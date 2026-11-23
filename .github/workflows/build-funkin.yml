@@ -14,10 +14,8 @@ permissions:
 jobs:
   html5:
     name: Official HTML5 build artifact (not published)
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 120
-    container:
-      image: ghcr.io/funkincrew/build-dependencies:main
     steps:
       - name: Clone official source and matching asset submodules
         shell: bash
@@ -31,14 +29,18 @@ jobs:
           git submodule sync --recursive
           git submodule update --init --recursive
           git rev-parse HEAD > ../FUNKIN_SOURCE_COMMIT.txt
+      - name: Set up public Haxe toolchain
+        uses: FunkinCrew/ci-haxe@v3
+        with:
+          haxe-version: 4.3.7
       - name: Configure Haxe libraries and compile HTML5
         shell: bash
         working-directory: funkin-source
         run: |
           set -euo pipefail
           haxelib --never newrepo
-          haxelib --global git haxelib https://github.com/FunkinCrew/haxelib.git
-          haxelib --global git hmm https://github.com/FunkinCrew/hmm.git
+          haxelib --global git haxelib https://github.com/FunkinCrew/haxelib.git funkin-patches --skip-dependencies
+          haxelib --global git hmm https://github.com/FunkinCrew/hmm.git funkin-patches
           haxelib --global run hmm install -q
           haxelib --global fixrepo
           haxelib run lime setup
