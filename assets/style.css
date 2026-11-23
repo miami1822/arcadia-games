@@ -53,3 +53,49 @@ body.arcadia-player-expanded{overflow:hidden}
 .merge-tile[data-value="2"]{background:#35566a}.merge-tile[data-value="4"]{background:#3b726e}.merge-tile[data-value="8"]{background:#7c6445}.merge-tile[data-value="16"]{background:#9b6449}.merge-tile[data-value="32"],.merge-tile[data-value="64"]{background:#ad5a61}.merge-tile[data-value="128"],.merge-tile[data-value="256"],.merge-tile[data-value="512"],.merge-tile[data-value="1024"],.merge-tile[data-value="2048"]{background:#9b7b26}
 .game-stage canvas{max-width:100%;max-height:100%;height:auto;object-fit:contain;touch-action:none}
 .play-surface:fullscreen .merge-grid,.play-surface.arcadia-theater .merge-grid,.school-player:fullscreen .merge-grid,.school-player.arcadia-theater .merge-grid{width:min(65vh,90vw,600px)}
+
+
+/* Fullscreen hotfix v3: pin embedded game to the entire available playfield.
+   Percentage iframe heights inside flex items can otherwise collapse to a strip. */
+.play-surface:fullscreen,
+.play-surface.arcadia-theater{
+  position:fixed!important;inset:0!important;display:flex!important;flex-direction:column!important;
+  box-sizing:border-box!important;width:100vw!important;height:100vh!important;height:100dvh!important;
+  max-width:none!important;max-height:none!important;min-height:0!important;margin:0!important;padding:0!important;
+  overflow:hidden!important;border:0!important;border-radius:0!important;
+}
+.play-surface:fullscreen > .play-top,.play-surface.arcadia-theater > .play-top{
+  flex:0 0 auto!important;min-height:64px;z-index:2;
+}
+.play-surface:fullscreen > #game-stage,
+.play-surface.arcadia-theater > #game-stage{
+  display:block!important;position:relative!important;flex:1 1 0!important;min-height:0!important;
+  max-height:none!important;height:auto!important;overflow:hidden!important;padding:0!important;
+  align-self:stretch!important;width:100%!important;
+}
+.play-surface:fullscreen > #game-stage > iframe,
+.play-surface.arcadia-theater > #game-stage > iframe{
+  display:block!important;position:absolute!important;inset:0!important;
+  width:100%!important;height:100%!important;min-height:0!important;max-height:none!important;
+  max-width:none!important;margin:0!important;border:0!important;
+}
+.play-surface:not(:fullscreen):not(.arcadia-theater) > #game-stage.game-stage-embedded{
+  position:relative!important;min-height:min(75dvh,800px)!important;
+  height:min(75dvh,800px)!important;display:block!important;
+}
+.play-surface:not(:fullscreen):not(.arcadia-theater) > #game-stage.game-stage-embedded > iframe{
+  position:absolute!important;inset:0!important;width:100%!important;height:100%!important;
+}
+.school-player:fullscreen .school-game-stage.game-stage-embedded,
+.school-player.arcadia-theater .school-game-stage.game-stage-embedded{
+  display:block!important;position:relative!important;flex:1 1 0!important;min-height:0!important;
+  height:auto!important;max-height:none!important;overflow:hidden!important;
+}
+.school-player:fullscreen .school-game-stage.game-stage-embedded iframe,
+.school-player.arcadia-theater .school-game-stage.game-stage-embedded iframe{
+  position:absolute!important;inset:0!important;width:100%!important;height:100%!important;
+  max-height:none!important;min-height:0!important;
+}
+@media(max-width:650px){
+  .play-surface:fullscreen > .play-top,.play-surface.arcadia-theater > .play-top{min-height:54px}
+}
