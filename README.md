@@ -6,12 +6,15 @@ An original, responsive arcade starter with four playable games, searchable cata
 
 Run `python -m http.server 8000` from this folder and open `http://localhost:8000`. Opening `index.html` directly as a `file://` URL won't load the JSON catalog in most browsers.
 
-## Publish automatically with GitHub Pages
+## Publish on GitHub Pages
 
-1. Create a **new** GitHub repository and upload these files to its `main` branch, including `.github/workflows/deploy.yml`.
-2. In repository **Settings → Pages**, select **GitHub Actions** as the build/deployment source.
-3. Every push to `main` triggers automatic deployment. GitHub Actions minutes and permissions are subject to your account/org settings.
-4. On `admin.html`, edit the catalog and **Export catalog.json**. Commit the exported file at the root of your repository. This publishes game catalog changes automatically.
+This repository is ready for GitHub Pages (static files from the main branch).
+
+Open https://github.com/miami1822/arcadia-games/settings/pages and select **Deploy from a branch**, branch **main**, folder **/(root)**, then **Save**. GitHub Pages must show a successful deployment before the published site can be treated as live.
+
+See [GITHUB_PAGES.md](GITHUB_PAGES.md) for expected URLs, a step-by-step guide, and safety limitations.
+
+The Arcadia staff publishes reviewed games by committing files and updating catalog.json. Edits in admin.html are local until committed.
 
 ## Important limitations
 
@@ -19,7 +22,7 @@ Run `python -m http.server 8000` from this folder and open `http://localhost:800
 - New built-in games require a corresponding JavaScript module under `games/`. Other games can be linked by HTTPS iframe when the game's publisher permits embedding; some hosts prohibit iframe embeds.
 - Favorites and high scores are local to the player's browser.
 - Do not host copyrighted games without proper permission. School network restrictions and acceptable-use policies still apply; this project does not bypass filtering.
-- This is a static-host starter. For authenticated shared admin editing and automatic ingestion of games, you'd need a backend and moderation/review process.
+- This is a static-host starter. Arcadia Creator deliberately requires no developer accounts. Public games still require manual maintainer review and GitHub commits.
 
 ## File layout
 
@@ -29,7 +32,7 @@ Run `python -m http.server 8000` from this folder and open `http://localhost:800
 - `admin.html`: local catalog editor
 - `assets/`: CSS, catalog/home/editor/player scripts
 - `games/`: four standalone original games
-- `.github/workflows/deploy.yml`: GitHub Pages auto-deployment
+- `creator.html` and `assets/creator.*`: Creator alpha (no developer accounts)
 
 ## License
 
@@ -43,7 +46,7 @@ Project source is supplied for your use and customization. No external game cont
 - To create the Google Sites companion: publish this site to HTTPS first. In the Google Sites editor, choose **Insert → Embed → URL**, enter the published absolute URL of `/school.html`, adjust the iframe size, and publish the Google Site. If your Google Workspace administrator blocks embedding or access to the host, follow that policy. The Google Site itself must be manually created/published with an authorized account.
 - To add a new original built-in game, add `games/<id>.js` and a matching `catalog.json` entry. Run `python scripts/check_catalog.py` to check metadata and module presence. More thorough browser/gameplay tests are still needed before public releases.
 - `assets/player.js` now supports additional built-in JavaScript game files referenced by a validated catalog ID. Code review is essential because game scripts run on your site.
-- The deployment workflow validates the catalog before publishing. The Google Sites embed automatically reflects changes on the hosted `school.html`, subject to normal caching. It does **not** automatically create/update native Google Sites pages.
+- Changes to the catalog should be reviewed before a maintainer commits them. The Google Sites embed automatically reflects changes on the hosted `school.html`, subject to normal caching. It does **not** automatically create/update native Google Sites pages.
 
 ## Revenue plan (not yet active)
 
@@ -51,13 +54,15 @@ Keep the school edition free; do not depend on Google Sites for AdSense, because
 
 ## Weekly game drops
 
-A ChatGPT weekly task has been scheduled separately. Its success in editing a live repository depends on available access at the time of each run. This package does not itself automatically generate new games; the GitHub action only validates and publishes changes pushed to `main`. Do not assume scheduled creation equals confirmed live deployment.
+A ChatGPT weekly task has been scheduled separately. Its success in editing a live repository depends on available access at the time of each run. This package does not itself automatically generate new games. Do not assume scheduled creation equals confirmed live deployment.
 
 
 ## Arcadia Creator alpha (November 2026)
 
-Arcadia Creator is a local-first game development alpha at **https://arcadia-creator.onrender.com/creator.html**. The `creator.html` page has a responsive dashboard, playable 2D Visual Builder, HTML/CSS/JavaScript Code Studio, isolated playtest frame, small HTML/ZIP import, and ZIP export. The main Arcadia homepage links to it.
+Arcadia Creator is an **account-free**, local-first tool at `creator.html`. It provides a responsive dashboard, playable 2D Visual Builder, HTML/CSS/JavaScript Code Studio, sandboxed playtest, small HTML/ZIP import and ZIP export.
 
-**It does not yet offer sign-in, cloud projects, server-side review, or public game submissions.** Drafts remain on the creator's current device. Refer to [CREATOR.md](CREATOR.md) for functional limits, security measures, and the production publishing roadmap.
+Creators need no sign-in or developer accounts. Drafts are stored in the current browser, not GitHub. Export backups. Arcadia staff manually review game packages before publishing them to the game catalog.
 
-The `arcadia-creator` Render static site currently deploys the public repository's `main` branch. This is independent of GitHub Pages and does not require GitHub Actions minutes.
+GitHub Pages is the preferred hosting target. After it is enabled, the expected Creator URL is https://miami1822.github.io/arcadia-games/creator.html. The previous Render static site can stay available until Pages is confirmed live.
+
+See [CREATOR.md](CREATOR.md) and [GITHUB_PAGES.md](GITHUB_PAGES.md) for the details.
