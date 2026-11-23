@@ -68,7 +68,7 @@ class ArcadiaCreatorPlaytestBridge{
    if(this._recent.length>MAX_REQUESTS_WINDOW)throw Error('Playtest request limit reached');
    result=operation(this.gameId,m.method,m.payload);
   }catch(err){ok=false;error=safeError(err)}
-  try{this._port.postMessage({__arcadiaPreview:1,protocol:1,gameId:this.gameId,type:'RESPONSE',requestId:m.requestId,ok,result,error})}catch{}
+  try{this._port.postMessage({__arcadiaPreview:1,protocol:1,gameId:this.gameId,nonce:this.nonce,type:'RESPONSE',requestId:m.requestId,ok,result,error})}catch{}
   if(ok&&['storage.save','storage.remove','scores.submit','achievements.unlock'].includes(m.method))this._emit('data',m.method);
  }
  runTest(){
