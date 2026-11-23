@@ -45,6 +45,7 @@ $('close-dialog').addEventListener('click',closeDialog);$('cancel-dialog').addEv
 $('start-visual').addEventListener('click',function(){openDialog('visual')});$('start-code').addEventListener('click',function(){openDialog('code')});
 $('start-assets').addEventListener('click',function(){if(!projects.length){openDialog('visual');toast('Create a project first, then open its Asset Library.');return}activeId=projects[0].id;show('editor');setTab('assets')});
 $('start-publish').addEventListener('click',function(){if(!current()&&projects.length)activeId=projects[0].id;show('publish')});
+$('start-models').addEventListener('click',function(){if(!projects.length){openDialog('visual');toast('Create a project, then open its 3D Model Arsenal.');return}activeId=projects[0].id;show('editor');setTab('models')});
 document.querySelectorAll('[data-view]').forEach(function(b){b.addEventListener('click',function(){show(b.dataset.view)})});
 document.addEventListener('click',function(e){var t=e.target.closest('[data-open],[data-duplicate],[data-delete],[data-export]');if(!t)return;if(t.dataset.open)openProject(t.dataset.open);else if(t.dataset.duplicate)duplicate(t.dataset.duplicate);else if(t.dataset.delete)removeProject(t.dataset.delete);else if(t.dataset.export){var p=projects.find(function(x){return x.id===t.dataset.export});if(p)exportGame(p)}});
 $('search-projects').addEventListener('input',renderProjects);$('sort-projects').addEventListener('change',renderProjects);
