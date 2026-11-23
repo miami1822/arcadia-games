@@ -61,3 +61,35 @@
 .audio-library-section .sdk-how{margin-top:18px}
 .audio-library-section .sdk-how p{line-height:1.6;color:#bdcbe0}
 .audio-library-section .sdk-how code{background:#222d43;padding:2px 4px;border-radius:4px;color:#d6c8ff}
+
+
+/* 2D + 3D asset toolkit (November 2026) */
+.sheet-tool{margin:24px 0 8px;padding:20px;border-radius:14px;background:linear-gradient(145deg,#182542,#141b2d);border:1px solid #415478}
+.sheet-tool h3{margin:9px 0 6px;font-size:20px;color:#eff1ff}
+.sheet-tool .hint{line-height:1.5}
+.sheet-grid{display:grid;grid-template-columns:minmax(160px,2fr) repeat(3,minmax(95px,1fr));gap:12px;margin:16px 0}
+.sheet-grid label{font-size:11px;display:flex;flex-direction:column;gap:7px;color:#c1d0ea}
+.sheet-grid input{width:100%;min-width:0}
+.sheet-action-row{display:flex;flex-wrap:wrap;align-items:center;gap:15px}
+.models-workspace .page-heading{display:flex;gap:16px;align-items:center;justify-content:space-between;flex-wrap:wrap;margin:10px 0 20px}
+.models-workspace .page-heading h2{font-size:27px;margin:6px 0}
+.models-workspace .page-heading p{font-size:12px;line-height:1.6;color:#aebbd1}
+.three-studio-grid{display:grid;grid-template-columns:minmax(0,1.75fr) minmax(240px,1fr);align-items:stretch;gap:16px;margin:10px 0 24px}
+.three-preview-panel{min-width:0;border:1px solid #3e4a66;background:#141e30;border-radius:14px;overflow:hidden}
+.three-preview-panel .preview-toolbar{padding:12px 14px}
+#three-model-viewer{display:block;width:100%;height:370px;min-height:300px;background:radial-gradient(circle at 40% 38%,#39476c,#19253a 70%,#101724);--poster-color:transparent}
+.three-preview-footer{display:flex;justify-content:space-between;gap:12px;padding:12px 16px;align-items:center;color:#c3d0e5;font-size:11px;flex-wrap:wrap}
+.three-preview-panel>p{padding:0 15px 12px;margin:0;overflow-wrap:anywhere}
+.three-preview-panel code{font-family:ui-monospace,monospace;color:#c9aeff}
+.three-help-panel{border:1px solid #384663;background:#171f33;border-radius:14px;padding:20px}
+.three-help-panel h3{font-size:18px;margin:0 0 9px}
+.three-help-panel>p{font-size:12px;line-height:1.7;color:#bdc8df}
+.three-feature{display:flex;gap:7px;flex-direction:column;padding:13px 0;border-bottom:1px solid #36445b}
+.three-feature strong{font-size:12px;color:#e2e9fc}
+.three-feature span{font-size:11px;color:#a2b2ce}
+.three-help-panel .notice{margin-top:17px;font-size:11px;line-height:1.65}
+.asset-3d-card-actions{display:flex;gap:6px;margin-top:auto;flex-wrap:wrap}
+.asset-3d-card-actions .button{flex:1;min-width:82px;padding:9px 7px;font-size:11px;white-space:normal}
+.models-workspace>.asset-filters{margin-top:14px}
+@media(max-width:900px){.three-studio-grid{grid-template-columns:1fr}.sheet-grid{grid-template-columns:repeat(3,minmax(80px,1fr))}.sheet-grid label:first-child{grid-column:1/-1}}
+@media(max-width:500px){.sheet-grid{grid-template-columns:repeat(2,minmax(100px,1fr))}.sheet-grid label:first-child{grid-column:1/-1}#three-model-viewer{height:300px}.three-preview-footer{align-items:flex-start;flex-direction:column}}
