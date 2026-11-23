@@ -59,5 +59,25 @@
     "type": "hosted",
     "path": "maggar/index.html",
     "featured": true
+  },
+  {
+    "id": "orbit-dodger",
+    "title": "Orbit Dodger",
+    "description": "Pilot a neon ship, dodge falling meteors, and collect stars for a high score.",
+    "category": "Arcade",
+    "emoji": "🚀",
+    "accent": "#64f4cb",
+    "type": "built-in",
+    "featured": true
+  },
+  {
+    "id": "number-merge",
+    "title": "Number Merge",
+    "description": "Slide and combine matching number tiles in a strategic 4×4 puzzle.",
+    "category": "Puzzle",
+    "emoji": "🔢",
+    "accent": "#ffd46d",
+    "type": "built-in",
+    "featured": false
   }
 ]
