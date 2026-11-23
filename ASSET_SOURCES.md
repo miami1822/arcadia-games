@@ -1,6 +1,6 @@
 # Arcadia Creator — Free Asset and Audio Sources
 
-These are **creator-facing source links**, not hidden copies or automatically downloaded bundles. Arcadia Creator includes a library of ten original SVG sprites and **13 generated original audio tracks and sound effects** that can be immediately added to a project. Packs from the websites below can be downloaded at their original source and imported using **Asset Library → Import ZIP Pack** or **Sound & Music Studio → Import Audio ZIP**.
+These are **creator-facing source links**, not hidden copies or automatically downloaded bundles. Arcadia Creator includes a library of 22 original SVG sprites and **13 generated original audio tracks and sound effects** that can be immediately added to a project. Packs from the websites below can be downloaded at their original source and imported using **Asset Library → Import ZIP Pack** or **Sound & Music Studio → Import Audio ZIP**.
 
 ## Verified CC0 sources
 
@@ -37,12 +37,12 @@ Browsers may block autoplay until the player interacts with the game. Start musi
 
 ## Imports, packaging and rights
 
-- The current local alpha accepts PNG, JPEG, GIF, WebP, WAV, MP3 and OGG; choose small files for browser storage.
+- The current local alpha accepts PNG, JPEG, GIF, WebP, WAV, MP3, OGG, and small standalone 3D GLB files. The 2D Sprite Sheet Cutter converts PNG/JPEG/WebP sheets into individual frames. Choose small files for browser storage.
 - Image imports: up to 350 KB each. Audio imports: up to 350 KB each. Total local asset limit: 32 resources per project.
 - ZIP imports scan filenames and sizes and import up to a subset of images/sounds. Use the filename filter to choose from large source packs; no drag-and-drop of complete 1 GB packs is supported yet.
 - `arcadia-release.json` contains per-asset `source` and `license` metadata; exported ZIP games also include `ASSET-CREDITS.txt`.
 - A note like *verify license* is a reminder, **not** proof that an asset is licensed. Review original source metadata and honor attribution requirements before publication.
-- 3D packs are links for research and future 3D tooling. The current visual builder does not import 3D meshes into playable scenes.
+- 3D packs are links for research and future 3D tooling. The 3D Model Arsenal now imports and previews compact self-contained GLB files, then exports those models in release ZIPs. The playable Visual Builder still runs 2D scenes and does not position, rig or animate 3D meshes.
 
 ## Verified reference sources (November 2026)
 
@@ -52,3 +52,9 @@ Browsers may block autoplay until the player interacts with the game. Start musi
 - Freesound's [official FAQ](https://freesound.org/help/faq/) explains multiple sound licenses.
 
 Sources may update licensing or file offerings. Confirm terms at download time; this document does not grant rights to files hosted by others.
+
+## New 3D Model Arsenal
+
+Eight original downloadable GLB models are now built into Creator, with a live orbit/zoom WebGL model inspector and a filtered external-GLB ZIP importer. Individual GLB files are capped at 1.25 MB. The 3D source browser links to [Kenney Nature Kit](https://kenney.nl/assets/nature-kit), [Kenney Platformer Kit](https://kenney.nl/assets/platformer-kit), [Kenney Space Kit](https://kenney.nl/assets/space-kit), [Kenney City Kit Commercial](https://kenney.nl/assets/city-kit-commercial), [Poly Haven Models](https://polyhaven.com/models), and other original source sites. Quaternius downloads require checking their individual pack terms.
+
+[Detailed 2D and 3D asset workflow](ASSET_PIPELINE_2D_3D.md).
