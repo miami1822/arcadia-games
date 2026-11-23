@@ -47,3 +47,17 @@
 .publisher-choice h3{margin:0 0 5px}
 .publisher-choice .mode-option{grid-template-columns:22px 1fr}
 @media(max-width:700px){.blockly-surface{height:480px}.block-studio-head h2{font-size:20px}.asset-grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}}
+
+
+/* Sound & Music Studio */
+.audio-library-section{margin-top:32px;padding-top:26px;border-top:1px solid #39475f}
+.audio-library-section .section-heading{flex-wrap:wrap;align-items:flex-start}
+.audio-library-section .section-heading h2{margin:7px 0;font-size:21px}
+.asset-description{font-size:12px;color:#a8bad1;line-height:1.6;max-width:590px}
+.audio-icon{background:radial-gradient(circle at 50% 35%,#384a7a,#1a2440)!important;color:#dbcaff}
+.audio-card .button{margin-top:0}
+.audio-card .button.primary{margin-top:auto}
+.audio-card small{min-height:32px}
+.audio-library-section .sdk-how{margin-top:18px}
+.audio-library-section .sdk-how p{line-height:1.6;color:#bdcbe0}
+.audio-library-section .sdk-how code{background:#222d43;padding:2px 4px;border-radius:4px;color:#d6c8ff}
