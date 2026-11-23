@@ -5,6 +5,7 @@
     "description": "Collect glowing orbs. Don't hit the walls or your tail.",
     "category": "Arcade",
     "emoji": "🐍",
+    "thumbnail": "assets/thumbnails/snake.svg",
     "accent": "#6bf6b5",
     "type": "built-in",
     "featured": true
@@ -15,6 +16,7 @@
     "description": "Bounce the ball, smash every brick, and keep it alive.",
     "category": "Arcade",
     "emoji": "🧱",
+    "thumbnail": "assets/thumbnails/breakout.svg",
     "accent": "#fbbf74",
     "type": "built-in",
     "featured": true
@@ -25,6 +27,7 @@
     "description": "Match every pair of cards in as few moves as possible.",
     "category": "Puzzle",
     "emoji": "🧠",
+    "thumbnail": "assets/thumbnails/memory.svg",
     "accent": "#b5a3ff",
     "type": "built-in",
     "featured": false
@@ -35,6 +38,7 @@
     "description": "Play tic-tac-toe against a smart computer opponent.",
     "category": "Strategy",
     "emoji": "⭕",
+    "thumbnail": "assets/thumbnails/tictactoe.svg",
     "accent": "#7ac5ff",
     "type": "built-in",
     "featured": false
@@ -45,6 +49,7 @@
     "description": "Explore five 3D regions with a rigged explorer, roaming wildlife, mysterious mobs, survival crafting, base automation, and the cinematic Meridian Signal campaign. Original Lucion Games beta.",
     "category": "Survival",
     "emoji": "🌲",
+    "thumbnail": "assets/thumbnails/hollow-frontier.svg",
     "accent": "#a8ffba",
     "type": "built-in",
     "featured": true
@@ -55,6 +60,7 @@
     "description": "Grow your cell and compete against AI rivals across several arena modes.",
     "category": "Arcade",
     "emoji": "🟢",
+    "thumbnail": "assets/thumbnails/maggar.svg",
     "accent": "#00e5ff",
     "type": "hosted",
     "path": "maggar/index.html",
@@ -66,6 +72,7 @@
     "description": "Pilot a neon ship, dodge falling meteors, and collect stars for a high score.",
     "category": "Arcade",
     "emoji": "🚀",
+    "thumbnail": "assets/thumbnails/orbit-dodger.svg",
     "accent": "#64f4cb",
     "type": "built-in",
     "featured": true
@@ -76,6 +83,7 @@
     "description": "Slide and combine matching number tiles in a strategic 4×4 puzzle.",
     "category": "Puzzle",
     "emoji": "🔢",
+    "thumbnail": "assets/thumbnails/number-merge.svg",
     "accent": "#ffd46d",
     "type": "built-in",
     "featured": false
@@ -86,6 +94,7 @@
     "description": "Restore fuses, manage your flashlight, and escape dark buildings.",
     "category": "Horror",
     "emoji": "🔦",
+    "thumbnail": "assets/thumbnails/deadlight.svg",
     "accent": "#6bc1fc",
     "type": "hosted",
     "path": "games/deadlight/index.html",
@@ -97,6 +106,7 @@
     "description": "Survive enemy swarms, gather upgrades, and reach dawn.",
     "category": "Survival",
     "emoji": "🔥",
+    "thumbnail": "assets/thumbnails/cinderfall.svg",
     "accent": "#f5a56b",
     "type": "hosted",
     "path": "games/cinderfall/index.html",
