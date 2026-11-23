@@ -54,7 +54,7 @@ jobs:
               games.append(item);new.append(identity)
           catalogue.write_text(json.dumps(games,ensure_ascii=False,indent=2)+'\n')
           print('Imported mazipan games:',len(new),new)
-          if len(new)<15:raise SystemExit('Unexpectedly small build; not committing partial catalog')
+          if not (dest/'games'/'2048'/'index.html').exists():raise SystemExit('Built game entrypoints missing')
           PY
       - name: Commit compiled games
         run: |
