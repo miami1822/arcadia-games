@@ -54,6 +54,7 @@ class ArcadiaSDK{
   };
   if(typeof port.start==='function')port.start();
   this.connected=true;
+  if(this._manifest)this._notify('READY',{manifest:this._manifest});
   for(const n of this._previewNotifications.splice(0))this._notify(n.type,n.payload);
   for(const w of this._previewWaiters.splice(0)){clearTimeout(w.timer);this._rpc(w.method,w.payload).then(w.resolve,w.reject)}
   this._dispatch('connected',{capabilities:this.capabilities});return this;
