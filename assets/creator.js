@@ -256,7 +256,7 @@ $('release-form').addEventListener('submit',function(e){e.preventDefault();var p
 async function exportGame(p){
  if(!p)return;
  var filename=(p.title.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'arcadia-game')+'.zip';
- var meta={name:p.title,description:p.description,genre:p.genre,controls:p.controls,schoolReviewRequested:p.school,rightsDeclared:p.rights,generatedBy:'Arcadia Creator Alpha',arcadiaSDK:'0.1.0',exportedAt:new Date().toISOString()};
+ var meta={name:p.title,description:p.description,genre:p.genre,controls:p.controls,schoolReviewRequested:p.school,rightsDeclared:p.rights,generatedBy:'Arcadia Creator Alpha',arcadiaSDK:'0.1.0',publisherMode:'anonymous',assetSources:p.assetMeta||{},exportedAt:new Date().toISOString()};
  try{
   var sdkSource=await sdkSourcePromise;
   var options={sdkSource,projectId:p.id,title:p.title};
@@ -276,7 +276,7 @@ async function exportGame(p){
    });
    Object.keys(p.assets||{}).forEach(function(key){
     var data=p.assets[key],parts=data.split(',');
-    if(parts.length===2&&!key.split('/').includes('..')&&!key.startsWith('/'))zip.file(key,parts[1],{base64:true});
+    if(parts.length===2&&!key.split('/').includes('..')&&!key.startsWith('/')){if(/^data:image\/svg\+xml(?:;charset=utf-8)?$/i.test(parts[0]))zip.file(key,decodeURIComponent(parts[1]));else if(/;base64$/i.test(parts[0]))zip.file(key,parts[1],{base64:true})}
    });
   }
   zip.file('arcadia-release.json',JSON.stringify(meta,null,2));
