@@ -46,3 +46,10 @@ a:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid #81f2
 .school-player:fullscreen .game-box canvas,.school-player.arcadia-theater .game-box canvas{max-height:calc(100dvh - 230px);max-width:100%;object-fit:contain}
 body.arcadia-player-expanded{overflow:hidden}
 @media(max-width:650px){.play-surface:fullscreen .play-top,.play-surface.arcadia-theater .play-top{padding:8px}.school-player:fullscreen,.school-player.arcadia-theater{padding:5px!important}.school-player:fullscreen .school-player-desc,.school-player.arcadia-theater .school-player-desc{display:none}}
+
+/* Number Merge + responsive arcade games */
+.merge-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;width:min(90vw,390px);aspect-ratio:1;background:#21283a;border:1px solid #424d67;padding:10px;border-radius:16px;margin:12px auto;touch-action:none}
+.merge-tile{min-width:0;display:grid;place-items:center;border-radius:10px;background:#30394d;color:#f7f9fc;font-size:clamp(19px,4.5vw,30px);font-weight:850}
+.merge-tile[data-value="2"]{background:#35566a}.merge-tile[data-value="4"]{background:#3b726e}.merge-tile[data-value="8"]{background:#7c6445}.merge-tile[data-value="16"]{background:#9b6449}.merge-tile[data-value="32"],.merge-tile[data-value="64"]{background:#ad5a61}.merge-tile[data-value="128"],.merge-tile[data-value="256"],.merge-tile[data-value="512"],.merge-tile[data-value="1024"],.merge-tile[data-value="2048"]{background:#9b7b26}
+.game-stage canvas{max-width:100%;max-height:100%;height:auto;object-fit:contain;touch-action:none}
+.play-surface:fullscreen .merge-grid,.play-surface.arcadia-theater .merge-grid,.school-player:fullscreen .merge-grid,.school-player.arcadia-theater .merge-grid{width:min(65vh,90vw,600px)}
