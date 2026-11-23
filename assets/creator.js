@@ -254,7 +254,7 @@ $('preview-top').addEventListener('click',function(){setTab('preview')});$('refr
 $('release-top').addEventListener('click',function(){show('publish')});
 function checks(p){return [['Game has a title',!!p.title.trim()],['Game has a description',!!p.description.trim()],['Rights declaration completed',!!p.rights],['Includes '+(p.mode==='visual'?'a player and finish zone':'an index.html file'),p.mode==='visual'?(p.scene.some(function(o){return o.type==='player'})&&p.scene.some(function(o){return o.type==='goal'})):!!(p.files['index.html']||'').trim()],['Preview opened for playtesting',!!p.testedAt]]}
 function renderRelease(){var p=current();$('release-empty').hidden=!!p;$('release-active').hidden=!p;if(!p)return;$('release-title').value=p.title;$('release-description').value=p.description||'';$('release-genre').value=p.genre||'Arcade';$('release-controls').value=p.controls||'';$('release-rights').checked=!!p.rights;$('release-school').checked=!!p.school;var items=checks(p);$('release-checks').innerHTML=items.map(function(pair){return '<div class="check-item"><span class="'+(pair[1]?'yes':'no')+'">'+(pair[1]?'✓':'○')+'</span><span>'+escapeHTML(pair[0])+'</span></div>'}).join('')}
-$('release-form').addEventListener('submit',function(e){e.preventDefault();var p=current();if(!p)return;p.title=$('release-title').value.trim()||p.title;p.description=$('release-description').value.trim();p.genre=$('release-genre').value;p.controls=$('release-controls').value.trim();p.rights=$('release-rights').checked;p.school=$('release-school').checked;touch(p);renderRelease();toast('Release details saved locally')});
+$('release-form').addEventListener('submit',function(e){e.preventDefault();var p=current();if(!p)return;saveReleaseInputs(p);renderRelease();toast('Release details saved locally')});
 function packageFilename(p){return (p.title.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'arcadia-game')+'.zip'}
 async function buildGameZip(p){
  if(!window.JSZip)throw Error('ZIP library unavailable');
@@ -293,6 +293,72 @@ async function exportGame(p){
   toast('Game ZIP exported with SDK and asset credits. Keep a backup.');
  }catch(error){toast('Export failed: '+error.message)}
 }
+
+/* Optional anonymous review service. Remains hidden until backend/CAPTCHA config exists. */
+var reviewConfig=window.ArcadiaCreatorConfig||{},reviewCaptchaToken='',reviewWidgetId=null;
+var reviewBase=String(reviewConfig.submissionApiBase||'').replace(/\/$/,'');
+function reviewConfigured(){
+ if(!reviewConfig.turnstileSiteKey||!reviewBase)return false;
+ try{var url=new URL(reviewBase);return url.protocol==='https:'||(url.hostname==='localhost'&&url.protocol==='http:')}catch{return false}
+}
+function setupReview(){
+ var section=$('submission-online');if(!section)return;
+ var active=reviewConfigured();section.hidden=!active;
+ if(!active)return;
+ var script=document.createElement('script');
+ script.src='https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
+ script.async=true;
+ script.onload=function(){
+  if(!window.turnstile){$('submission-status').textContent='Verification could not load.';return}
+  reviewWidgetId=window.turnstile.render('#creator-turnstile',{sitekey:reviewConfig.turnstileSiteKey,callback:function(token){reviewCaptchaToken=token},'expired-callback':function(){reviewCaptchaToken=''}});
+ };
+ script.onerror=function(){$('submission-status').textContent='Verification is unavailable.'};
+ document.head.append(script);
+}
+function saveReleaseInputs(p){
+ p.title=$('release-title').value.trim()||p.title;
+ p.description=$('release-description').value.trim();
+ p.genre=$('release-genre').value;
+ p.controls=$('release-controls').value.trim();
+ p.rights=$('release-rights').checked;
+ p.school=$('release-school').checked;
+ touch(p);
+}
+async function submitForReview(){
+ var p=current();if(!p||!reviewConfigured())return;
+ saveReleaseInputs(p);renderRelease();
+ var node=$('submission-status');
+ if(p.description.length<10||!checks(p).every(function(x){return x[1]})){node.textContent='Complete the release checklist and add a description of at least 10 characters.';return}
+ if(!reviewCaptchaToken){node.textContent='Please complete the verification first.';return}
+ var button=$('submit-for-review');button.disabled=true;node.textContent='Preparing game package and submitting for review…';
+ try{
+  var game=await buildGameZip(p);
+  if(game.blob.size>2*1024*1024)throw Error('Review upload limit is 2 MB. Reduce image sizes or export ZIP manually.');
+  var data=new FormData();
+  data.append('game',game.blob,game.filename);
+  data.append('title',p.title);data.append('description',p.description);data.append('genre',p.genre||'Arcade');
+  data.append('school_requested',String(!!p.school));data.append('rights_confirmed',String(!!p.rights));
+  data.append('asset_manifest',JSON.stringify(p.assetMeta||{}));
+  data.append('turnstile_token',reviewCaptchaToken);
+  var response=await fetch(reviewBase+'/api/v1/creator/submissions',{method:'POST',body:data});
+  var result=await response.json().catch(function(){return {}});
+  if(!response.ok)throw Error(result.error||'The review service did not accept the submission.');
+  var receipt={id:result.id,receipt:result.receipt,title:p.title,createdAt:Date.now(),status:result.status};
+  try{var stored=JSON.parse(localStorage.getItem('arcadia-review-receipts-v1')||'[]');if(!Array.isArray(stored))stored=[];stored.unshift(receipt);localStorage.setItem('arcadia-review-receipts-v1',JSON.stringify(stored.slice(0,20)))}catch{}
+  node.replaceChildren();
+  var line=document.createElement('p');line.textContent='Submitted for review. This is not publicly published yet. Receipt: '+result.receipt;
+  var copy=document.createElement('button');copy.type='button';copy.className='button secondary';copy.textContent='Copy receipt';
+  copy.onclick=function(){navigator.clipboard?.writeText(result.id+':'+result.receipt).then(function(){toast('Receipt copied')}).catch(function(){toast('Select and copy the receipt text')})};
+  node.append(line,copy);
+  toast('Game submitted for human review. Keep the receipt code.');
+ }catch(error){node.textContent='Submission failed: '+error.message}
+ finally{
+  button.disabled=false;reviewCaptchaToken='';
+  if(window.turnstile&&reviewWidgetId!==null)window.turnstile.reset(reviewWidgetId);
+ }
+}
+$('submit-for-review').addEventListener('click',submitForReview);
+setupReview();
 
 function download(blob,filename){var url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(url)},30000)}
 $('export-top').addEventListener('click',function(){exportGame(current())});$('release-export').addEventListener('click',function(){var p=current();if(!p)return;var complete=checks(p).every(function(c){return c[1]});if(!complete)toast('Exporting draft. Finish the checklist before submitting to Arcadia.');exportGame(p)});
