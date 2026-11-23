@@ -10,7 +10,9 @@ The Creator UI is also linked from the main `index.html`.
 - 2D Visual Builder: add, select, drag, resize, recolor, and remove players, platforms, coins, hazards, and goals.
 - **Advanced Block Studio:** Blockly-powered, Scratch-style coding with 22 custom Arcadia blocks, including events, movement, physics, looks, sounds, scores, achievements and saves; standard control/logic/math/text/variables blocks are also available.
 - **Convert to Code:** One-way conversion of visual scene and blocks into editable HTML and JavaScript, retaining the original block snapshot. Reverse conversion is not supported.
-- **Asset Library:** Ten original starter sprites, curated Kenney and OpenGameArt links, image imports, and filtered ZIP pack importing. Import metadata follows assets into exported game manifests.
+- **Asset Library:** Ten original starter sprites plus 24 additional vetted free-media and reference pack links from Kenney, OpenGameArt, Freesound, Poly Haven, and ambientCG. Includes sprite imports and filtered ZIP pack importing.
+- **Sound & Music Studio:** Thirteen original audio clips (10 SFX + 3 short loops) can be previewed and added to a game, along with WAV/MP3/OGG imports and filtered audio ZIP importing. A companion pack browser links to official audio sources.
+- **Audio Blocks:** Block Studio provides Play Audio Asset, Loop Music Asset, and Stop Background Music blocks, and exports bundle audio files plus source metadata.
 - Generated playable platformer, keyboard controls, collision, collectibles, score, finish zone.
 - Code Studio for `index.html`, `style.css`, and `game.js`.
 - Sandboxed game preview, restart and fullscreen.
@@ -78,3 +80,9 @@ See [PUBLISHING.md](PUBLISHING.md) and [server/README.md](server/README.md) for 
 - Starter art ships as original in-browser SVG; Kenney/OpenGameArt items are linked to their original download pages. Imports require license verification.
 - Browser localStorage is size-limited. Keep exported ZIP backups, especially when importing large art packs.
 - Public game submissions, creator profiles and verified Lucion Identity are not live yet.
+
+## Free media source verification
+
+Refer to [ASSET_SOURCES.md](ASSET_SOURCES.md) for first-party audio inventory, curated third-party pack links, CC0/source licensing notes, and practical import/export limitations. Third-party packs are not automatically redistributed by Arcadia. The Sound & Music Studio originals can be added directly to a local project without visiting external websites.
+
+Exported ZIP games include `ASSET-CREDITS.txt` to list source provenance; imported files still require verification before publication.
