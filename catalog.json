@@ -123,5 +123,16 @@
     "type": "hosted",
     "path": "games/quiet-street/index.html",
     "featured": true
+  },
+  {
+    "id": "vesper-signal-run",
+    "title": "Vesper // Signal Run",
+    "description": "Pilot a salvage craft through three abandoned outposts, recover signals, evade sentry drones and race to extraction.",
+    "category": "Arcade",
+    "emoji": "🛸",
+    "accent": "#65e5fc",
+    "type": "hosted",
+    "path": "games/vesper-signal-run/index.html",
+    "featured": true
   }
 ]
