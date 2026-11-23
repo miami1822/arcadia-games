@@ -27,7 +27,7 @@ function codeFiles(){return {
 }}
 function createProject(name,mode){var now=Date.now();return {id:uid(),title:name,mode:mode==='code'?'code':'visual',scene:starterScene(),files:codeFiles(),assets:{},description:'',genre:'Arcade',controls:'Arrow keys or A/D to move, Space to jump',rights:false,school:false,createdAt:now,updatedAt:now,testedAt:null}}
 function ago(t){var minutes=Math.max(0,Math.round((Date.now()-t)/60000));if(minutes<1)return 'Just now';if(minutes<60)return minutes+'m ago';if(minutes<1440)return Math.floor(minutes/60)+'h ago';return new Date(t).toLocaleDateString()}
-function show(view){if(view!=='editor'){if(editorTab==='blocks'&&window.ArcadiaCreatorBlocks)ArcadiaCreatorBlocks.unmount();if(playtestBridge){playtestBridge.destroy();playtestBridge=null;$('game-preview').srcdoc=''}}['home','projects','editor','publish'].forEach(function(v){$('view-'+v).hidden=v!==view});document.querySelectorAll('[data-view]').forEach(function(n){if(n.classList.contains('nav')){n.classList.toggle('active',n.dataset.view===view)}});$('crumb').textContent=({home:'CREATOR HUB',projects:'MY PROJECTS',editor:'GAME STUDIO',publish:'RELEASE CENTER'})[view];if(view==='home')renderHome();if(view==='projects')renderProjects();if(view==='editor')renderEditor();if(view==='publish')renderRelease();window.scrollTo({top:0,behavior:'instant'})}
+function show(view){if(view!=='editor'){if(editorTab==='blocks'&&window.ArcadiaCreatorBlocks)ArcadiaCreatorBlocks.unmount();if(editorTab==='assets'&&window.ArcadiaCreatorAudio)ArcadiaCreatorAudio.unmount();if(playtestBridge){playtestBridge.destroy();playtestBridge=null;$('game-preview').srcdoc=''}}['home','projects','editor','publish'].forEach(function(v){$('view-'+v).hidden=v!==view});document.querySelectorAll('[data-view]').forEach(function(n){if(n.classList.contains('nav')){n.classList.toggle('active',n.dataset.view===view)}});$('crumb').textContent=({home:'CREATOR HUB',projects:'MY PROJECTS',editor:'GAME STUDIO',publish:'RELEASE CENTER'})[view];if(view==='home')renderHome();if(view==='projects')renderProjects();if(view==='editor')renderEditor();if(view==='publish')renderRelease();window.scrollTo({top:0,behavior:'instant'})}
 function card(p){return '<article class="project-card"><div class="cover" aria-hidden="true">'+(p.mode==='visual'?'🎮':'💻')+'</div><div class="project-body"><h3>'+escapeHTML(p.title)+'</h3><div class="project-meta">'+(p.mode==='visual'?'Visual game':'Code game')+' · Updated '+ago(p.updatedAt)+'</div><div class="project-actions"><span class="tag">LOCAL DRAFT</span><div><button class="button secondary" data-open="'+p.id+'">Open ↗</button></div></div><div class="project-actions"><button class="text-btn" data-duplicate="'+p.id+'">Duplicate</button><button class="text-btn" data-export="'+p.id+'">Export</button><button class="text-btn" data-delete="'+p.id+'">Delete</button></div></div></article>'}
 function renderHome(){var count=projects.length;var metric=[['PROJECTS',count],['VISUAL GAMES',projects.filter(function(p){return p.mode==='visual'}).length],['CODE GAMES',projects.filter(function(p){return p.mode==='code'}).length]];$('metrics').innerHTML=metric.map(function(m){return '<div class="metric"><small>'+m[0]+'</small><strong>'+m[1]+'</strong></div>'}).join('');$('recent-projects').innerHTML=count?projects.slice().sort(function(a,b){return b.updatedAt-a.updatedAt}).slice(0,3).map(card).join(''):'<div class="empty"><div class="empty-icon">✨</div><h2>Your first game starts here</h2><p>Create a project to start building.</p><button class="button primary" id="empty-home-create">Create your first game</button></div>';var b=$('empty-home-create');if(b)b.addEventListener('click',openDialog)}
 function renderProjects(){var s=$('search-projects').value.trim().toLowerCase();var arr=projects.filter(function(p){return p.title.toLowerCase().includes(s)});var sort=$('sort-projects').value;arr.sort(sort==='old'?function(a,b){return a.updatedAt-b.updatedAt}:sort==='name'?function(a,b){return a.title.localeCompare(b.title)}:function(a,b){return b.updatedAt-a.updatedAt});$('all-projects').innerHTML=arr.length?arr.map(card).join(''):'<div class="empty"><h2>No projects found</h2><p>Create a new game or change your search.</p></div>'}
@@ -74,6 +74,7 @@ function setTab(tab){
  if(tab==='code'&&p.mode==='visual'){convertToCode();return}
  if((tab==='visual'||tab==='blocks')&&p.mode==='code'){toast('This is now a code project. Block and scene edits cannot safely reconstruct your JavaScript.');return}
  if(editorTab==='blocks'&&tab!=='blocks')ArcadiaCreatorBlocks.unmount();
+ if(editorTab==='assets'&&tab!=='assets')ArcadiaCreatorAudio.unmount();
  if(tab!=='preview'&&playtestBridge){playtestBridge.destroy();playtestBridge=null;$('game-preview').srcdoc=''}
  editorTab=tab;
  document.querySelectorAll('[data-editor-tab]').forEach(function(btn){
@@ -89,6 +90,7 @@ function setTab(tab){
  if(tab==='assets'){
   $('editor-mode-label').textContent='ASSET LIBRARY';
   ArcadiaCreatorAssets.mount(p,{save:function(obj){touch(obj)},notify:toast,selected:function(){return selectedObjectId},renderScene:renderScene});
+  ArcadiaCreatorAudio.mount(p,{save:function(obj){touch(obj)},notify:toast});
  }
  if(tab==='code'){$('editor-mode-label').textContent='CODE STUDIO';renderCode()}
  if(tab==='preview'){$('editor-mode-label').textContent='PLAYTEST';refreshPreview()}
@@ -96,6 +98,7 @@ function setTab(tab){
 document.querySelectorAll('[data-editor-tab]').forEach(function(btn){btn.addEventListener('click',function(){setTab(btn.dataset.editorTab)})});
 $('blocks-convert').addEventListener('click',convertToCode);
 ArcadiaCreatorAssets.init();
+ArcadiaCreatorAudio.init();
 $('project-title').addEventListener('change',function(){var p=current();if(!p)return;p.title=$('project-title').value.trim()||'Untitled Game';$('project-title').value=p.title;touch(p)});
 function renderCode(){var p=current();if(!p)return;document.querySelectorAll('[data-file]').forEach(function(b){b.classList.toggle('active',b.dataset.file===activeFile)});$('file-label').textContent=activeFile;$('code-input').value=p.files[activeFile]||''}
 document.querySelectorAll('[data-file]').forEach(function(b){b.addEventListener('click',function(){activeFile=b.dataset.file;renderCode()})});
@@ -137,9 +140,27 @@ var canvas=document.getElementById('arcadia-game'),ctx=canvas.getContext('2d');
 var objs=scene.map(function(o){return Object.assign({},o)});
 var player=objs.find(function(o){return o.type==='player'})||{x:40,y:40,w:36,h:44,color:'#ad9aff'};
 var spawn={x:player.x,y:player.y},keys={},velocity=0,score=0,done=false,last=performance.now(),sdk=window.arcadiaGame||null,speed=4.2,gravity=.54,notice='',noticeUntil=0;
-var handlers={};var sprites={};
+var handlers={};var sprites={};var activeMusic=null;
 Object.keys(window.ARCADIA_ASSETS||{}).forEach(function(path){if(!/^sprites\//.test(path))return;var image=new Image();image.src=window.ARCADIA_ASSETS[path];sprites[path]=image});
 function emit(event){(handlers[event]||[]).slice().forEach(function(cb){try{cb()}catch(error){console.error('Arcadia block error:',error)}})}
+function playAudioAsset(key,loop){
+ var map=window.ARCADIA_ASSETS||{};
+ if(typeof key!=='string'||!/^audio\/[A-Za-z0-9._/-]{1,100}$/.test(key))return false;
+ var data=map[key];
+ if(typeof data!=='string'||!/^data:audio\/(?:wav|x-wav|mpeg|mp3|ogg|wave)[^,]*;base64,/.test(data))return false;
+ try{
+  if(loop&&activeMusic){activeMusic.pause();activeMusic.currentTime=0;activeMusic=null}
+  var clip=new Audio(data);clip.volume=loop?.38:.6;clip.loop=!!loop;
+  if(loop)activeMusic=clip;
+  var result=clip.play();
+  if(result&&typeof result.catch==='function')result.catch(function(){if(loop&&activeMusic===clip)activeMusic=null});
+  return true;
+ }catch(error){console.error('Arcadia audio playback failed',error);return false}
+}
+function stopAudioAsset(){
+ if(!activeMusic)return false;
+ activeMusic.pause();activeMusic.currentTime=0;activeMusic=null;return true;
+}
 window.ArcadiaLogic={
  on:function(event,callback){if(typeof callback!=='function')return;(handlers[event]??=[]).push(callback)},
  move:function(dx,dy){player.x=Math.max(0,Math.min(960-player.w,player.x+(Number(dx)||0)));player.y=Math.max(0,Math.min(540-player.h,player.y+(Number(dy)||0)))},
@@ -153,6 +174,9 @@ window.ArcadiaLogic={
  setScore:function(n){score=Math.max(0,Math.min(999999,Number(n)||0))},
  unlock:function(id){if(sdk&&typeof id==='string')sdk.achievements.unlock(id).catch(function(){})},
  save:function(slot){if(sdk&&typeof slot==='string')sdk.storage.save(slot,{score:score,x:player.x,y:player.y}).catch(function(){})},
+ playAudio:playAudioAsset,
+ playMusic:function(key){return playAudioAsset(key,true)},
+ stopMusic:stopAudioAsset,
  sound:function(name){try{var Audio=window.AudioContext||window.webkitAudioContext;if(!Audio)return;var ac=window.__arcadiaSoundContext||(window.__arcadiaSoundContext=new Audio());var tone=ac.createOscillator(),gain=ac.createGain();tone.type='sine';tone.frequency.value=({coin:800,jump:500,win:1100,hit:180})[name]||500;gain.gain.value=.05;tone.connect(gain);gain.connect(ac.destination);tone.start();tone.stop(ac.currentTime+.11)}catch(_){}},
  isKeyDown:function(key){return !!keys[String(key).toLowerCase()]},
  score:function(){return score},
