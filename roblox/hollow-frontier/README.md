@@ -21,6 +21,8 @@
 1. Install the **Rojo** CLI and Studio plugin: <https://create.roblox.com/docs/projects/rojo>.
 2. From this extracted directory, run `rojo build default.project.json -o HollowFrontier-FirstLight.rbxl`.
 3. Open the generated `.rbxl` in **Roblox Studio**. Use **Play** to enter the lobby, choose a free slot, and enter your Frontier.
+
+**Alternative without Rojo:** Open an empty private place in Studio, open View → Command Bar, and paste/run the complete `InstallInStudio.commandbar.luau` file. This installs the necessary modules locally. Run it only in a fresh test place: it replaces existing HollowFrontier folders. It does not publish your game. For native 15-joint player characters, select R15 in Studio's Avatar Settings.
 4. For persistent saves, **publish a private test experience**, then enable **Studio Access to API Services** only for that test experience in Game Settings → Security. Do not enable production data access for unreviewed experiments.
 5. Use the E prompt near resources. Craft a Signal Scanner from the PACK menu, restore Meridian Station Nine with materials, then travel to the Ashwood Archive.
 6. Test two Studio clients using **Test → Start** with multiple players; they will have separate world plots. Shared co-op settlements are **not** implemented yet.
