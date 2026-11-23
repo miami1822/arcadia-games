@@ -111,6 +111,21 @@ function render(){
   ]));
  }
  if(!list.children.length){const empty=document.createElement('p');empty.className='hint';empty.textContent='No audio matches your search.';list.append(empty)}
+ const sources=document.getElementById('audio-pack-results');
+ if(sources){
+  sources.replaceChildren();
+  const packages=(global.ArcadiaCreatorAssets?.packs||[]).filter(item=>['Audio','Music','Retro'].includes(item[4]));
+  for(const item of packages.filter(item=>item.join(' ').toLowerCase().includes(q))){
+   const card=makeCard(item[0],item[1]+' · '+item[3]+' · '+item[4],item[5],[]);
+   card.classList.add('asset-pack');
+   const link=document.createElement('a');
+   link.className='button secondary';link.textContent='Download at source ↗';link.href=item[2];
+   link.target='_blank';link.rel='noopener noreferrer';
+   card.append(link);sources.append(card);
+  }
+  if(!sources.children.length){const none=document.createElement('p');none.className='hint';none.textContent='No audio source packs match this search.';sources.append(none)}
+ }
+
  const counter=document.getElementById('audio-count');
  counter.textContent=Object.keys(current).filter(k=>/^audio\//.test(k)).length+' sounds in your project · '+originals.length+' ready-to-use originals';
 }
