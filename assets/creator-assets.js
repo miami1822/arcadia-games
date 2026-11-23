@@ -25,6 +25,33 @@ const packs=[
  ['CC0 Assets','OpenGameArt','https://opengameart.org/content/cc0-resources','Per asset','Various','🎨'],
  ['Game Assets','itch.io','https://itch.io/game-assets','Per creator','Various','🧩']
 ];
+/* Vetted source links. Individual OpenGameArt/Freesound works may have distinct license terms. */
+packs.push(
+ ['UI Audio (50 sounds)','Kenney','https://kenney.nl/assets/ui-audio','CC0','Audio','🔔'],
+ ['Interface Sounds','Kenney','https://kenney.nl/assets/interface-sounds','CC0','Audio','🖱️'],
+ ['Music Jingles (85 cues)','Kenney','https://kenney.nl/assets/music-jingles','CC0','Music','🎹'],
+ ['Music Loops','Kenney','https://kenney.nl/assets/music-loops','CC0','Music','🎶'],
+ ['Sci-fi Sounds','Kenney','https://kenney.nl/assets/sci-fi-sounds','CC0','Audio','🪐'],
+ ['Impact Sounds','Kenney','https://kenney.nl/assets/impact-sounds','CC0','Audio','💫'],
+ ['RPG Audio','Kenney','https://kenney.nl/assets/rpg-audio','CC0','Audio','✨'],
+ ['Retro Sounds 1','Kenney','https://kenney.nl/assets/retro-sounds-1','CC0','Retro','👾'],
+ ['Retro Sounds 2','Kenney','https://kenney.nl/assets/retro-sounds-2','CC0','Retro','🕹️'],
+ ['Digital Audio','Kenney','https://kenney.nl/assets/digital-audio','CC0','Audio','🔊'],
+ ['Foley Sounds','Kenney','https://kenney.nl/assets/foley-sounds','CC0','Audio','🍃'],
+ ['UI Pack Sci-Fi','Kenney','https://kenney.nl/assets/ui-pack-sci-fi','CC0','UI','🛰️'],
+ ['Simple Space','Kenney','https://kenney.nl/assets/simple-space','CC0','2D','🌌'],
+ ['Particle Pack','Kenney','https://kenney.nl/assets/particle-pack','CC0','Effects','✨'],
+ ['Nature Kit','Kenney','https://kenney.nl/assets/nature-kit','CC0','3D (reference)','🌲'],
+ ['Racing Kit','Kenney','https://kenney.nl/assets/racing-kit','CC0','3D (reference)','🏎️'],
+ ['12 Music Loops','OpenGameArt','https://opengameart.org/content/12-music-loops','CC0 on this pack','Music','🎵'],
+ ['Short Music Loops','OpenGameArt','https://opengameart.org/content/short-loops-background-music-pack','CC0 on this pack','Music','🎼'],
+ ['Quobodup CC0 Audio','OpenGameArt','https://opengameart.org/content/qubodup-audio-cc0','Check each item','Audio','🎧'],
+ ['Game Sound Search','Freesound','https://freesound.org/search/?q=game','Per sound (filter CC0)','Audio','🔎'],
+ ['3D Models','Poly Haven','https://polyhaven.com/models','CC0','3D (reference)','🪨'],
+ ['PBR Textures','Poly Haven','https://polyhaven.com/textures','CC0','Textures','🧱'],
+ ['Skyboxes / HDRIs','Poly Haven','https://polyhaven.com/hdris','CC0','3D (reference)','🌄'],
+ ['Materials & Textures','ambientCG','https://ambientcg.com/','CC0','Textures','🪵']
+);
 const svgURL=v=>'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(v);
 let project=null,onSave=null,onNotify=null,onSelected=null,onRepaint=null,filter='all';
 function applySprite(key){
