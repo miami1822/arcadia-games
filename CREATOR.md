@@ -32,6 +32,23 @@ The ZIP importer is limited to 3 MB, at most 50 files, and common text/image/aud
 4. Use **Export ZIP** frequently to back up your game.
 5. In **Release Center**, document your game, run the checklist, and export. No direct submit button is provided. Share the exported game ZIP with Arcadia staff for manual review before it is added to the public catalog.
 
+## SDK-powered Playtest (v0.1.0)
+
+Create or open a project and select **Playtest**. Creator automatically initializes `window.arcadiaGame` inside the game. For example:
+
+    await window.arcadiaGame.storage.save('progress', {level: 2});
+    const progress = await window.arcadiaGame.storage.load('progress');
+    await window.arcadiaGame.scores.submit(500, {mode: 'arcade'});
+    await window.arcadiaGame.achievements.unlock('first-win');
+
+**Run SDK Test** inside the inspector writes a sample `sdk-test` save, a `sdk-ready` achievement, and a 250-point score, entirely through the preview bridge. Subsequent tests add more scores. **Refresh data** reads saves, top scores, and achievements; **Clear Playtest data** clears only the current project's preview SDK data.
+
+Playtest uses a `preview-<project-id>` namespace, while standalone exports use `game-<project-id>`. Their data is separate. Exported HTML and ZIP games automatically include the SDK. Visual Builder games unlock first-coin and level-complete achievements and record a finishing score.
+
+The preview iframe stays sandboxed without `allow-same-origin`. A fresh per-preview nonce and dedicated MessagePort allow only game-scoped local SDK methods. This never exposes Creator projects, arbitrary localStorage keys, account credentials, or cloud APIs.
+
+Limits: 16 save slots, 48 KiB per save, 64 achievements, up to 100 stored scores, and 60 requests per ten seconds. External fetches remain blocked in Playtest. All data is browser-local, with no cloud saves, online leaderboards, or accounts.
+
 ## Local development
 
 Serve the repository using `python -m http.server 8000` and open `http://localhost:8000/creator.html`.
