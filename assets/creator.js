@@ -310,7 +310,7 @@ function setupReview(){
  script.async=true;
  script.onload=function(){
   if(!window.turnstile){$('submission-status').textContent='Verification could not load.';return}
-  reviewWidgetId=window.turnstile.render('#creator-turnstile',{sitekey:reviewConfig.turnstileSiteKey,callback:function(token){reviewCaptchaToken=token},'expired-callback':function(){reviewCaptchaToken=''}});
+  reviewWidgetId=window.turnstile.render('#creator-turnstile',{sitekey:reviewConfig.turnstileSiteKey,action:'arcadia-submit',callback:function(token){reviewCaptchaToken=token},'expired-callback':function(){reviewCaptchaToken=''}});
  };
  script.onerror=function(){$('submission-status').textContent='Verification is unavailable.'};
  document.head.append(script);
