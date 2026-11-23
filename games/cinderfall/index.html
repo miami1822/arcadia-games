@@ -1,0 +1,13 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Cinderfall</title><link rel="stylesheet" href="css/style.css"></head>
+<body>
+<canvas id="c"></canvas><div id="vig"></div>
+<div id="hud" hidden><div class="bar"><b id="hp"></b></div><div class="bar thin"><b id="xp"></b></div><div id="info"></div></div>
+<div id="tc" hidden></div>
+<div id="ui" hidden><div id="panel"></div></div>
+<div id="load">Lighting the embers…</div>
+<script>addEventListener('error',function(){var l=document.getElementById('load');if(l)l.textContent='Could not start. Serve this folder over http(s) instead of opening the file directly.'})</script>
+<script type="module" src="src/main.js"></script>
+</body></html>
