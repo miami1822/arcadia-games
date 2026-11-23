@@ -1,7 +1,63 @@
 [
-  {"id":"snake","title":"Neon Snake","description":"Collect glowing orbs. Don't hit the walls or your tail.","category":"Arcade","emoji":"🐍","accent":"#6bf6b5","type":"built-in","featured":true},
-  {"id":"breakout","title":"Pixel Breaker","description":"Bounce the ball, smash every brick, and keep it alive.","category":"Arcade","emoji":"🧱","accent":"#fbbf74","type":"built-in","featured":true},
-  {"id":"memory","title":"Memory Flip","description":"Match every pair of cards in as few moves as possible.","category":"Puzzle","emoji":"🧠","accent":"#b5a3ff","type":"built-in","featured":false},
-  {"id":"tictactoe","title":"Grid Duel","description":"Play tic-tac-toe against a smart computer opponent.","category":"Strategy","emoji":"⭕","accent":"#7ac5ff","type":"built-in","featured":false},
-  {"id":"hollow-frontier","title":"Hollow Frontier","description":"Survive a mysterious wilderness, build an automated outpost, and uncover the Meridian Incident. Browser prototype by Lucion Games.","category":"Survival","emoji":"🌲","accent":"#a8ffba","type":"built-in","featured":true}
+  {
+    "id": "snake",
+    "title": "Neon Snake",
+    "description": "Collect glowing orbs. Don't hit the walls or your tail.",
+    "category": "Arcade",
+    "emoji": "🐍",
+    "accent": "#6bf6b5",
+    "type": "built-in",
+    "featured": true
+  },
+  {
+    "id": "breakout",
+    "title": "Pixel Breaker",
+    "description": "Bounce the ball, smash every brick, and keep it alive.",
+    "category": "Arcade",
+    "emoji": "🧱",
+    "accent": "#fbbf74",
+    "type": "built-in",
+    "featured": true
+  },
+  {
+    "id": "memory",
+    "title": "Memory Flip",
+    "description": "Match every pair of cards in as few moves as possible.",
+    "category": "Puzzle",
+    "emoji": "🧠",
+    "accent": "#b5a3ff",
+    "type": "built-in",
+    "featured": false
+  },
+  {
+    "id": "tictactoe",
+    "title": "Grid Duel",
+    "description": "Play tic-tac-toe against a smart computer opponent.",
+    "category": "Strategy",
+    "emoji": "⭕",
+    "accent": "#7ac5ff",
+    "type": "built-in",
+    "featured": false
+  },
+  {
+    "id": "hollow-frontier",
+    "title": "Hollow Frontier",
+    "description": "Survive a mysterious wilderness, build an automated outpost, and uncover the Meridian Incident. Browser prototype by Lucion Games.",
+    "category": "Survival",
+    "emoji": "🌲",
+    "accent": "#a8ffba",
+    "type": "built-in",
+    "featured": true
+  },
+  {
+    "id": "maggar",
+    "title": "MAGGAR.io",
+    "description": "Grow your cell and compete against AI rivals across several arena modes.",
+    "category": "Arcade",
+    "emoji": "🟢",
+    "accent": "#00e5ff",
+    "type": "hosted",
+    "path": "maggar/index.html",
+    "featured": true
+  }
 ]
