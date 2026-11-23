@@ -24,3 +24,9 @@ Upstream repository: https://github.com/CoolDude2349/Offline-HTML-Games-Pack
 Source revision: 237c5beada5f5bad68c097c1deb927213c642618
 Imported games: offline-2048, offline-9007199254740992, offline-agar-io-lite, offline-coreball
 The source repository license and the owner's reported permissions apply; review upstream license files and downstream assets before commercial reuse. Some games depend on third-party CDNs.
+
+## carter3647/cool-game-downlods
+Upstream repository: https://github.com/carter3647/cool-game-downlods
+Source revision: 488c7f1047eff3b64531f998b909bb030a1cc166
+Imported games: carter-dino
+The source repository license and the owner's reported permissions apply; review upstream license files and downstream assets before commercial reuse. Some games depend on third-party CDNs.

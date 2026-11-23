@@ -1267,5 +1267,16 @@
     "type": "hosted",
     "path": "games/offline-coreball/index.html",
     "featured": false
+  },
+  {
+    "id": "carter-dino",
+    "title": "Dino",
+    "description": "Browser game provided by carter3647/cool-game-downlods.",
+    "category": "Arcade",
+    "emoji": "🎮",
+    "accent": "#83cfff",
+    "type": "hosted",
+    "path": "games/carter-dino/index.html",
+    "featured": false
   }
 ]
