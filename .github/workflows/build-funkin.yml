@@ -43,6 +43,15 @@ jobs:
           haxelib --global git hmm https://github.com/FunkinCrew/hmm.git funkin-patches
           haxelib --global run hmm install -q
           haxelib --global fixrepo
+          # Lime is checked out from Git, where native lime.ndll is not prebuilt.
+          # Rebuild native CFFI libraries before invoking Lime's command runner.
+          pushd .haxelib/hxcpp/git/tools/hxcpp
+          haxe compile.hxml
+          popd
+          pushd .haxelib/lime/git
+          haxelib run hxcpp Build.xml -Dlinux -Dstatic_link
+          popd
+          haxelib run lime rebuild cpp -64
           haxelib run lime setup
           haxelib run lime build html5 -release -DGITHUB_BUILD
       - name: Verify game entrypoint
