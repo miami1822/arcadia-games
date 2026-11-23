@@ -39,14 +39,14 @@ class ArcadiaSDK{
  }
  _send(type,other={}){if(!this._parent)return;for(const origin of this._allowed){this._parent.postMessage({__arcadia:1,protocol:PROTOCOL,type,gameId:this.gameId,channelId:this._id,...other},origin)}}
  _hello(){this._send('HELLO',{version:this.version})}
- _receive(e){if(!this._parent||e.source!==this._parent||!this._allowed.has(e.origin))return;const m=e.data;if(!m||m.__arcadia!==1||m.protocol!==PROTOCOL||m.channelId!==this._id||m.gameId!==this.gameId)return;
+ _receive(e){if(!this._parent||e.source!==this._parent||!this._allowed.has(e.origin))return;const m=e.data;if(!m||m.__arcadia!==1||m.protocol!==PROTOCOL||m.channelId!==this._id||m.gameId!==this.gameId||m.nonce!==this._previewNonce)return;
   if(m.type==='WELCOME'){this.connected=true;this.capabilities={...this.capabilities,...(m.capabilities||{})};this._dispatch('connected',{capabilities:this.capabilities});if(this._manifest)this._notify('READY',{manifest:this._manifest});return}
   if(m.type==='RESPONSE'){const pending=this._pending.get(m.requestId);if(!pending)return;clearTimeout(pending.timer);this._pending.delete(m.requestId);if(m.ok)pending.resolve(m.result);else pending.reject(Error(m.error||'Arcadia host request failed'));return}
   if(m.type==='EVENT'&&typeof m.name==='string')this._dispatch(m.name,m.data||{});
  }
- attachPreviewPort(port){
-  if(!this.previewMode||this._previewPort||!port||typeof port.postMessage!=='function')throw Error('Invalid preview port');
-  this._previewPort=port;
+ attachPreviewPort(port,nonce){
+  if(!this.previewMode||this._previewPort||!port||typeof port.postMessage!=='function'||typeof nonce!=='string'||nonce.length<24)throw Error('Invalid preview port');
+  this._previewPort=port;this._previewNonce=nonce;
   port.onmessage=e=>{
    const m=e.data;if(!m||m.__arcadiaPreview!==1||m.protocol!==PROTOCOL||m.gameId!==this.gameId)return;
    if(m.type==='RESPONSE'){const pending=this._pending.get(m.requestId);if(!pending)return;clearTimeout(pending.timer);this._pending.delete(m.requestId);if(m.ok)pending.resolve(m.result);else pending.reject(Error(m.error||'Preview request failed'))}
@@ -63,12 +63,12 @@ class ArcadiaSDK{
   const requestId=++this._counter;return new Promise((resolve,reject)=>{
    const timer=setTimeout(()=>{this._pending.delete(requestId);reject(Error('Playtest request timed out'))},4000);
    this._pending.set(requestId,{resolve,reject,timer});
-   try{this._previewPort.postMessage({__arcadiaPreview:1,protocol:PROTOCOL,gameId:this.gameId,type:'REQUEST',requestId,method,payload})}catch(err){clearTimeout(timer);this._pending.delete(requestId);reject(err)}
+   try{this._previewPort.postMessage({__arcadiaPreview:1,protocol:PROTOCOL,gameId:this.gameId,nonce:this._previewNonce,type:'REQUEST',requestId,method,payload})}catch(err){clearTimeout(timer);this._pending.delete(requestId);reject(err)}
   });
  }
  if(!this.connected)return localOperation(this.gameId,method,payload);const requestId=++this._counter;return new Promise((resolve,reject)=>{const timer=setTimeout(()=>{this._pending.delete(requestId);reject(Error('Arcadia host timed out'))},4000);this._pending.set(requestId,{resolve,reject,timer});this._send('REQUEST',{requestId,method,payload})})}
  _notify(type,payload){if(this.previewMode){
-  if(this._previewPort){try{this._previewPort.postMessage({__arcadiaPreview:1,protocol:PROTOCOL,gameId:this.gameId,type,payload})}catch{return false}}
+  if(this._previewPort){try{this._previewPort.postMessage({__arcadiaPreview:1,protocol:PROTOCOL,gameId:this.gameId,nonce:this._previewNonce,type,payload})}catch{return false}}
   else if(this._previewNotifications.length<30)this._previewNotifications.push({type,payload});
   return true;
  }this._send(type,payload);return true}
