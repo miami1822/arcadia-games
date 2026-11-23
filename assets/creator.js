@@ -12,7 +12,8 @@ var escapeHTML=function(s){return String(s==null?'':s).replace(/[&<>"']/g,functi
 var uid=function(){return (self.crypto&&crypto.randomUUID?crypto.randomUUID():'arc-'+Date.now()+'-'+Math.random().toString(36).slice(2))};
 var clamp=function(v,min,max){return Math.max(min,Math.min(max,v))};
 var current=function(){return projects.find(function(p){return p.id===activeId})||null};
-var timer;
+var timer,playtestBridge=null;
+var sdkSourcePromise=fetch('sdk/arcadia-sdk.js',{cache:'force-cache'}).then(function(r){if(!r.ok)throw Error('SDK source unavailable');return r.text()});
 function toast(msg){var el=$('toast');el.textContent=msg;el.hidden=false;clearTimeout(timer);timer=setTimeout(function(){el.hidden=true},3600)}
 function readProjects(){try{var p=JSON.parse(localStorage.getItem(STORAGE_KEY)||'[]');return Array.isArray(p)?p.filter(function(x){return x&&x.id&&x.title&&x.scene&&x.files}):[]}catch(err){return []}}
 function persist(){try{localStorage.setItem(STORAGE_KEY,JSON.stringify(projects));$('save-state').textContent='Saved locally · '+new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});return true}catch(err){$('save-state').textContent='Storage limit reached';toast('Browser storage is full. Export your game to keep a backup.');return false}}
@@ -46,7 +47,7 @@ document.querySelectorAll('[data-view]').forEach(function(b){b.addEventListener(
 document.addEventListener('click',function(e){var t=e.target.closest('[data-open],[data-duplicate],[data-delete],[data-export]');if(!t)return;if(t.dataset.open)openProject(t.dataset.open);else if(t.dataset.duplicate)duplicate(t.dataset.duplicate);else if(t.dataset.delete)removeProject(t.dataset.delete);else if(t.dataset.export){var p=projects.find(function(x){return x.id===t.dataset.export});if(p)exportGame(p)}});
 $('search-projects').addEventListener('input',renderProjects);$('sort-projects').addEventListener('change',renderProjects);
 function renderEditor(){var p=current();$('editor-empty').hidden=!!p;$('editor-active').hidden=!p;if(!p)return;$('project-title').value=p.title;setTab(editorTab)}
-function setTab(tab){var p=current();if(!p)return;editorTab=tab;document.querySelectorAll('[data-editor-tab]').forEach(function(btn){btn.classList.toggle('active',btn.dataset.editorTab===tab);btn.setAttribute('aria-selected',String(btn.dataset.editorTab===tab))});['visual','code','preview'].forEach(function(v){$('workspace-'+v).hidden=v!==tab});if(tab==='visual'||tab==='code'){if(p.mode!==tab){p.mode=tab;touch(p);toast('Preview now uses '+(tab==='visual'?'the visual scene':'your code')+'. Both versions remain saved.')}$('editor-mode-label').textContent=tab==='visual'?'VISUAL BUILDER':'CODE STUDIO';if(tab==='visual'){renderScene();renderInspector()}else renderCode()}else{refreshPreview();$('editor-mode-label').textContent='PLAYTEST'}}
+function setTab(tab){var p=current();if(!p)return;if(tab!=='preview'&&playtestBridge){playtestBridge.destroy();playtestBridge=null;$('game-preview').srcdoc='';}editorTab=tab;document.querySelectorAll('[data-editor-tab]').forEach(function(btn){btn.classList.toggle('active',btn.dataset.editorTab===tab);btn.setAttribute('aria-selected',String(btn.dataset.editorTab===tab))});['visual','code','preview'].forEach(function(v){$('workspace-'+v).hidden=v!==tab});if(tab==='visual'||tab==='code'){if(p.mode!==tab){p.mode=tab;touch(p);toast('Preview now uses '+(tab==='visual'?'the visual scene':'your code')+'. Both versions remain saved.')}$('editor-mode-label').textContent=tab==='visual'?'VISUAL BUILDER':'CODE STUDIO';if(tab==='visual'){renderScene();renderInspector()}else renderCode()}else{refreshPreview();$('editor-mode-label').textContent='PLAYTEST'}}
 document.querySelectorAll('[data-editor-tab]').forEach(function(btn){btn.addEventListener('click',function(){setTab(btn.dataset.editorTab)})});
 $('project-title').addEventListener('change',function(){var p=current();if(!p)return;p.title=$('project-title').value.trim()||'Untitled Game';$('project-title').value=p.title;touch(p)});
 function renderCode(){var p=current();if(!p)return;document.querySelectorAll('[data-file]').forEach(function(b){b.classList.toggle('active',b.dataset.file===activeFile)});$('file-label').textContent=activeFile;$('code-input').value=p.files[activeFile]||''}
@@ -121,7 +122,44 @@ else html=html.replace(/<head([^>]*)>/i,'<head$1>'+safetyCSP());
 return html
 }
 function previewHTML(p){return p.mode==='visual'?visualHTML(p):codeHTML(p)}
-function refreshPreview(){var p=current();if(!p)return;var iframe=$('game-preview');iframe.srcdoc=previewHTML(p);p.testedAt=Date.now();persist()}
+function previewNonce(){var bytes=new Uint8Array(24);crypto.getRandomValues(bytes);return Array.from(bytes,function(b){return b.toString(16).padStart(2,'0')}).join('')}
+function renderSDKPanel(event){
+ var p=current(),status=$('sdk-status'),feedback=$('sdk-feedback');
+ if(!p||!playtestBridge){status.textContent='Not running';return}
+ status.textContent=playtestBridge.connected?'● Connected':'◌ Connecting…';
+ if(event)feedback.textContent=event.time+' · '+String(event.details||event.type).slice(0,240);
+ var data;
+ try{data=playtestBridge.snapshot()}catch(error){feedback.textContent='SDK storage unavailable: '+error.message;return}
+ function update(id,items,format){var node=$(id);node.replaceChildren();if(!items.length){var empty=document.createElement('li');empty.textContent='None yet';node.appendChild(empty);return}items.forEach(function(item){var li=document.createElement('li');li.textContent=format(item);node.appendChild(li)})}
+ update('sdk-saves',data.saves,function(x){return x});
+ update('sdk-scores',data.scores,function(x){return String(x.score)+' points · '+String(x.mode||'default').slice(0,40)});
+ update('sdk-achievements',data.achievements,function(x){return String(x.id||'achievement').slice(0,64)});
+}
+async function refreshPreview(){
+ var p=current();if(!p)return;
+ if(playtestBridge){playtestBridge.destroy();playtestBridge=null}
+ var iframe=$('game-preview'),id=p.id;
+ $('sdk-status').textContent='Loading…';$('sdk-feedback').textContent='Starting sandbox and SDK…';
+ try{
+  var sdkSource=await sdkSourcePromise;
+  if(current()?.id!==id||editorTab!=='preview')return;
+  var nonce=previewNonce();
+  var bridge=new ArcadiaCreatorPlaytestBridge({iframe,projectId:id,nonce,onChange:function(event){if(playtestBridge===bridge)renderSDKPanel(event)}});
+  playtestBridge=bridge;
+  iframe.srcdoc=ArcadiaCreatorRuntime.preview(previewHTML(p),{sdkSource,projectId:id,nonce,title:p.title});
+  p.testedAt=Date.now();persist();renderSDKPanel();
+ }catch(error){$('sdk-status').textContent='Unavailable';$('sdk-feedback').textContent='Cannot initialize SDK: '+error.message;toast('Playtest failed: '+error.message)}
+}
+$('sdk-run-test').addEventListener('click',function(){
+ if(!playtestBridge||!playtestBridge.runTest()){toast('Open Playtest and wait for the SDK connection.');return}
+ $('sdk-feedback').textContent='Running SDK test in the game sandbox…';
+});
+$('sdk-refresh').addEventListener('click',function(){renderSDKPanel();toast('SDK data refreshed')});
+$('sdk-clear').addEventListener('click',function(){
+ if(!playtestBridge)return;
+ if(!confirm('Clear saves, scores, and achievements for this game’s Playtest? Other projects are unaffected.'))return;
+ try{playtestBridge.clear();renderSDKPanel()}catch(error){toast('Unable to clear Playtest data: '+error.message)}
+});
 $('preview-top').addEventListener('click',function(){setTab('preview')});$('refresh-preview').addEventListener('click',refreshPreview);$('fullscreen-preview').addEventListener('click',function(){var f=$('preview-wrap');if(f.requestFullscreen)f.requestFullscreen().catch(function(){toast('Fullscreen was blocked by this browser')})});
 $('release-top').addEventListener('click',function(){show('publish')});
 function checks(p){return [['Game has a title',!!p.title.trim()],['Game has a description',!!p.description.trim()],['Rights declaration completed',!!p.rights],['Includes '+(p.mode==='visual'?'a player and finish zone':'an index.html file'),p.mode==='visual'?(p.scene.some(function(o){return o.type==='player'})&&p.scene.some(function(o){return o.type==='goal'})):!!(p.files['index.html']||'').trim()],['Preview opened for playtesting',!!p.testedAt]]}
