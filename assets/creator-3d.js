@@ -114,6 +114,11 @@ function verifyGLB(buffer){
  if(v.getUint32(16,true)!==0x4e4f534a||n>buffer.byteLength-20||n<10)throw Error('Missing valid GLB JSON chunk.');
  let meta;try{meta=JSON.parse(new TextDecoder().decode(new Uint8Array(buffer,20,n)).trim())}catch{throw Error('Could not parse GLB JSON.')}
  if(!meta.asset||String(meta.asset.version).split('.')[0]!=='2')throw Error('Only glTF 2.0 GLB models are supported.');
+ const binaryStart=20+n;
+ if(binaryStart+8>buffer.byteLength||v.getUint32(binaryStart+4,true)!==0x004e4942)throw Error('GLB is missing its binary geometry chunk.');
+ const binLength=v.getUint32(binaryStart,true);
+ if(binLength>MAX_GLB_BYTES||binaryStart+8+binLength>buffer.byteLength||(meta.buffers||[]).length!==1||meta.buffers[0].byteLength>binLength)throw Error('GLB geometry is incomplete or invalid.');
+ if((meta.images||[]).some(function(image){return (image.mimeType&&!/^image\/(png|jpeg|webp)$/.test(image.mimeType))||(image.uri&&!/^data:image\/(png|jpeg|webp);base64,/i.test(image.uri))}))throw Error('Only embedded PNG, JPEG or WebP model textures are supported.');
  if(!Array.isArray(meta.meshes)||!meta.meshes.length||meta.meshes.length>250||((meta.nodes||[]).length>500))throw Error('GLB contains no supported meshes or has too many scene elements.');
  if((meta.buffers||[]).some(x=>x.uri&&!x.uri.startsWith('data:'))||(meta.images||[]).some(x=>x.uri&&!x.uri.startsWith('data:')))throw Error('Model references external textures or buffers. Export a self-contained GLB.');
  if((meta.extensionsRequired||[]).some(x=>!['KHR_materials_unlit','KHR_texture_transform','KHR_mesh_quantization'].includes(x)))throw Error('Model requires compression or an unsupported glTF extension.');
@@ -239,6 +244,8 @@ function render(){
  document.getElementById('three-count').textContent=count+' local GLB files · '+prefabs.length+' original 3D starters';
 }
 function init(){
+ const viewer=document.getElementById('three-model-viewer');
+ viewer?.addEventListener('error',function(){const status=document.getElementById('three-preview-status');if(status)status.textContent='3D preview failed. Confirm this GLB uses supported textures and no external files.'});
  const input=document.getElementById('three-upload'),zip=document.getElementById('three-zip-upload');
  input?.addEventListener('change',async()=>{try{await importModel(input.files[0])}catch(err){notify?.(err.message)}finally{input.value=''}});
  zip?.addEventListener('change',async()=>{try{await importZIP(zip.files[0])}catch(err){notify?.(err.message)}finally{zip.value=''}});
