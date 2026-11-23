@@ -26,7 +26,7 @@ function operation(gameId,method,payload){
    if(!slots.includes(payload.slot)&&slots.length>=16)throw Error('Maximum 16 Playtest save slots');
   }
  }
- if(method==='achievements.unlock'&&!safeId(payload.id))throw Error('Invalid achievement ID');
+ if(method==='achievements.unlock'){if(!safeId(payload.id))throw Error('Invalid achievement ID');const unlocked=global.ArcadiaSDK.localOperation(gameId,'achievements.list',{});if(unlocked.length>=64&&!unlocked.some(item=>item.id===payload.id))throw Error('Maximum 64 Playtest achievements')}
  if(method==='achievements.unlock'&&payload.metadata!==undefined&&asJSONSize(payload.metadata)>4096)throw Error('Achievement metadata too large');
  if(method==='scores.submit'&&payload.metadata!==undefined&&asJSONSize(payload.metadata)>4096)throw Error('Score metadata too large');
  return global.ArcadiaSDK.localOperation(gameId,method,payload);
