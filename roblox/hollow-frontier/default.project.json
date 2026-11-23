@@ -1,0 +1,23 @@
+{
+  "name": "Hollow Frontier — First Light",
+  "tree": {
+    "$className": "DataModel",
+    "Workspace": {
+      "$properties": {
+        "StreamingEnabled": true
+      }
+    },
+    "ReplicatedStorage": {
+      "HollowShared": { "$path": "src/shared" }
+    },
+    "ServerScriptService": {
+      "HollowFrontier": { "$path": "src/server" }
+    },
+    "StarterPlayer": {
+      "$properties": { "EnableMouseLockOption": true },
+      "StarterPlayerScripts": {
+        "HollowFrontier": { "$path": "src/client" }
+      }
+    }
+  }
+}
