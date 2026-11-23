@@ -1,0 +1,2 @@
+**Quiet Street** — Stealth horror. Mr. Marrow goes out at night, or says he does. Slip into his house, find the keys and open the basement. He listens, searches, and remembers where you have been: use the same hiding spot or route twice and he will be waiting.
+Controls: WASD move, mouse look, Shift run (loud), C crouch (silent), E use, click/T throw a can to lure him, F flashlight, Esc/P pause, G fullscreen. Touch: left thumb move, right thumb look, buttons at right.
