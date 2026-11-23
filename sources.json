@@ -38,6 +38,69 @@
       "preferred_method": "per-game authorized embed or licensed self-host",
       "review_status": "per-game rights and embedding verification required",
       "notes": "Directory includes links to external developers and publishers; a listing does not transfer rights."
+    },
+    {
+      "id": "funhtml5games",
+      "name": "Fun HTML5 Games",
+      "url": "https://funhtml5games.com/",
+      "reported_permission": "user-reported site-wide embedding permission",
+      "preferred_method": "official game iframe URLs",
+      "review_status": "four individually verified iframe paths listed",
+      "notes": "Embed only using game iframe paths; preserve source attribution."
+    },
+    {
+      "id": "talha-js-games",
+      "name": "Talha HTML CSS JavaScript Games",
+      "url": "https://github.com/he-is-talha/html-css-javascript-games",
+      "reported_permission": "developer requested Arcadia distribution (user-reported)",
+      "preferred_method": "mirror licensed HTML/CSS/JS with assets",
+      "review_status": "47 entries imported; excluded unsuitable entries",
+      "notes": "Repository MIT; preserves code and asset paths. Review individual derivative/third-party content."
+    },
+    {
+      "id": "cooldude-offline",
+      "name": "Offline HTML Games Pack",
+      "url": "https://github.com/CoolDude2349/Offline-HTML-Games-Pack",
+      "reported_permission": "developer requested Arcadia distribution (user-reported)",
+      "preferred_method": "self-host small reviewed HTML packages",
+      "review_status": "4 of 352 entries imported",
+      "notes": "Approx. multi-gigabyte collection; broad mirroring exceeds practical GitHub Pages hosting. Some files may include third-party protected games and require rights verification."
+    },
+    {
+      "id": "poor-man-playstation",
+      "name": "Poor-Man-PlayStation",
+      "url": "https://github.com/mohandesghorbany809-cmyk/Poor-Man-PlayStation",
+      "reported_permission": "developer granted use (user-reported)",
+      "preferred_method": "self-host selected original standalone HTML",
+      "review_status": "17 games imported",
+      "notes": "Repository AGPL-3.0; preserve source notices and review trademarked third-party assets before additional copies."
+    },
+    {
+      "id": "mazipan-mini-games",
+      "name": "Mazipan Mini Games",
+      "url": "https://github.com/mazipan/mini-games",
+      "reported_permission": "developer granted use (user-reported)",
+      "preferred_method": "build upstream Eleventy site using Bun then mirror output",
+      "review_status": "32 games imported; excluded gambling-themed entry",
+      "notes": "MIT; compiled collection includes source license."
+    },
+    {
+      "id": "carter-games",
+      "name": "Carter Cool Game Downloads",
+      "url": "https://github.com/carter3647/cool-game-downlods",
+      "reported_permission": "developer granted use (user-reported)",
+      "preferred_method": "single-file HTML where rights permit",
+      "review_status": "one small game imported",
+      "notes": "Other files are large and may contain branded third-party games; review rights and hosting size before publishing."
+    },
+    {
+      "id": "minteez-browser-games",
+      "name": "Minteez Browser Game Hub",
+      "url": "https://github.com/minteez/browser-game-hub",
+      "reported_permission": "developer granted use (user-reported)",
+      "preferred_method": "self-host standalone HTML games",
+      "review_status": "30 games imported",
+      "notes": "MIT; upstream analytics scripts removed from initial direct imports; remaining automatically imported assets should be audited for tracking and external dependencies."
     }
   ],
   "requirements": [
