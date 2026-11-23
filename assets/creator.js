@@ -224,7 +224,8 @@ function safetyCSP(){return "<meta http-equiv=\"Content-Security-Policy\" conten
 function safeInline(s){return String(s||'').replace(/<\/script/gi,'<\\/script').replace(/<\/style/gi,'<\\/style')}
 function visualHTML(p){
  var scene=JSON.stringify(p.scene).replace(/</g,'\\u003c');
- var assets=JSON.stringify(p.assets||{}).replace(/</g,'\\u003c');
+ var visualAssets={};Object.keys(p.assets||{}).forEach(function(key){if(!key.startsWith('models/'))visualAssets[key]=p.assets[key]});
+ var assets=JSON.stringify(visualAssets).replace(/</g,'\\u003c');
  var logic=safeInline(p.blockCode||'');
  var js='window.ARCADIA_SCENE='+scene+';window.ARCADIA_ASSETS='+assets+';('+visualRuntime.toString()+')();\n'+logic;
  return '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'+safetyCSP()+'<title>'+escapeHTML(p.title)+'</title><style>*{box-sizing:border-box}body{background:#0b1020;margin:0;color:#fff;font-family:system-ui,sans-serif;display:grid;min-height:100vh;place-items:center}canvas{width:100%;height:auto;max-height:100vh;object-fit:contain}div{width:100%;max-width:960px}</style></head><body><div><canvas width="960" height="540" id="arcadia-game"></canvas></div><script>'+safeInline(js)+'</script></body></html>'
@@ -298,13 +299,16 @@ async function buildGameZip(p){
    if(!key||key.split('/').includes('..')||key.startsWith('/'))return;
    zip.file(key,key==='index.html'?ArcadiaCreatorRuntime.standalone(p.files[key],options):p.files[key]);
   });
-  Object.keys(p.assets||{}).forEach(function(key){
-   var value=p.assets[key],parts=value.split(',');
-   if(parts.length!==2||key.split('/').includes('..')||key.startsWith('/'))return;
-   if(/^data:image\/svg\+xml(?:;charset=utf-8)?$/i.test(parts[0]))zip.file(key,decodeURIComponent(parts[1]));
-   else if(/;base64$/i.test(parts[0]))zip.file(key,parts[1],{base64:true});
-  });
  }
+ Object.keys(p.assets||{}).forEach(function(key){
+  if(!key||key.startsWith('/')||key.split('/').includes('..'))return;
+  var data=p.assets[key];if(typeof data!=='string')return;
+  var parts=data.split(',');if(parts.length!==2)return;
+  if(/^data:image\/svg\+xml(?:;charset=utf-8)?$/i.test(parts[0])){try{zip.file(key,decodeURIComponent(parts[1]))}catch{}}
+  else if(/^data:(?:image|audio|model)\/[A-Za-z0-9.+-]+(?:;[^,]*)?;base64$/i.test(parts[0]))zip.file(key,parts[1],{base64:true});
+ });
+ const modelFiles=Object.keys(p.assets||{}).filter(function(k){return /^models\/[A-Za-z0-9._-]+\.glb$/i.test(k)});
+ if(modelFiles.length)zip.file('arcadia-3d-assets.json',JSON.stringify({format:'glTF 2.0 GLB',models:modelFiles,gameEngine:'3D scene/gameplay runtime not bundled; integrate with a compatible engine'},null,2));
  const credits=['ARCADIA GAME - ASSET SOURCES','Game: '+p.title,'Generated: '+metadata.exportedAt,'','VERIFY PERMISSIONS BEFORE PUBLISHING','','Asset sources:'];
  const entries=Object.entries(p.assetMeta||{});
  if(!entries.length)credits.push('No imported or library assets credited.');
