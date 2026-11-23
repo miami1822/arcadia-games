@@ -48,8 +48,8 @@ jobs:
           pushd .haxelib/hxcpp/git/tools/hxcpp
           haxe compile.hxml
           popd
-          pushd .haxelib/lime/git
-          haxelib run hxcpp project/Build.xml -Dlinux -Dstatic_link
+          pushd .haxelib/lime/git/project
+          haxelib run hxcpp Build.xml -Dlinux -Dstatic_link
           popd
           haxelib run lime rebuild cpp -64
           haxelib run lime setup
