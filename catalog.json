@@ -189,5 +189,71 @@
     "accent": "#a68dff",
     "type": "external",
     "featured": false
+  },
+  {
+    "id": "minteez-cosmic-dodge",
+    "title": "Cosmic Dodge",
+    "description": "Play Cosmic Dodge, from Minteez's Browser Game Hub.",
+    "category": "Arcade",
+    "emoji": "🛸",
+    "accent": "#5bd6ff",
+    "type": "hosted",
+    "path": "games/minteez-cosmic-dodge/index.html",
+    "featured": false
+  },
+  {
+    "id": "minteez-neon-paddle",
+    "title": "Neon Paddle",
+    "description": "Play Neon Paddle, from Minteez's Browser Game Hub.",
+    "category": "Arcade",
+    "emoji": "🏓",
+    "accent": "#5bd6ff",
+    "type": "hosted",
+    "path": "games/minteez-neon-paddle/index.html",
+    "featured": false
+  },
+  {
+    "id": "minteez-maze-quest",
+    "title": "Maze Quest",
+    "description": "Play Maze Quest, from Minteez's Browser Game Hub.",
+    "category": "Puzzle",
+    "emoji": "🧭",
+    "accent": "#5bd6ff",
+    "type": "hosted",
+    "path": "games/minteez-maze-quest/index.html",
+    "featured": false
+  },
+  {
+    "id": "minteez-neon-ascent",
+    "title": "Neon Ascent",
+    "description": "Play Neon Ascent, from Minteez's Browser Game Hub.",
+    "category": "Arcade",
+    "emoji": "⬆️",
+    "accent": "#5bd6ff",
+    "type": "hosted",
+    "path": "games/minteez-neon-ascent/index.html",
+    "featured": false
+  },
+  {
+    "id": "minteez-sky-hopper",
+    "title": "Sky Hopper",
+    "description": "Play Sky Hopper, from Minteez's Browser Game Hub.",
+    "category": "Arcade",
+    "emoji": "🐸",
+    "accent": "#5bd6ff",
+    "type": "hosted",
+    "path": "games/minteez-sky-hopper/index.html",
+    "featured": false
+  },
+  {
+    "id": "minteez-emoji-memory-match",
+    "title": "Emoji Memory Match",
+    "description": "Play Emoji Memory Match, from Minteez's Browser Game Hub.",
+    "category": "Puzzle",
+    "emoji": "🧠",
+    "accent": "#5bd6ff",
+    "type": "hosted",
+    "path": "games/minteez-emoji-memory-match/index.html",
+    "featured": false
   }
 ]
