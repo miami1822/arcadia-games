@@ -79,5 +79,49 @@
     "accent": "#ffd46d",
     "type": "built-in",
     "featured": false
+  },
+  {
+    "id": "deadlight",
+    "title": "Deadlight",
+    "description": "Restore fuses, manage your flashlight, and escape dark buildings.",
+    "category": "Horror",
+    "emoji": "🔦",
+    "accent": "#6bc1fc",
+    "type": "hosted",
+    "path": "games/deadlight/index.html",
+    "featured": true
+  },
+  {
+    "id": "cinderfall",
+    "title": "Cinderfall",
+    "description": "Survive enemy swarms, gather upgrades, and reach dawn.",
+    "category": "Survival",
+    "emoji": "🔥",
+    "accent": "#f5a56b",
+    "type": "hosted",
+    "path": "games/cinderfall/index.html",
+    "featured": true
+  },
+  {
+    "id": "conduit",
+    "title": "Conduit",
+    "description": "Rotate circuit tiles to power every lamp across 30 levels and daily puzzles.",
+    "category": "Puzzle",
+    "emoji": "💡",
+    "accent": "#6bf4d7",
+    "type": "hosted",
+    "path": "games/conduit/index.html",
+    "featured": true
+  },
+  {
+    "id": "quiet-street",
+    "title": "Quiet Street",
+    "description": "Explore a mysterious house while avoiding its watchful neighbor.",
+    "category": "Stealth",
+    "emoji": "🏠",
+    "accent": "#b5a4ff",
+    "type": "hosted",
+    "path": "games/quiet-street/index.html",
+    "featured": true
   }
 ]
