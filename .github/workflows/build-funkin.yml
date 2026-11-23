@@ -1,0 +1,60 @@
+name: Build Friday Night Funkin HTML5 (staging)
+on:
+  workflow_dispatch:
+    inputs:
+      source_tag:
+        description: "Pinned official Funkin release tag"
+        required: true
+        type: string
+        default: "v0.8.6"
+
+permissions:
+  contents: read
+
+jobs:
+  html5:
+    name: Official HTML5 build artifact (not published)
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    container:
+      image: ghcr.io/funkincrew/build-dependencies:main
+    steps:
+      - name: Clone official source and matching asset submodules
+        shell: bash
+        env:
+          SOURCE_TAG: ${{ inputs.source_tag }}
+        run: |
+          set -euo pipefail
+          git clone --filter=blob:none https://github.com/FunkinCrew/Funkin.git funkin-source
+          cd funkin-source
+          git checkout "$SOURCE_TAG"
+          git submodule sync --recursive
+          git submodule update --init --recursive
+          git rev-parse HEAD > ../FUNKIN_SOURCE_COMMIT.txt
+      - name: Configure Haxe libraries and compile HTML5
+        shell: bash
+        working-directory: funkin-source
+        run: |
+          set -euo pipefail
+          haxelib --never newrepo
+          haxelib --global git haxelib https://github.com/FunkinCrew/haxelib.git
+          haxelib --global git hmm https://github.com/FunkinCrew/hmm.git
+          haxelib --global run hmm install -q
+          haxelib --global fixrepo
+          haxelib run lime setup
+          haxelib run lime build html5 -release -DGITHUB_BUILD
+      - name: Verify game entrypoint
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f funkin-source/export/release/html5/bin/index.html
+          du -sh funkin-source/export/release/html5/bin
+          find funkin-source/export/release/html5/bin -type f | wc -l
+      - name: Upload browser build for review (not public)
+        uses: actions/upload-artifact@v4
+        with:
+          name: fnf-html5-staging
+          path: |
+            funkin-source/export/release/html5/bin/
+            FUNKIN_SOURCE_COMMIT.txt
+          retention-days: 7
