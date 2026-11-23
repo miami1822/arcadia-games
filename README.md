@@ -52,3 +52,12 @@ Keep the school edition free; do not depend on Google Sites for AdSense, because
 ## Weekly game drops
 
 A ChatGPT weekly task has been scheduled separately. Its success in editing a live repository depends on available access at the time of each run. This package does not itself automatically generate new games; the GitHub action only validates and publishes changes pushed to `main`. Do not assume scheduled creation equals confirmed live deployment.
+
+
+## Arcadia Creator alpha (November 2026)
+
+Arcadia Creator is a local-first game development alpha at **https://arcadia-creator.onrender.com/creator.html**. The `creator.html` page has a responsive dashboard, playable 2D Visual Builder, HTML/CSS/JavaScript Code Studio, isolated playtest frame, small HTML/ZIP import, and ZIP export. The main Arcadia homepage links to it.
+
+**It does not yet offer sign-in, cloud projects, server-side review, or public game submissions.** Drafts remain on the creator's current device. Refer to [CREATOR.md](CREATOR.md) for functional limits, security measures, and the production publishing roadmap.
+
+The `arcadia-creator` Render static site currently deploys the public repository's `main` branch. This is independent of GitHub Pages and does not require GitHub Actions minutes.
