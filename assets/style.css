@@ -22,3 +22,27 @@ a:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid #81f2
 .arcadia-theater iframe{height:100%!important;min-height:0!important;max-height:100%!important;width:100%;max-width:100%}
 .school-player:fullscreen .school-game-stage,.school-player.arcadia-theater .school-game-stage{border-radius:8px}
 @media(max-width:600px){.player-actions{width:100%;justify-content:flex-start}.arcadia-theater{padding:6px!important}.school-player:fullscreen{padding:6px}}
+
+/* Full viewport responsive player v2. Overrides legacy fixed inline/size limits */
+.player-wrap{max-width:1600px;width:100%;margin-inline:auto}
+.play-surface{width:100%;min-width:0}
+.play-surface .game-stage{width:100%;min-width:0}
+.game-stage-embedded{display:block!important;padding:0!important;min-height:clamp(420px,72dvh,850px)}
+.game-stage-embedded > iframe{display:block;width:100%!important;max-width:none!important;height:clamp(420px,72dvh,850px)!important;min-height:0!important;border:0}
+.play-surface:fullscreen,.school-player:fullscreen,
+.play-surface.arcadia-theater,.school-player.arcadia-theater{display:flex!important;flex-direction:column!important;overflow:hidden!important;width:100vw!important;height:100dvh!important;min-height:100dvh!important;max-height:100dvh!important;max-width:none!important;margin:0!important;padding:0!important;border:0!important;border-radius:0!important;background:#0b0c16!important}
+.play-surface:fullscreen .play-top,.play-surface.arcadia-theater .play-top{flex:0 0 auto;min-height:58px}
+.play-surface:fullscreen .game-stage,.play-surface.arcadia-theater .game-stage{flex:1 1 auto!important;display:flex!important;align-items:center;justify-content:center;min-height:0!important;max-height:none!important;height:auto!important;width:100%!important;overflow:hidden!important;padding:0!important}
+.play-surface:fullscreen .game-stage-embedded,.play-surface.arcadia-theater .game-stage-embedded{display:block!important}
+.play-surface:fullscreen .game-stage iframe,.play-surface.arcadia-theater .game-stage iframe{display:block!important;width:100%!important;max-width:none!important;height:100%!important;min-height:0!important;max-height:none!important}
+.play-surface:fullscreen .game-box,.play-surface.arcadia-theater .game-box{width:min(100%,1000px);max-height:100%;overflow:auto}
+.play-surface:fullscreen .game-box canvas,.play-surface.arcadia-theater .game-box canvas{max-height:calc(100dvh - 220px)!important;max-width:100%!important;object-fit:contain}
+.school-player:fullscreen,.school-player.arcadia-theater{padding:12px!important;gap:0!important}
+.school-player:fullscreen .school-player-head,.school-player.arcadia-theater .school-player-head{flex:0 0 auto;min-height:70px}
+.school-player:fullscreen .school-game-stage,.school-player.arcadia-theater .school-game-stage{flex:1 1 auto!important;display:flex!important;justify-content:center;align-items:center;min-height:0!important;height:auto!important;max-height:none!important;overflow:hidden!important;width:100%!important;margin:0!important;padding:4px!important}
+.school-player:fullscreen .school-game-stage.game-stage-embedded,.school-player.arcadia-theater .school-game-stage.game-stage-embedded{display:block!important}
+.school-player:fullscreen .school-game-stage iframe,.school-player.arcadia-theater .school-game-stage iframe{width:100%!important;height:100%!important;max-width:none!important;min-height:0!important}
+.school-player:fullscreen .school-game-instructions,.school-player.arcadia-theater .school-game-instructions{display:none}
+.school-player:fullscreen .game-box canvas,.school-player.arcadia-theater .game-box canvas{max-height:calc(100dvh - 230px);max-width:100%;object-fit:contain}
+body.arcadia-player-expanded{overflow:hidden}
+@media(max-width:650px){.play-surface:fullscreen .play-top,.play-surface.arcadia-theater .play-top{padding:8px}.school-player:fullscreen,.school-player.arcadia-theater{padding:5px!important}.school-player:fullscreen .school-player-desc,.school-player.arcadia-theater .school-player-desc{display:none}}
