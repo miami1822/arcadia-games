@@ -134,5 +134,16 @@
     "type": "hosted",
     "path": "games/vesper-signal-run/index.html",
     "featured": true
+  },
+  {
+    "id": "afterglow-arcade",
+    "title": "Afterglow Arcade",
+    "description": "Rebuild Grandpa's boardwalk: six story chapters, eight attractions, power management, upgrades and a Lantern Festival finale.",
+    "category": "Strategy",
+    "emoji": "🎡",
+    "accent": "#ffb86c",
+    "type": "hosted",
+    "path": "games/afterglow-arcade/index.html",
+    "featured": true
   }
 ]
