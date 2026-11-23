@@ -53,7 +53,7 @@ packs.push(
  ['Materials & Textures','ambientCG','https://ambientcg.com/','CC0','Textures','🪵']
 );
 const svgURL=v=>'data:image/svg+xml;charset=utf-8,'+encodeURIComponent(v);
-let project=null,onSave=null,onNotify=null,onSelected=null,onRepaint=null,filter='all';
+let project=null,onSave=null,onNotify=null,onSelected=null,onRepaint=null,filter='starter';
 function applySprite(key){
  const id=onSelected&&onSelected();
  const obj=project&&project.scene&&project.scene.find(o=>o.id===id);
