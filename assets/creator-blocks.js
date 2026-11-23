@@ -88,7 +88,7 @@ function save(){
  if(!workspace||!activeProject||loading)return;
  try{
   activeProject.blockState=global.Blockly.serialization.workspaces.save(workspace);
-  activeProject.blockCode=global.javascript.javascriptGenerator.workspaceToCode(workspace);
+  activeProject.blockCode='window.__arcadiaBlockIterations=0;\n'+global.javascript.javascriptGenerator.workspaceToCode(workspace);
   activeProject.blockUpdatedAt=Date.now();
   const code=document.getElementById('blocks-code');
   if(code)code.textContent=activeProject.blockCode||'// Add some blocks to start generating JavaScript';
