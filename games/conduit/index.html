@@ -1,0 +1,13 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Conduit</title><link rel="stylesheet" href="css/style.css"></head>
+<body>
+<canvas id="c"></canvas>
+<div id="hud" hidden><div id="t1"></div><div id="t2"></div></div>
+<div id="bar" hidden><button id="reset">Reset</button><button id="pause">Menu</button></div>
+<div id="ui" hidden><div id="panel"></div></div>
+<div id="load">Closing the circuit…</div>
+<script>addEventListener('error',function(){var l=document.getElementById('load');if(l)l.textContent='Could not start. Serve this folder over http(s) instead of opening the file directly.'})</script>
+<script type="module" src="src/main.js"></script>
+</body></html>
