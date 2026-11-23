@@ -7,6 +7,9 @@
 <title>Arcadia Creator — Make your next game</title>
 <link rel="stylesheet" href="assets/creator.css">
 <script defer src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+<script defer src="sdk/arcadia-sdk.js"></script>
+<script defer src="assets/creator-playtest-bridge.js"></script>
+<script defer src="assets/creator-preview-runtime.js"></script>
 <script defer src="assets/creator.js"></script>
 </head>
 <body>
@@ -50,7 +53,22 @@
 <div class="tool-panel inspector"><h3>Inspector</h3><div id="inspector-empty" class="hint">Select an object to change its position, dimensions, and color.</div><form id="object-form" hidden><label>Name<input id="obj-name" maxlength="48"></label><div class="input-pair"><label>X<input id="obj-x" type="number" min="0" max="960"></label><label>Y<input id="obj-y" type="number" min="0" max="540"></label></div><div class="input-pair"><label>Width<input id="obj-w" type="number" min="8" max="960"></label><label>Height<input id="obj-h" type="number" min="8" max="540"></label></div><label>Color<input id="obj-color" type="color"></label><button class="button danger full" type="button" id="remove-object">Remove object</button></form><div class="inspector-tip">Objects use simple platformer rules in the alpha. More visual scripting tools are planned.</div></div>
 </div>
 <div id="workspace-code" hidden><div class="code-layout"><div class="file-panel"><h3>FILES</h3><button class="file-btn active" data-file="index.html">◈ index.html</button><button class="file-btn" data-file="style.css">◈ style.css</button><button class="file-btn" data-file="game.js">⌘ game.js</button><p>Ctrl / ⌘ + S saves your code.</p></div><div class="code-pane"><div class="code-bar"><span id="file-label">index.html</span><span>Plain text editor · Monaco upgrade planned</span></div><textarea id="code-input" spellcheck="false" aria-label="Source code editor" autocomplete="off" autocapitalize="off"></textarea></div></div></div>
-<div id="workspace-preview" hidden><div class="preview-toolbar"><span>ISOLATED BROWSER PREVIEW</span><div class="action-row"><button class="button secondary" id="refresh-preview">↻ Restart</button><button class="button secondary" id="fullscreen-preview">⛶ Fullscreen</button></div></div><div class="preview-wrap" id="preview-wrap"><iframe id="game-preview" title="Game preview" sandbox="allow-scripts allow-pointer-lock" allow="fullscreen"></iframe></div><div class="notice">Game code runs in a sandbox without access to your Creator projects or cookies. External network requests are disabled in this alpha.</div></div>
+<div id="workspace-preview" hidden><div class="preview-toolbar"><span>ISOLATED BROWSER PREVIEW</span><div class="action-row"><button class="button secondary" id="refresh-preview">↻ Restart</button><button class="button secondary" id="fullscreen-preview">⛶ Fullscreen</button></div></div><div class="preview-wrap" id="preview-wrap"><iframe id="game-preview" title="Game preview" sandbox="allow-scripts allow-pointer-lock" allow="fullscreen"></iframe></div><section class="sdk-inspector" aria-labelledby="sdk-heading">
+<div class="sdk-toolbar"><div><div class="eyebrow">ARCADIA GAME SDK · V0.1.0</div><h3 id="sdk-heading">Playtest Data Inspector</h3></div><span class="sdk-status" id="sdk-status" role="status">Connecting…</span></div>
+<p>Game code can use <code>window.arcadiaGame</code> to save progress, submit scores, and unlock achievements. Only this project's Playtest data is accessible to the preview.</p>
+<div class="sdk-data">
+<div><strong>Saved slots</strong><ul id="sdk-saves"><li>None yet</li></ul></div>
+<div><strong>Top scores</strong><ul id="sdk-scores"><li>None yet</li></ul></div>
+<div><strong>Achievements</strong><ul id="sdk-achievements"><li>None yet</li></ul></div>
+</div>
+<div class="action-row sdk-actions"><button class="button primary" id="sdk-run-test" type="button">▶ Run SDK Test</button><button class="button secondary" id="sdk-refresh" type="button">↻ Refresh data</button><button class="button secondary" id="sdk-clear" type="button">Clear Playtest data</button></div>
+<details class="sdk-how"><summary>Show code example</summary><pre><code>await window.arcadiaGame.storage.save('progress', {level: 2});
+const progress = await window.arcadiaGame.storage.load('progress');
+await window.arcadiaGame.scores.submit(500);
+await window.arcadiaGame.achievements.unlock('first-win');</code></pre></details>
+<div id="sdk-feedback" class="sdk-feedback" role="status" aria-live="polite">Waiting for the game preview.</div>
+</section>
+<div class="notice">Playtest runs in an opaque-origin sandbox with no direct access to Creator projects or cookies. The SDK bridge permits only local saves, scores, achievements, and limited session events. External network requests stay blocked.</div></div>
 </div>
 </section>
 <section class="view" id="view-publish" hidden>
