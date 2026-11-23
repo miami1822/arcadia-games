@@ -46,9 +46,54 @@ $('start-visual').addEventListener('click',function(){openDialog('visual')});$('
 document.querySelectorAll('[data-view]').forEach(function(b){b.addEventListener('click',function(){show(b.dataset.view)})});
 document.addEventListener('click',function(e){var t=e.target.closest('[data-open],[data-duplicate],[data-delete],[data-export]');if(!t)return;if(t.dataset.open)openProject(t.dataset.open);else if(t.dataset.duplicate)duplicate(t.dataset.duplicate);else if(t.dataset.delete)removeProject(t.dataset.delete);else if(t.dataset.export){var p=projects.find(function(x){return x.id===t.dataset.export});if(p)exportGame(p)}});
 $('search-projects').addEventListener('input',renderProjects);$('sort-projects').addEventListener('change',renderProjects);
-function renderEditor(){var p=current();$('editor-empty').hidden=!!p;$('editor-active').hidden=!p;if(!p)return;$('project-title').value=p.title;setTab(editorTab)}
-function setTab(tab){var p=current();if(!p)return;if(tab!=='preview'&&playtestBridge){playtestBridge.destroy();playtestBridge=null;$('game-preview').srcdoc='';}editorTab=tab;document.querySelectorAll('[data-editor-tab]').forEach(function(btn){btn.classList.toggle('active',btn.dataset.editorTab===tab);btn.setAttribute('aria-selected',String(btn.dataset.editorTab===tab))});['visual','code','preview'].forEach(function(v){$('workspace-'+v).hidden=v!==tab});if(tab==='visual'||tab==='code'){if(p.mode!==tab){p.mode=tab;touch(p);toast('Preview now uses '+(tab==='visual'?'the visual scene':'your code')+'. Both versions remain saved.')}$('editor-mode-label').textContent=tab==='visual'?'VISUAL BUILDER':'CODE STUDIO';if(tab==='visual'){renderScene();renderInspector()}else renderCode()}else{refreshPreview();$('editor-mode-label').textContent='PLAYTEST'}}
+function renderEditor(){
+ var p=current();
+ $('editor-empty').hidden=!!p;$('editor-active').hidden=!p;
+ if(!p)return;
+ $('project-title').value=p.title;
+ if(p.mode==='code'&&['visual','blocks'].includes(editorTab))editorTab='code';
+ if(p.mode==='visual'&&editorTab==='code')editorTab='visual';
+ setTab(editorTab);
+}
+function convertToCode(){
+ var p=current();if(!p)return;
+ if(p.mode==='code'){setTab('code');return}
+ if(!confirm('Convert your visual scene and blocks into editable HTML/JavaScript? This is one-way: changes in Code Studio will not update the original blocks.'))return;
+ if(editorTab==='blocks')ArcadiaCreatorBlocks.unmount();
+ p.files['index.html']=visualHTML(p);
+ p.files['style.css']='';
+ p.files['game.js']='';
+ p.mode='code';activeFile='index.html';
+ touch(p);toast('Converted to editable HTML/JavaScript. The original block snapshot is retained.');
+ setTab('code');
+}
+function setTab(tab){
+ var p=current();if(!p)return;
+ if(tab==='code'&&p.mode==='visual'){convertToCode();return}
+ if((tab==='visual'||tab==='blocks')&&p.mode==='code'){toast('This is now a code project. Block and scene edits cannot safely reconstruct your JavaScript.');return}
+ if(editorTab==='blocks'&&tab!=='blocks')ArcadiaCreatorBlocks.unmount();
+ if(tab!=='preview'&&playtestBridge){playtestBridge.destroy();playtestBridge=null;$('game-preview').srcdoc=''}
+ editorTab=tab;
+ document.querySelectorAll('[data-editor-tab]').forEach(function(btn){
+  btn.classList.toggle('active',btn.dataset.editorTab===tab);
+  btn.setAttribute('aria-selected',String(btn.dataset.editorTab===tab));
+ });
+ ['visual','blocks','assets','code','preview'].forEach(function(v){$('workspace-'+v).hidden=v!==tab});
+ if(tab==='visual'){renderScene();renderInspector();$('editor-mode-label').textContent='VISUAL BUILDER'}
+ if(tab==='blocks'){
+  $('editor-mode-label').textContent='BLOCK STUDIO';
+  ArcadiaCreatorBlocks.mount(p,function(obj){touch(obj)});
+ }
+ if(tab==='assets'){
+  $('editor-mode-label').textContent='ASSET LIBRARY';
+  ArcadiaCreatorAssets.mount(p,{save:function(obj){touch(obj)},notify:toast,selected:function(){return selectedObjectId},renderScene:renderScene});
+ }
+ if(tab==='code'){$('editor-mode-label').textContent='CODE STUDIO';renderCode()}
+ if(tab==='preview'){$('editor-mode-label').textContent='PLAYTEST';refreshPreview()}
+}
 document.querySelectorAll('[data-editor-tab]').forEach(function(btn){btn.addEventListener('click',function(){setTab(btn.dataset.editorTab)})});
+$('blocks-convert').addEventListener('click',convertToCode);
+ArcadiaCreatorAssets.init();
 $('project-title').addEventListener('change',function(){var p=current();if(!p)return;p.title=$('project-title').value.trim()||'Untitled Game';$('project-title').value=p.title;touch(p)});
 function renderCode(){var p=current();if(!p)return;document.querySelectorAll('[data-file]').forEach(function(b){b.classList.toggle('active',b.dataset.file===activeFile)});$('file-label').textContent=activeFile;$('code-input').value=p.files[activeFile]||''}
 document.querySelectorAll('[data-file]').forEach(function(b){b.addEventListener('click',function(){activeFile=b.dataset.file;renderCode()})});
