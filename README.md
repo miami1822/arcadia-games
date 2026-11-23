@@ -33,6 +33,7 @@ The Arcadia staff publishes reviewed games by committing files and updating cata
 - `assets/`: CSS, catalog/home/editor/player scripts
 - `games/`: four standalone original games
 - `creator.html` and `assets/creator.*`: Creator alpha (no developer accounts)
+- `sdk/`: Arcadia Game SDK v0.1.0 (browser-local saves, scores, achievements, sessions; same-origin iframe host adapter)
 
 ## License
 
@@ -66,3 +67,10 @@ Creators need no sign-in or developer accounts. Drafts are stored in the current
 GitHub Pages is the preferred hosting target. After it is enabled, the expected Creator URL is https://miami1822.github.io/arcadia-games/creator.html. The previous Render static site can stay available until Pages is confirmed live.
 
 See [CREATOR.md](CREATOR.md) and [GITHUB_PAGES.md](GITHUB_PAGES.md) for the details.
+
+
+## Arcadia Game SDK v0.1.0
+
+The uploaded Arcadia Game SDK is integrated at [`sdk/`](sdk/README.md) and requires no developer accounts. The Main Edition and School Edition initialize `window.arcadiaGame` for reviewed built-in games, and **Neon Snake** records scores and unlocks achievements through it.
+
+Try [`sdk/example.html`](sdk/example.html) for a standalone demo or [`sdk/host-demo.html`](sdk/host-demo.html) for the trusted iframe host adapter. Local saves and scores remain on the current browser/device; there are no online leaderboards, cloud saves or automatic anonymous publishing APIs. Hosted/external games are not automatically granted host access.
