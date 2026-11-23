@@ -300,6 +300,19 @@ async function buildGameZip(p){
    else if(/;base64$/i.test(parts[0]))zip.file(key,parts[1],{base64:true});
   });
  }
+ const credits=['ARCADIA GAME - ASSET SOURCES','Game: '+p.title,'Generated: '+metadata.exportedAt,'','VERIFY PERMISSIONS BEFORE PUBLISHING','','Asset sources:'];
+ const entries=Object.entries(p.assetMeta||{});
+ if(!entries.length)credits.push('No imported or library assets credited.');
+ for(const [key,item] of entries){
+  credits.push('File: '+key);
+  credits.push('  Name: '+String(item.name||key));
+  credits.push('  Source: '+String(item.source||'Unknown'));
+  credits.push('  License: '+String(item.license||'Not verified'));
+  credits.push('  Attribution/terms: Verify the original file or pack page before publishing.');
+  credits.push('');
+ }
+ credits.push('External asset libraries may require attribution. Source metadata is not proof of licensing.');
+ zip.file('ASSET-CREDITS.txt',credits.join('\n'));
  zip.file('arcadia-release.json',JSON.stringify(metadata,null,2));
  var blob=await zip.generateAsync({type:'blob',compression:'DEFLATE',compressionOptions:{level:5}});
  return {blob,filename:packageFilename(p),metadata};
