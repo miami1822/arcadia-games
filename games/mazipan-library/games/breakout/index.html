@@ -1,0 +1,1304 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Break all the bricks by bouncing the ball with your paddle." />
+    <meta name="author" content="mazipan" />
+    <meta name="robots" content="index, follow" />
+    <meta name="google-site-verification" content="dX5C5vUSIubW3_nbheDlOWWIN8ECF-FrCsrsZdIf7pQ" />
+
+    <title>Breakout — Mini Games</title>
+
+    
+    <link rel="canonical" href="https://games.mazipan.space/games/breakout/" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Mini Games" />
+    <meta property="og:title" content="Breakout — Mini Games" />
+    <meta property="og:description" content="Break all the bricks by bouncing the ball with your paddle." />
+    <meta property="og:url" content="https://games.mazipan.space/games/breakout/" />
+    <meta property="og:image" content="https://games.mazipan.space/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Breakout — Mini Games" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Breakout — Mini Games" />
+    <meta name="twitter:description" content="Break all the bricks by bouncing the ball with your paddle." />
+    <meta name="twitter:image" content="https://games.mazipan.space/og-image.png" />
+
+    <link rel="stylesheet" href="../../css/main.css" />
+    <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-breakout.png" />
+  <!-- Built from https://github.com/mazipan/mini-games (MIT). --></head>
+  <body class="min-h-screen bg-slate-900 flex flex-col">
+    <!-- Game Nav -->
+    <nav
+      class="flex items-center justify-between px-4 py-3 bg-slate-900/80 backdrop-blur border-b border-slate-800 sticky top-0 z-50"
+    >
+      <a href="../../" class="flex items-center gap-2 text-slate-300 hover:text-white transition-colors group">
+        <svg
+          class="w-4 h-4 group-hover:-translate-x-0.5 transition-transform"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+        <span class="text-sm font-medium">All Games</span>
+      </a>
+      <div class="flex items-center gap-2">
+        <span class="text-lg">🧱</span>
+        <span class="font-semibold text-white">Breakout</span>
+        
+        <span class="badge bg-violet-500/20 text-violet-300 border-violet-500/30">Arcade</span>
+        
+      </div>
+      <a
+        href="https://github.com/mazipan/mini-games"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="text-slate-400 hover:text-white transition-colors"
+        title="View source"
+      >
+        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+          <path
+            d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"
+          />
+        </svg>
+      </a>
+    </nav>
+
+    <!-- Game Content -->
+    <div class="flex-1 flex flex-col">
+
+
+<style>
+  #game-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: calc(100vh - 60px);
+    gap: 1rem;
+    padding: 1rem;
+  }
+  .canvas-wrapper {
+    position: relative;
+    touch-action: none;
+    line-height: 0;
+  }
+  canvas {
+    border: 2px solid #7c2d12;
+    border-radius: 4px;
+    cursor: none;
+    display: block;
+  }
+  #overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(15, 23, 42, 0.85);
+    border-radius: 4px;
+    gap: 0.75rem;
+    line-height: normal;
+  }
+  #overlay h2 {
+    font-size: 1.6rem;
+    font-weight: bold;
+    color: white;
+  }
+  .score-row {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .stat {
+    text-align: center;
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+  }
+  .stat-label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #94a3b8;
+  }
+  .stat-value {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #e2e8f0;
+    font-family: monospace;
+  }
+  .play-btn {
+    padding: 0.5rem 1.5rem;
+    background: #ea580c;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .play-btn:hover {
+    background: #c2410c;
+  }
+  .controls-hint {
+    font-size: 0.75rem;
+    color: #64748b;
+    text-align: center;
+  }
+  .lives {
+    display: flex;
+    gap: 0.4rem;
+  }
+  .life {
+    font-size: 1rem;
+  }
+  .demo-label {
+    font-size: 0.7rem;
+    color: #ea580c;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  #gameover-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(15, 23, 42, 0.96);
+    border-radius: 4px;
+    gap: 0.75rem;
+    line-height: normal;
+  }
+  #gameover-overlay h2 {
+    font-size: 1.6rem;
+    font-weight: bold;
+    color: white;
+  }
+  .summary-row {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .summary-stat {
+    text-align: center;
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    padding: 0.5rem 0.9rem;
+    min-width: 72px;
+  }
+  .summary-label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #94a3b8;
+  }
+  .summary-value {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #e2e8f0;
+    font-family: monospace;
+  }
+  .pattern-row {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: min(480px, calc(100vw - 2rem));
+  }
+  .pattern-btn {
+    padding: 0.3rem 0.8rem;
+    background: #1e293b;
+    color: #94a3b8;
+    border: 1px solid #334155;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .pattern-btn.active,
+  .pattern-btn:hover {
+    background: #334155;
+    color: white;
+    border-color: #ea580c;
+  }
+  .info-section {
+    width: 100%;
+    max-width: 500px;
+    padding: 0 1rem 2rem;
+    margin: 0 auto;
+  }
+  .info-details {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    margin-bottom: 0.75rem;
+    overflow: hidden;
+  }
+  .info-details summary {
+    padding: 0.75rem 1rem;
+    font-weight: 600;
+    color: #e2e8f0;
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    user-select: none;
+  }
+  .info-details summary::-webkit-details-marker {
+    display: none;
+  }
+  .info-details summary::after {
+    content: "+";
+    font-size: 1.1rem;
+    color: #64748b;
+  }
+  .info-details[open] summary::after {
+    content: "−";
+  }
+  .info-body {
+    padding: 0.75rem 1rem 1rem;
+    color: #94a3b8;
+    font-size: 0.875rem;
+    line-height: 1.6;
+    border-top: 1px solid #334155;
+  }
+  .info-body h4 {
+    color: #e2e8f0;
+    font-weight: 600;
+    margin: 0.75rem 0 0.25rem;
+    font-size: 0.875rem;
+  }
+  .info-body h4:first-child {
+    margin-top: 0;
+  }
+  .info-body ul {
+    padding-left: 1.25rem;
+    margin: 0.25rem 0;
+  }
+  .info-body li {
+    margin-bottom: 0.25rem;
+  }
+  .info-body p {
+    margin: 0.25rem 0;
+  }
+</style>
+
+<div id="game-wrapper">
+  <div class="score-row">
+    
+<div class="stat">
+  <div class="stat-label" >Score</div>
+  <div class="stat-value" id="score">0</div>
+</div>
+ 
+<div class="stat">
+  <div class="stat-label" >Best</div>
+  <div class="stat-value" id="best-score">0</div>
+</div>
+ 
+<div class="stat">
+  <div class="stat-label" >Lives</div>
+  <div class="stat-value lives" id="lives">❤️❤️❤️</div>
+</div>
+ 
+<div class="stat">
+  <div class="stat-label" >Level</div>
+  <div class="stat-value" id="level">1</div>
+</div>
+
+  </div>
+  <div class="pattern-row" id="pattern-row">
+    <button class="pattern-btn active" id="pat-random" onclick="setPattern(-1)">🔀 Random</button>
+    <button class="pattern-btn" id="pat-0" onclick="setPattern(0)">Classic</button>
+    <button class="pattern-btn" id="pat-1" onclick="setPattern(1)">Pyramid</button>
+    <button class="pattern-btn" id="pat-2" onclick="setPattern(2)">Diamond</button>
+    <button class="pattern-btn" id="pat-3" onclick="setPattern(3)">Checkerboard</button>
+    <button class="pattern-btn" id="pat-4" onclick="setPattern(4)">Cross</button>
+    <button class="pattern-btn" id="pat-5" onclick="setPattern(5)">Fortress</button>
+    <button class="pattern-btn" id="pat-6" onclick="setPattern(6)">Arrow</button>
+    <button class="pattern-btn" id="pat-7" onclick="setPattern(7)">Wave</button>
+  </div>
+  <div class="canvas-wrapper">
+    <canvas id="breakout"></canvas>
+    <div id="overlay">
+      <span class="demo-label" id="demo-label">Live Demo</span>
+      <span style="font-size: 3rem">🧱</span>
+      <h2 id="overlay-title">Breakout</h2>
+      <p id="overlay-msg" style="color: #94a3b8; font-size: 0.85rem; text-align: center">
+        Mouse, drag, or hold ← → to move paddle
+      </p>
+      <button class="play-btn" onclick="startGame()">Play Game</button>
+    </div>
+    <div id="gameover-overlay" style="display: none">
+      <span id="go-icon" style="font-size: 2.5rem">💀</span>
+      <h2 id="go-title">Game Over</h2>
+      <div class="summary-row">
+        
+<div class="summary-stat">
+  <div class="summary-label">Score</div>
+  <div class="summary-value" id="go-score">0</div>
+</div>
+ 
+<div class="summary-stat">
+  <div class="summary-label">Best</div>
+  <div class="summary-value" id="go-best">0</div>
+</div>
+ 
+<div class="summary-stat">
+  <div class="summary-label">Level</div>
+  <div class="summary-value" id="go-level">1</div>
+</div>
+
+      </div>
+      <p id="go-pattern" style="color: #64748b; font-size: 0.8rem"></p>
+      <button class="play-btn" onclick="startGame()">New Game</button>
+    </div>
+  </div>
+  <p class="controls-hint">Mouse / finger drag · Hold ← → arrow keys</p>
+</div>
+
+<div class="info-section">
+  
+<details class="info-details">
+  <summary>How to Play</summary>
+  <div class="info-body">
+  <h4>Goal</h4>
+  <p>Bounce the ball with your paddle to break all the bricks. Clear all 8 levels to win!</p>
+  <h4>Controls</h4>
+  <ul>
+    <li><strong>Mouse</strong> — move cursor over canvas to position paddle (desktop)</li>
+    <li><strong>Finger drag</strong> — drag left/right on the canvas (mobile)</li>
+    <li><strong>Hold ← →</strong> — hold arrow keys for continuous paddle movement</li>
+  </ul>
+  <h4>Levels &amp; Patterns</h4>
+  <ul>
+    <li>8 levels — each uses a unique brick layout</li>
+    <li>Patterns: Classic, Pyramid, Diamond, Checkerboard, Cross, Fortress, Arrow, Wave</li>
+    <li>Ball speeds up each level</li>
+    <li>Darker bricks take <strong>2 hits</strong> to break</li>
+  </ul>
+  <h4>Scoring</h4>
+  <ul>
+    <li>Each brick = <strong>10 × level</strong> points</li>
+    <li>3 lives — ball resets when it falls</li>
+    <li>Best score saved in your browser</li>
+  </ul>
+  </div>
+</details>
+ 
+<details class="info-details">
+  <summary>FAQ</summary>
+  <div class="info-body">
+  <h4>Why does the ball angle change when hitting the paddle?</h4>
+  <p>
+    The ball reflects based on where it hits the paddle — hitting the edge sends it at a sharp angle, hitting the centre
+    bounces it straight up.
+  </p>
+  <h4>Do bricks reset when I lose a life?</h4>
+  <p>No — your brick progress is saved between lives. Only the ball and paddle reset position.</p>
+  <h4>Is my best score saved?</h4>
+  <p>Yes — automatically saved in your browser's local storage.</p>
+  <h4>Can I play on mobile?</h4>
+  <p>Yes! The game scales to fit your screen. Drag your finger across the canvas to move the paddle.</p>
+  </div>
+</details>
+
+</div>
+
+<script>
+  function launchConfetti() {
+    const canvas = document.createElement("canvas");
+    canvas.style.cssText = "position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999";
+    document.body.appendChild(canvas);
+    const ctx = canvas.getContext("2d");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    const colors = ["#7c3aed", "#db2777", "#f59e0b", "#10b981", "#3b82f6", "#ef4444", "#fbbf24"];
+    const pieces = Array.from({ length: 80 }, () => ({
+      x: Math.random() * canvas.width,
+      y: -10 - Math.random() * 40,
+      r: Math.random() * 6 + 3,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      vx: (Math.random() - 0.5) * 5,
+      vy: Math.random() * 4 + 2,
+      angle: Math.random() * Math.PI * 2,
+      va: (Math.random() - 0.5) * 0.15,
+    }));
+    const start = performance.now();
+    function draw(now) {
+      if (now - start > 1500) {
+        canvas.remove();
+        return;
+      }
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      pieces.forEach((p) => {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.angle += p.va;
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.angle);
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.r, -p.r / 2, p.r * 2, p.r);
+        ctx.restore();
+      });
+      requestAnimationFrame(draw);
+    }
+    requestAnimationFrame(draw);
+  }
+
+  const canvas = document.getElementById("breakout");
+  const ctx = canvas.getContext("2d");
+  const STORAGE_KEY = "mini-breakout-best";
+
+  // Responsive: scale canvas to fit viewport
+  const SIZE = Math.min(480, window.innerWidth - 32);
+  canvas.width = SIZE;
+  canvas.height = SIZE;
+  const W = canvas.width,
+    H = canvas.height;
+  const S = SIZE / 480;
+
+  const PADDLE_W = Math.round(80 * S);
+  const PADDLE_H = Math.round(10 * S);
+  const BALL_R = Math.max(5, Math.round(7 * S));
+  const BRICK_COLS = 10;
+  const BRICK_H = Math.round(16 * S);
+  const BRICK_GAP = Math.max(2, Math.round(4 * S));
+  const BRICK_W = (W - BRICK_GAP) / BRICK_COLS - BRICK_GAP;
+  const BRICK_TOP = Math.round(44 * S);
+  const PADDLE_Y = H - Math.round(28 * S);
+  const PADDLE_SPEED = Math.round(8 * S);
+  const BRICK_COLORS = ["#f43f5e", "#f97316", "#eab308", "#22c55e", "#3b82f6"];
+
+  // prettier-ignore
+  const PATTERNS = [
+    { name: "Classic", grid: [
+      [2,2,2,2,2,2,2,2,2,2],
+      [2,2,2,2,2,2,2,2,2,2],
+      [1,1,1,1,1,1,1,1,1,1],
+      [1,1,1,1,1,1,1,1,1,1],
+      [1,1,1,1,1,1,1,1,1,1],
+    ]},
+    { name: "Pyramid", grid: [
+      [1,1,1,1,1,1,1,1,1,1],
+      [0,1,1,1,1,1,1,1,1,0],
+      [0,0,1,1,1,1,1,1,0,0],
+      [0,0,0,1,1,1,1,0,0,0],
+      [0,0,0,0,1,1,0,0,0,0],
+    ]},
+    { name: "Diamond", grid: [
+      [0,0,0,0,1,1,0,0,0,0],
+      [0,0,0,1,1,1,1,0,0,0],
+      [0,0,1,1,2,2,1,1,0,0],
+      [0,1,1,2,2,2,2,1,1,0],
+      [1,1,2,2,2,2,2,2,1,1],
+      [0,1,1,2,2,2,2,1,1,0],
+      [0,0,1,1,2,2,1,1,0,0],
+      [0,0,0,1,1,1,1,0,0,0],
+      [0,0,0,0,1,1,0,0,0,0],
+    ]},
+    { name: "Checkerboard", grid: [
+      [2,0,2,0,2,0,2,0,2,0],
+      [0,1,0,1,0,1,0,1,0,1],
+      [2,0,2,0,2,0,2,0,2,0],
+      [0,1,0,1,0,1,0,1,0,1],
+      [2,0,2,0,2,0,2,0,2,0],
+      [0,1,0,1,0,1,0,1,0,1],
+    ]},
+    { name: "Cross", grid: [
+      [0,0,0,0,2,2,0,0,0,0],
+      [0,0,0,0,2,2,0,0,0,0],
+      [1,1,1,1,2,2,1,1,1,1],
+      [1,1,1,1,2,2,1,1,1,1],
+      [0,0,0,0,2,2,0,0,0,0],
+      [0,0,0,0,2,2,0,0,0,0],
+    ]},
+    { name: "Fortress", grid: [
+      [2,2,2,2,0,0,2,2,2,2],
+      [2,0,0,0,0,0,0,0,0,2],
+      [2,0,1,1,1,1,1,1,0,2],
+      [2,0,1,0,0,0,0,1,0,2],
+      [2,0,1,1,1,1,1,1,0,2],
+      [2,0,0,0,0,0,0,0,0,2],
+      [2,2,2,2,0,0,2,2,2,2],
+    ]},
+    { name: "Arrow", grid: [
+      [0,0,0,0,2,2,0,0,0,0],
+      [0,0,0,2,2,2,2,0,0,0],
+      [0,0,2,2,2,2,2,2,0,0],
+      [0,2,2,2,2,2,2,2,2,0],
+      [2,2,2,2,2,2,2,2,2,2],
+      [0,0,0,0,2,2,0,0,0,0],
+      [0,0,0,0,2,2,0,0,0,0],
+    ]},
+    { name: "Wave", grid: [
+      [1,1,1,0,0,0,0,1,1,1],
+      [0,1,1,1,0,0,1,1,1,0],
+      [0,0,1,1,1,1,1,1,0,0],
+      [0,0,0,1,1,1,1,0,0,0],
+      [0,0,1,1,1,1,1,1,0,0],
+      [0,1,1,1,0,0,1,1,1,0],
+      [1,1,1,0,0,0,0,1,1,1],
+    ]},
+  ];
+
+  let paddle,
+    ball,
+    bricks,
+    score,
+    lives,
+    level,
+    running = false,
+    animId,
+    demoAnimId,
+    chosenPattern = -1;
+  let bestScore = parseInt(localStorage.getItem(STORAGE_KEY) || "0", 10);
+  const keys = {};
+
+  function setPattern(idx) {
+    chosenPattern = idx;
+    document.querySelectorAll(".pattern-btn").forEach((b) => b.classList.remove("active"));
+    document.getElementById(idx === -1 ? "pat-random" : "pat-" + idx).classList.add("active");
+  }
+
+  document.getElementById("best-score").textContent = bestScore;
+
+  function ballSpeed(lvl) {
+    const vx = (1.5 + lvl * 0.35) * S * (Math.random() > 0.5 ? 1 : -1);
+    const vy = -(2.2 + lvl * 0.35) * S;
+    return { vx, vy };
+  }
+
+  function createBricks(idx) {
+    const grid = PATTERNS[idx % PATTERNS.length].grid;
+    const arr = [];
+    for (let r = 0; r < grid.length; r++)
+      for (let c = 0; c < grid[r].length; c++) {
+        if (!grid[r][c]) continue;
+        arr.push({
+          x: BRICK_GAP + c * (BRICK_W + BRICK_GAP),
+          y: BRICK_TOP + r * (BRICK_H + BRICK_GAP),
+          w: BRICK_W,
+          h: BRICK_H,
+          color: BRICK_COLORS[r % BRICK_COLORS.length],
+          alive: true,
+          hits: grid[r][c],
+        });
+      }
+    return arr;
+  }
+
+  function resetBall(lvl) {
+    const spd = ballSpeed(lvl);
+    ball = { x: W / 2, y: H - Math.round(50 * S), vx: spd.vx, vy: spd.vy };
+    paddle.x = W / 2 - PADDLE_W / 2;
+  }
+
+  function startGame() {
+    cancelAnimationFrame(demoAnimId);
+    document.getElementById("demo-label").style.display = "none";
+    document.getElementById("gameover-overlay").style.display = "none";
+    document.getElementById("pattern-row").style.display = "none";
+    level = 1;
+    score = 0;
+    lives = 3;
+    paddle = { x: W / 2 - PADDLE_W / 2, y: PADDLE_Y };
+    bricks = createBricks(chosenPattern === -1 ? 0 : chosenPattern);
+    resetBall(1);
+    updateUI();
+    document.getElementById("overlay").style.display = "none";
+    running = true;
+    cancelAnimationFrame(animId);
+    animId = requestAnimationFrame(loop);
+  }
+
+  function updateUI() {
+    document.getElementById("score").textContent = score;
+    document.getElementById("level").textContent = level;
+    const livesEl = document.getElementById("lives");
+    livesEl.innerHTML = Array.from({ length: lives }, () => '<span class="life">❤️</span>').join("") || "💀";
+  }
+
+  function loop() {
+    if (!running) return;
+    if (keys["ArrowLeft"]) paddle.x = Math.max(0, paddle.x - PADDLE_SPEED);
+    if (keys["ArrowRight"]) paddle.x = Math.min(W - PADDLE_W, paddle.x + PADDLE_SPEED);
+    update();
+    draw();
+    if (running) animId = requestAnimationFrame(loop);
+  }
+
+  function update() {
+    ball.x += ball.vx;
+    ball.y += ball.vy;
+    if (ball.x - BALL_R < 0) {
+      ball.x = BALL_R;
+      ball.vx = Math.abs(ball.vx);
+    }
+    if (ball.x + BALL_R > W) {
+      ball.x = W - BALL_R;
+      ball.vx = -Math.abs(ball.vx);
+    }
+    if (ball.y - BALL_R < 0) {
+      ball.y = BALL_R;
+      ball.vy = Math.abs(ball.vy);
+    }
+    if (ball.y + BALL_R > H) {
+      lives--;
+      if (lives <= 0) {
+        showEnd(false);
+        return;
+      }
+      updateUI();
+      resetBall(level);
+      return;
+    }
+    if (
+      ball.y + BALL_R > paddle.y &&
+      ball.y - BALL_R < paddle.y + PADDLE_H &&
+      ball.x > paddle.x &&
+      ball.x < paddle.x + PADDLE_W
+    ) {
+      ball.vy = -Math.abs(ball.vy);
+      const rel = (ball.x - (paddle.x + PADDLE_W / 2)) / (PADDLE_W / 2);
+      ball.vx = rel * 4 * S;
+    }
+    for (const b of bricks) {
+      if (!b.alive) continue;
+      if (
+        ball.x + BALL_R > b.x &&
+        ball.x - BALL_R < b.x + b.w &&
+        ball.y + BALL_R > b.y &&
+        ball.y - BALL_R < b.y + b.h
+      ) {
+        b.hits--;
+        if (b.hits <= 0) {
+          b.alive = false;
+          score += 10 * level;
+        }
+        ball.vy *= -1;
+        updateUI();
+        break;
+      }
+    }
+    if (bricks.every((b) => !b.alive)) {
+      level++;
+      launchConfetti();
+      if (level > PATTERNS.length) {
+        showEnd(true);
+        return;
+      }
+      running = false;
+      updateUI();
+      bricks = createBricks(chosenPattern === -1 ? level - 1 : chosenPattern);
+      resetBall(level);
+      setTimeout(() => {
+        running = true;
+        animId = requestAnimationFrame(loop);
+      }, 1500);
+    }
+  }
+
+  function draw() {
+    ctx.fillStyle = "#0f172a";
+    ctx.fillRect(0, 0, W, H);
+    for (const b of bricks) {
+      if (!b.alive) continue;
+      ctx.fillStyle = b.hits > 1 ? b.color : b.color + "88";
+      ctx.beginPath();
+      ctx.roundRect(b.x, b.y, b.w, b.h, 3);
+      ctx.fill();
+    }
+    ctx.fillStyle = "#7c3aed";
+    ctx.beginPath();
+    ctx.roundRect(paddle.x, paddle.y, PADDLE_W, PADDLE_H, 5);
+    ctx.fill();
+    ctx.fillStyle = "#f8fafc";
+    ctx.beginPath();
+    ctx.arc(ball.x, ball.y, BALL_R, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  function showEnd(isWin) {
+    running = false;
+    cancelAnimationFrame(animId);
+    if (score > bestScore) {
+      bestScore = score;
+      localStorage.setItem(STORAGE_KEY, bestScore);
+      document.getElementById("best-score").textContent = bestScore;
+      launchConfetti();
+    }
+    draw();
+    document.getElementById("go-icon").textContent = isWin ? "🏆" : "💀";
+    document.getElementById("go-title").textContent = isWin ? "You Win!" : "Game Over";
+    document.getElementById("go-score").textContent = score;
+    document.getElementById("go-best").textContent = bestScore;
+    document.getElementById("go-level").textContent = level;
+    document.getElementById("go-pattern").textContent =
+      "Pattern: " + (chosenPattern === -1 ? "Random" : PATTERNS[chosenPattern].name);
+    document.getElementById("overlay").style.display = "none";
+    document.getElementById("gameover-overlay").style.display = "flex";
+    document.getElementById("pattern-row").style.display = "flex";
+  }
+
+  // Demo: auto-track ball with paddle
+  function startDemo() {
+    paddle = { x: W / 2 - PADDLE_W / 2, y: PADDLE_Y };
+    const spd = ballSpeed(1);
+    ball = { x: W / 2, y: H / 2, vx: spd.vx * 0.7, vy: Math.abs(spd.vy) * 0.7 };
+    let demoPatternIdx = Math.floor(Math.random() * PATTERNS.length);
+    bricks = createBricks(demoPatternIdx);
+
+    function demoLoop() {
+      // AI: smoothly track ball
+      const target = ball.x - PADDLE_W / 2;
+      const diff = target - paddle.x;
+      paddle.x = Math.max(0, Math.min(W - PADDLE_W, paddle.x + diff * 0.12));
+
+      ball.x += ball.vx;
+      ball.y += ball.vy;
+      if (ball.x - BALL_R < 0) {
+        ball.x = BALL_R;
+        ball.vx = Math.abs(ball.vx);
+      }
+      if (ball.x + BALL_R > W) {
+        ball.x = W - BALL_R;
+        ball.vx = -Math.abs(ball.vx);
+      }
+      if (ball.y - BALL_R < 0) {
+        ball.y = BALL_R;
+        ball.vy = Math.abs(ball.vy);
+      }
+      if (ball.y + BALL_R > H) {
+        ball.y = H / 2;
+        ball.vy = -Math.abs(ball.vy);
+      }
+      if (
+        ball.y + BALL_R > paddle.y &&
+        ball.y - BALL_R < paddle.y + PADDLE_H &&
+        ball.x > paddle.x &&
+        ball.x < paddle.x + PADDLE_W
+      ) {
+        ball.vy = -Math.abs(ball.vy);
+        const rel = (ball.x - (paddle.x + PADDLE_W / 2)) / (PADDLE_W / 2);
+        ball.vx = rel * 3 * S;
+      }
+      for (const b of bricks) {
+        if (!b.alive) continue;
+        if (
+          ball.x + BALL_R > b.x &&
+          ball.x - BALL_R < b.x + b.w &&
+          ball.y + BALL_R > b.y &&
+          ball.y - BALL_R < b.y + b.h
+        ) {
+          b.hits--;
+          if (b.hits <= 0) b.alive = false;
+          ball.vy *= -1;
+          break;
+        }
+      }
+      if (bricks.every((b) => !b.alive)) {
+        demoPatternIdx = (demoPatternIdx + 1) % PATTERNS.length;
+        bricks = createBricks(demoPatternIdx);
+      }
+      draw();
+      demoAnimId = requestAnimationFrame(demoLoop);
+    }
+    draw();
+    demoAnimId = requestAnimationFrame(demoLoop);
+  }
+
+  // Mouse control
+  canvas.addEventListener("mousemove", (e) => {
+    if (!running) return;
+    const rect = canvas.getBoundingClientRect();
+    const scaleX = W / rect.width;
+    paddle.x = Math.max(0, Math.min(W - PADDLE_W, (e.clientX - rect.left) * scaleX - PADDLE_W / 2));
+  });
+
+  // Touch control (mobile drag)
+  canvas.addEventListener(
+    "touchstart",
+    (e) => {
+      e.preventDefault();
+      if (!running) return;
+      const rect = canvas.getBoundingClientRect();
+      const scaleX = W / rect.width;
+      paddle.x = Math.max(0, Math.min(W - PADDLE_W, (e.touches[0].clientX - rect.left) * scaleX - PADDLE_W / 2));
+    },
+    { passive: false }
+  );
+
+  canvas.addEventListener(
+    "touchmove",
+    (e) => {
+      e.preventDefault();
+      if (!running) return;
+      const rect = canvas.getBoundingClientRect();
+      const scaleX = W / rect.width;
+      paddle.x = Math.max(0, Math.min(W - PADDLE_W, (e.touches[0].clientX - rect.left) * scaleX - PADDLE_W / 2));
+    },
+    { passive: false }
+  );
+
+  // Keyboard: track held keys for continuous movement
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "ArrowLeft" || e.key === "ArrowRight") e.preventDefault();
+    keys[e.key] = true;
+  });
+  document.addEventListener("keyup", (e) => {
+    delete keys[e.key];
+  });
+
+  // Start with demo
+  ctx.fillStyle = "#0f172a";
+  ctx.fillRect(0, 0, W, H);
+  startDemo();
+</script>
+</div>
+
+    <section class="border-t border-slate-800 py-6">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6">
+    <div class="flex items-center gap-3 mb-4">
+      <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">More Games</span>
+      <div class="flex-1 h-px bg-slate-800"></div>
+      <a href="../../#games" class="text-xs text-violet-400 hover:text-violet-300 transition-colors">View all →</a>
+    </div>
+
+    <div class="flex flex-wrap gap-2">
+       
+      <a
+        href="../../games/2048/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🔢</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >2048</span
+        >
+      </a>
+        
+      <a
+        href="../../games/blackjack/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🃏</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Blackjack</span
+        >
+      </a>
+        
+      <a
+        href="../../games/bolt-sort/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🔩</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Bolt Sort</span
+        >
+      </a>
+          
+      <a
+        href="../../games/checkers/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🔴</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Checkers</span
+        >
+      </a>
+        
+      <a
+        href="../../games/color-block/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🟦</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Color Block</span
+        >
+      </a>
+        
+      <a
+        href="../../games/color-connect/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🔗</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Color Connect</span
+        >
+      </a>
+        
+      <a
+        href="../../games/connect-four/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🟡</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Connect Four</span
+        >
+      </a>
+        
+      <a
+        href="../../games/domino/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🎲</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Domino</span
+        >
+      </a>
+        
+      <a
+        href="../../games/flappy-bird/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🐦</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Flappy Bird</span
+        >
+      </a>
+        
+      <a
+        href="../../games/freecell/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🂠</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >FreeCell</span
+        >
+      </a>
+        
+      <a
+        href="../../games/hangman/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🪢</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Hangman</span
+        >
+      </a>
+        
+      <a
+        href="../../games/mancala/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🪨</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Mancala</span
+        >
+      </a>
+        
+      <a
+        href="../../games/match-three/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🍬</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Match Three</span
+        >
+      </a>
+        
+      <a
+        href="../../games/memory-match/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🧠</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Memory Match</span
+        >
+      </a>
+        
+      <a
+        href="../../games/minesweeper/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">💣</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Minesweeper</span
+        >
+      </a>
+        
+      <a
+        href="../../games/number-merge/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🔀</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Number Merge</span
+        >
+      </a>
+        
+      <a
+        href="../../games/onet-connect/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🀄</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Onet Connect Classic</span
+        >
+      </a>
+        
+      <a
+        href="../../games/piano-tiles/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🎹</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Piano Tiles</span
+        >
+      </a>
+        
+      <a
+        href="../../games/pong/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🏓</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Pong</span
+        >
+      </a>
+        
+      <a
+        href="../../games/reversi/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">⚫</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Reversi</span
+        >
+      </a>
+        
+      <a
+        href="../../games/solitaire/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">♠️</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Solitaire</span
+        >
+      </a>
+        
+      <a
+        href="../../games/sliding-puzzle/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🔲</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Sliding Puzzle</span
+        >
+      </a>
+        
+      <a
+        href="../../games/snake/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🐍</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Snake</span
+        >
+      </a>
+        
+      <a
+        href="../../games/space-invaders/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">👾</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Space Invaders</span
+        >
+      </a>
+        
+      <a
+        href="../../games/stack/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">📦</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Stack</span
+        >
+      </a>
+        
+      <a
+        href="../../games/sudoku/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🧩</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Sudoku</span
+        >
+      </a>
+        
+      <a
+        href="../../games/tetris/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🟥</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Tetris</span
+        >
+      </a>
+        
+      <a
+        href="../../games/tictactoe/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">⭕</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Tic-Tac-Toe</span
+        >
+      </a>
+        
+      <a
+        href="../../games/whack-a-mole/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🦔</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Whack-a-Mole</span
+        >
+      </a>
+        
+      <a
+        href="../../games/word-search/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🔤</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Word Search</span
+        >
+      </a>
+        
+      <a
+        href="../../games/wordle/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🟩</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Wordle</span
+        >
+      </a>
+        
+      <a
+        href="../../games/yahtzee/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🎯</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Yahtzee</span
+        >
+      </a>
+       
+    </div>
+  </div>
+</section>
+ <footer class="border-t border-slate-800 pt-12 pb-8 mt-20">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-10">
+      <!-- Brand -->
+      <div class="lg:col-span-1">
+        <div class="flex items-center gap-2 mb-3">
+          <span class="text-2xl">🎮</span>
+          <span class="font-bold text-white">Mini Games</span>
+        </div>
+        <p class="text-sm text-slate-400 leading-relaxed">
+          Free browser-based games.<br />No login. No downloads.<br />Play instantly.
+        </p>
+      </div>
+
+      <!-- Games -->
+      <div>
+        <h3 class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-4">Games</h3>
+        <ul class="space-y-1">
+          <li><a href="../../#games" class="text-sm text-slate-400 hover:text-white transition-colors">All Games</a></li>
+          <li><a href="../../#arcade" class="text-sm text-slate-400 hover:text-white transition-colors">Arcade</a></li>
+          <li><a href="../../#puzzle" class="text-sm text-slate-400 hover:text-white transition-colors">Puzzle</a></li>
+          <li><a href="../../#board" class="text-sm text-slate-400 hover:text-white transition-colors">Board</a></li>
+          <li><a href="../../#word" class="text-sm text-slate-400 hover:text-white transition-colors">Word</a></li>
+        </ul>
+      </div>
+
+      <!-- Other Projects -->
+      <div>
+        <h3 class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-4">Other Projects</h3>
+        <ul class="space-y-1">
+          <li>
+            <a
+              href="https://tools.mazipan.space/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-sm text-slate-400 hover:text-white transition-colors"
+            >
+              HTML Tools
+            </a>
+          </li>
+          <li>
+            <a
+              href="https://www.baca-quran.id/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-sm text-slate-400 hover:text-white transition-colors"
+            >
+              Baca Quran
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Site -->
+      <div>
+        <h3 class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-4">Site</h3>
+        <ul class="space-y-1">
+          <li>
+            <a
+              href="https://github.com/mazipan/mini-games"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-sm text-slate-400 hover:text-white transition-colors"
+              >GitHub</a
+            >
+          </li>
+          <li>
+            <a href="../../design-system/" class="text-sm text-slate-400 hover:text-white transition-colors"
+              >Design System</a
+            >
+          </li>
+          <li>
+            <a
+              href="https://mazipan.space"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-sm text-slate-400 hover:text-white transition-colors"
+              >mazipan</a
+            >
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Bottom bar -->
+    <div class="border-t border-slate-800 pt-6 text-center text-xs text-slate-600">
+      © 2026 mazipan · Free to play, forever.
+    </div>
+  </div>
+</footer>
+
+  </body>
+</html>

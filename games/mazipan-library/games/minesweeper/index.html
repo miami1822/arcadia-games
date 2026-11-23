@@ -1,0 +1,990 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Reveal all safe squares without triggering a mine. Use logic and luck." />
+    <meta name="author" content="mazipan" />
+    <meta name="robots" content="index, follow" />
+    <meta name="google-site-verification" content="dX5C5vUSIubW3_nbheDlOWWIN8ECF-FrCsrsZdIf7pQ" />
+
+    <title>Minesweeper — Mini Games</title>
+
+    
+    <link rel="canonical" href="https://games.mazipan.space/games/minesweeper/" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Mini Games" />
+    <meta property="og:title" content="Minesweeper — Mini Games" />
+    <meta property="og:description" content="Reveal all safe squares without triggering a mine. Use logic and luck." />
+    <meta property="og:url" content="https://games.mazipan.space/games/minesweeper/" />
+    <meta property="og:image" content="https://games.mazipan.space/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Minesweeper — Mini Games" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Minesweeper — Mini Games" />
+    <meta name="twitter:description" content="Reveal all safe squares without triggering a mine. Use logic and luck." />
+    <meta name="twitter:image" content="https://games.mazipan.space/og-image.png" />
+
+    <link rel="stylesheet" href="../../css/main.css" />
+    <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-minesweeper.png" />
+  <!-- Built from https://github.com/mazipan/mini-games (MIT). --></head>
+  <body class="min-h-screen bg-slate-900 flex flex-col">
+    <!-- Game Nav -->
+    <nav
+      class="flex items-center justify-between px-4 py-3 bg-slate-900/80 backdrop-blur border-b border-slate-800 sticky top-0 z-50"
+    >
+      <a href="../../" class="flex items-center gap-2 text-slate-300 hover:text-white transition-colors group">
+        <svg
+          class="w-4 h-4 group-hover:-translate-x-0.5 transition-transform"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+        <span class="text-sm font-medium">All Games</span>
+      </a>
+      <div class="flex items-center gap-2">
+        <span class="text-lg">💣</span>
+        <span class="font-semibold text-white">Minesweeper</span>
+        
+        <span class="badge bg-emerald-500/20 text-emerald-300 border-emerald-500/30">Puzzle</span>
+        
+      </div>
+      <a
+        href="https://github.com/mazipan/mini-games"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="text-slate-400 hover:text-white transition-colors"
+        title="View source"
+      >
+        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+          <path
+            d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"
+          />
+        </svg>
+      </a>
+    </nav>
+
+    <!-- Game Content -->
+    <div class="flex-1 flex flex-col">
+
+
+<style>
+  #game-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: calc(100vh - 60px);
+    gap: 1.25rem;
+    padding: 1rem;
+  }
+  .score-row {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .stat {
+    text-align: center;
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+  }
+  .stat-label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #94a3b8;
+  }
+  .stat-value {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #e2e8f0;
+    font-family: monospace;
+  }
+  #board {
+    display: grid;
+    gap: 2px;
+  }
+  .cell {
+    width: var(--cell-size, 32px);
+    height: var(--cell-size, 32px);
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.1s;
+    user-select: none;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .cell:not(.revealed):not(.flagged):hover {
+    background: #273449;
+    border-color: #7c3aed;
+  }
+  .cell.revealed {
+    background: #0f172a;
+    border-color: #1e293b;
+    cursor: default;
+  }
+  .cell.flagged {
+    background: #2d1b4e;
+    border-color: #7c3aed;
+  }
+  .cell.mine-hit {
+    background: #7f1d1d;
+    border-color: #ef4444;
+  }
+  .cell.safe-reveal {
+    background: #14532d;
+    border-color: #22c55e;
+  }
+  .n1 {
+    color: #60a5fa;
+  }
+  .n2 {
+    color: #34d399;
+  }
+  .n3 {
+    color: #f87171;
+  }
+  .n4 {
+    color: #818cf8;
+  }
+  .n5 {
+    color: #f97316;
+  }
+  .n6 {
+    color: #22d3ee;
+  }
+  .n7 {
+    color: #e2e8f0;
+  }
+  .n8 {
+    color: #94a3b8;
+  }
+  #status {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #e2e8f0;
+    min-height: 1.5rem;
+    text-align: center;
+  }
+  .play-btn {
+    padding: 0.5rem 1.5rem;
+    background: #7c3aed;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .play-btn:hover {
+    background: #6d28d9;
+  }
+  .difficulty-row {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .diff-btn {
+    padding: 0.3rem 0.8rem;
+    background: #1e293b;
+    color: #94a3b8;
+    border: 1px solid #334155;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+  .diff-btn.active,
+  .diff-btn:hover {
+    background: #334155;
+    color: white;
+    border-color: #7c3aed;
+  }
+  .flag-hint {
+    font-size: 0.7rem;
+    color: #475569;
+    text-align: center;
+  }
+  #board-scroll {
+    overflow-x: auto;
+    max-width: calc(100vw - 2rem);
+  }
+  .info-section {
+    width: 100%;
+    max-width: 480px;
+    padding: 0 1rem 2rem;
+    margin: 0 auto;
+  }
+  .info-details {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    margin-bottom: 0.75rem;
+    overflow: hidden;
+  }
+  .info-details summary {
+    padding: 0.75rem 1rem;
+    font-weight: 600;
+    color: #e2e8f0;
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    user-select: none;
+  }
+  .info-details summary::-webkit-details-marker {
+    display: none;
+  }
+  .info-details summary::after {
+    content: "+";
+    font-size: 1.1rem;
+    color: #64748b;
+  }
+  .info-details[open] summary::after {
+    content: "−";
+  }
+  .info-body {
+    padding: 0.75rem 1rem 1rem;
+    color: #94a3b8;
+    font-size: 0.875rem;
+    line-height: 1.6;
+    border-top: 1px solid #334155;
+  }
+  .info-body h4 {
+    color: #e2e8f0;
+    font-weight: 600;
+    margin: 0.75rem 0 0.25rem;
+    font-size: 0.875rem;
+  }
+  .info-body h4:first-child {
+    margin-top: 0;
+  }
+  .info-body ul {
+    padding-left: 1.25rem;
+    margin: 0.25rem 0;
+  }
+  .info-body li {
+    margin-bottom: 0.25rem;
+  }
+  .info-body p {
+    margin: 0.25rem 0;
+  }
+</style>
+
+<div id="game-wrapper">
+  <div class="difficulty-row">
+    <button class="diff-btn active" id="d-easy" onclick="setDiff('easy')">Easy 9×9</button>
+    <button class="diff-btn" id="d-med" onclick="setDiff('medium')">Medium 16×9</button>
+    <button class="diff-btn" id="d-hard" onclick="setDiff('hard')">Hard 16×16</button>
+  </div>
+  <div class="score-row">
+    
+<div class="stat">
+  <div class="stat-label" >Mines</div>
+  <div class="stat-value" id="mine-count">10</div>
+</div>
+ 
+<div class="stat">
+  <div class="stat-label" >Time</div>
+  <div class="stat-value" id="timer">0s</div>
+</div>
+ 
+<div class="stat">
+  <div class="stat-label" >Best Time</div>
+  <div class="stat-value" id="best-time">—</div>
+</div>
+
+    <button class="play-btn" onclick="newGame()">New Game</button>
+  </div>
+  <div id="status">Left-click to reveal · Right-click to flag</div>
+  <p class="flag-hint">Mobile: tap to reveal · long-press to flag</p>
+  <div id="board-scroll"><div id="board"></div></div>
+</div>
+
+<div class="info-section">
+  
+<details class="info-details">
+  <summary>How to Play</summary>
+  <div class="info-body">
+  <h4>Goal</h4>
+  <p>
+    Reveal all squares that don't contain mines. The number in a revealed square tells you how many mines are in the 8
+    surrounding squares.
+  </p>
+  <h4>Controls — Desktop</h4>
+  <ul>
+    <li><strong>Left-click</strong> — reveal a square</li>
+    <li><strong>Right-click</strong> — place/remove a flag 🚩</li>
+  </ul>
+  <h4>Controls — Mobile</h4>
+  <ul>
+    <li><strong>Tap</strong> — reveal a square</li>
+    <li><strong>Long-press</strong> — place/remove a flag 🚩</li>
+  </ul>
+  <h4>Tips</h4>
+  <ul>
+    <li>The first click is always safe — mines are placed after</li>
+    <li>Clicking an empty square (0) automatically reveals neighbours</li>
+    <li>Use flags to mark squares you're sure are mines</li>
+  </ul>
+  </div>
+</details>
+ 
+<details class="info-details">
+  <summary>FAQ</summary>
+  <div class="info-body">
+  <h4>Is the first click always safe?</h4>
+  <p>Yes! Mines are placed after your first click, ensuring you can never hit one immediately.</p>
+  <h4>Is my best time saved?</h4>
+  <p>Yes — best completion time per difficulty is saved in your browser's local storage.</p>
+  <h4>What do the numbers mean?</h4>
+  <p>
+    A number shows how many mines are among the 8 squares surrounding it. Use this to deduce which squares are safe.
+  </p>
+  </div>
+</details>
+
+</div>
+
+<script>
+  const DIFFS = {
+    easy: { cols: 9, rows: 9, mines: 10 },
+    medium: { cols: 16, rows: 9, mines: 25 },
+    hard: { cols: 16, rows: 16, mines: 40 },
+  };
+  let diff = "easy",
+    cols,
+    rows,
+    mineCount,
+    grid,
+    revealed,
+    flagged,
+    gameState = "idle",
+    timerInterval,
+    startTime,
+    timerSecs = 0;
+
+  function getBestKey(d) {
+    return "mini-minesweeper-best-" + d;
+  }
+  function getBest(d) {
+    const v = localStorage.getItem(getBestKey(d));
+    return v ? parseInt(v, 10) : null;
+  }
+  function setBest(d, v) {
+    localStorage.setItem(getBestKey(d), v);
+  }
+
+  function showBest() {
+    const b = getBest(diff);
+    document.getElementById("best-time").textContent = b !== null ? b + "s" : "—";
+  }
+
+  function setDiff(d) {
+    diff = d;
+    document.querySelectorAll(".diff-btn").forEach((b) => b.classList.remove("active"));
+    document.getElementById("d-" + d).classList.add("active");
+    newGame();
+  }
+
+  function getCellSize() {
+    const cfg = DIFFS[diff];
+    const available = window.innerWidth - 32;
+    const maxCell = Math.floor((available - (cfg.cols - 1) * 2) / cfg.cols);
+    return Math.min(32, Math.max(18, maxCell));
+  }
+
+  function newGame() {
+    const cfg = DIFFS[diff];
+    cols = cfg.cols;
+    rows = cfg.rows;
+    mineCount = cfg.mines;
+    grid = Array.from({ length: rows }, () => Array(cols).fill(0));
+    revealed = Array.from({ length: rows }, () => Array(cols).fill(false));
+    flagged = Array.from({ length: rows }, () => Array(cols).fill(false));
+    gameState = "idle";
+    timerSecs = 0;
+    clearInterval(timerInterval);
+    document.getElementById("timer").textContent = "0s";
+    document.getElementById("mine-count").textContent = mineCount;
+    document.getElementById("status").textContent = "Left-click to reveal · Right-click to flag";
+    const cs = getCellSize();
+    document.documentElement.style.setProperty("--cell-size", cs + "px");
+    document.getElementById("board").style.gridTemplateColumns = `repeat(${cols},${cs}px)`;
+    showBest();
+    render();
+  }
+
+  function placeMines(sr, sc) {
+    let placed = 0;
+    while (placed < mineCount) {
+      const r = Math.floor(Math.random() * rows),
+        c = Math.floor(Math.random() * cols);
+      if (grid[r][c] === -1 || (Math.abs(r - sr) <= 1 && Math.abs(c - sc) <= 1)) continue;
+      grid[r][c] = -1;
+      placed++;
+    }
+    for (let r = 0; r < rows; r++)
+      for (let c = 0; c < cols; c++) {
+        if (grid[r][c] === -1) continue;
+        let n = 0;
+        for (let dr = -1; dr <= 1; dr++)
+          for (let dc = -1; dc <= 1; dc++) {
+            const nr = r + dr,
+              nc = c + dc;
+            if (nr >= 0 && nr < rows && nc >= 0 && nc < cols && grid[nr][nc] === -1) n++;
+          }
+        grid[r][c] = n;
+      }
+  }
+
+  function reveal(r, c) {
+    if (r < 0 || r >= rows || c < 0 || c >= cols || revealed[r][c] || flagged[r][c]) return;
+    revealed[r][c] = true;
+    if (grid[r][c] === 0) for (let dr = -1; dr <= 1; dr++) for (let dc = -1; dc <= 1; dc++) reveal(r + dr, c + dc);
+  }
+
+  function click(r, c) {
+    if (gameState === "over" || gameState === "win" || flagged[r][c]) return;
+    if (gameState === "idle") {
+      placeMines(r, c);
+      gameState = "playing";
+      startTime = Date.now();
+      timerInterval = setInterval(() => {
+        timerSecs = Math.floor((Date.now() - startTime) / 1000);
+        document.getElementById("timer").textContent = timerSecs + "s";
+      }, 1000);
+    }
+    if (grid[r][c] === -1) {
+      revealed[r][c] = true;
+      gameState = "over";
+      clearInterval(timerInterval);
+      for (let rr = 0; rr < rows; rr++)
+        for (let cc = 0; cc < cols; cc++) if (grid[rr][cc] === -1) revealed[rr][cc] = true;
+      document.getElementById("status").textContent = "💥 Boom! Game over!";
+      render();
+      return;
+    }
+    reveal(r, c);
+    const safe = rows * cols - mineCount;
+    let revCount = 0;
+    for (let rr = 0; rr < rows; rr++) for (let cc = 0; cc < cols; cc++) if (revealed[rr][cc]) revCount++;
+    if (revCount >= safe) {
+      gameState = "win";
+      clearInterval(timerInterval);
+      const t = Math.floor((Date.now() - startTime) / 1000);
+      const prev = getBest(diff);
+      if (prev === null || t < prev) {
+        setBest(diff, t);
+        showBest();
+      }
+      document.getElementById("status").textContent = `🎉 You won in ${t}s!`;
+    }
+    render();
+  }
+
+  function flag(e, r, c) {
+    e.preventDefault();
+    if (gameState === "over" || gameState === "win" || revealed[r][c]) return;
+    flagged[r][c] = !flagged[r][c];
+    const f = flagged.flat().filter(Boolean).length;
+    document.getElementById("mine-count").textContent = mineCount - f;
+    render();
+  }
+
+  // Long-press for mobile flagging
+  let longPressTimer = null;
+  function onTouchStart(e, r, c) {
+    longPressTimer = setTimeout(() => {
+      longPressTimer = null;
+      flag(e, r, c);
+      render();
+    }, 500);
+  }
+  function onTouchEnd(e, r, c) {
+    if (longPressTimer) {
+      clearTimeout(longPressTimer);
+      longPressTimer = null;
+    }
+  }
+
+  function render() {
+    const board = document.getElementById("board");
+    board.innerHTML = "";
+    for (let r = 0; r < rows; r++)
+      for (let c = 0; c < cols; c++) {
+        const cell = document.createElement("div");
+        cell.className = "cell";
+        if (revealed[r][c]) {
+          cell.classList.add("revealed");
+          if (grid[r][c] === -1)
+            (cell.classList.add(gameState === "over" && !flagged[r][c] ? "mine-hit" : "safe-reveal"),
+              (cell.textContent = "💣"));
+          else if (grid[r][c] > 0) {
+            cell.classList.add("n" + grid[r][c]);
+            cell.textContent = grid[r][c];
+          }
+        } else if (flagged[r][c]) {
+          cell.classList.add("flagged");
+          cell.textContent = "🚩";
+        }
+        cell.onclick = () => click(r, c);
+        cell.oncontextmenu = (e) => flag(e, r, c);
+        cell.addEventListener("touchstart", (e) => onTouchStart(e, r, c), { passive: true });
+        cell.addEventListener("touchend", (e) => onTouchEnd(e, r, c), { passive: true });
+        board.appendChild(cell);
+      }
+  }
+
+  newGame();
+</script>
+</div>
+
+    <section class="border-t border-slate-800 py-6">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6">
+    <div class="flex items-center gap-3 mb-4">
+      <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">More Games</span>
+      <div class="flex-1 h-px bg-slate-800"></div>
+      <a href="../../#games" class="text-xs text-violet-400 hover:text-violet-300 transition-colors">View all →</a>
+    </div>
+
+    <div class="flex flex-wrap gap-2">
+       
+      <a
+        href="../../games/2048/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🔢</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >2048</span
+        >
+      </a>
+        
+      <a
+        href="../../games/blackjack/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🃏</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Blackjack</span
+        >
+      </a>
+        
+      <a
+        href="../../games/bolt-sort/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🔩</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Bolt Sort</span
+        >
+      </a>
+        
+      <a
+        href="../../games/breakout/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🧱</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Breakout</span
+        >
+      </a>
+        
+      <a
+        href="../../games/checkers/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🔴</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Checkers</span
+        >
+      </a>
+        
+      <a
+        href="../../games/color-block/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🟦</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Color Block</span
+        >
+      </a>
+        
+      <a
+        href="../../games/color-connect/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🔗</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Color Connect</span
+        >
+      </a>
+        
+      <a
+        href="../../games/connect-four/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🟡</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Connect Four</span
+        >
+      </a>
+        
+      <a
+        href="../../games/domino/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🎲</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Domino</span
+        >
+      </a>
+        
+      <a
+        href="../../games/flappy-bird/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🐦</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Flappy Bird</span
+        >
+      </a>
+        
+      <a
+        href="../../games/freecell/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🂠</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >FreeCell</span
+        >
+      </a>
+        
+      <a
+        href="../../games/hangman/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🪢</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Hangman</span
+        >
+      </a>
+        
+      <a
+        href="../../games/mancala/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🪨</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Mancala</span
+        >
+      </a>
+        
+      <a
+        href="../../games/match-three/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🍬</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Match Three</span
+        >
+      </a>
+        
+      <a
+        href="../../games/memory-match/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🧠</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Memory Match</span
+        >
+      </a>
+          
+      <a
+        href="../../games/number-merge/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🔀</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Number Merge</span
+        >
+      </a>
+        
+      <a
+        href="../../games/onet-connect/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🀄</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Onet Connect Classic</span
+        >
+      </a>
+        
+      <a
+        href="../../games/piano-tiles/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🎹</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Piano Tiles</span
+        >
+      </a>
+        
+      <a
+        href="../../games/pong/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🏓</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Pong</span
+        >
+      </a>
+        
+      <a
+        href="../../games/reversi/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">⚫</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Reversi</span
+        >
+      </a>
+        
+      <a
+        href="../../games/solitaire/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">♠️</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Solitaire</span
+        >
+      </a>
+        
+      <a
+        href="../../games/sliding-puzzle/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🔲</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Sliding Puzzle</span
+        >
+      </a>
+        
+      <a
+        href="../../games/snake/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🐍</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Snake</span
+        >
+      </a>
+        
+      <a
+        href="../../games/space-invaders/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">👾</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Space Invaders</span
+        >
+      </a>
+        
+      <a
+        href="../../games/stack/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">📦</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Stack</span
+        >
+      </a>
+        
+      <a
+        href="../../games/sudoku/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🧩</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Sudoku</span
+        >
+      </a>
+        
+      <a
+        href="../../games/tetris/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🟥</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Tetris</span
+        >
+      </a>
+        
+      <a
+        href="../../games/tictactoe/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">⭕</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Tic-Tac-Toe</span
+        >
+      </a>
+        
+      <a
+        href="../../games/whack-a-mole/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🦔</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Whack-a-Mole</span
+        >
+      </a>
+        
+      <a
+        href="../../games/word-search/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🔤</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Word Search</span
+        >
+      </a>
+        
+      <a
+        href="../../games/wordle/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🟩</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Wordle</span
+        >
+      </a>
+        
+      <a
+        href="../../games/yahtzee/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🎯</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Yahtzee</span
+        >
+      </a>
+       
+    </div>
+  </div>
+</section>
+ <footer class="border-t border-slate-800 pt-12 pb-8 mt-20">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-10">
+      <!-- Brand -->
+      <div class="lg:col-span-1">
+        <div class="flex items-center gap-2 mb-3">
+          <span class="text-2xl">🎮</span>
+          <span class="font-bold text-white">Mini Games</span>
+        </div>
+        <p class="text-sm text-slate-400 leading-relaxed">
+          Free browser-based games.<br />No login. No downloads.<br />Play instantly.
+        </p>
+      </div>
+
+      <!-- Games -->
+      <div>
+        <h3 class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-4">Games</h3>
+        <ul class="space-y-1">
+          <li><a href="../../#games" class="text-sm text-slate-400 hover:text-white transition-colors">All Games</a></li>
+          <li><a href="../../#arcade" class="text-sm text-slate-400 hover:text-white transition-colors">Arcade</a></li>
+          <li><a href="../../#puzzle" class="text-sm text-slate-400 hover:text-white transition-colors">Puzzle</a></li>
+          <li><a href="../../#board" class="text-sm text-slate-400 hover:text-white transition-colors">Board</a></li>
+          <li><a href="../../#word" class="text-sm text-slate-400 hover:text-white transition-colors">Word</a></li>
+        </ul>
+      </div>
+
+      <!-- Other Projects -->
+      <div>
+        <h3 class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-4">Other Projects</h3>
+        <ul class="space-y-1">
+          <li>
+            <a
+              href="https://tools.mazipan.space/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-sm text-slate-400 hover:text-white transition-colors"
+            >
+              HTML Tools
+            </a>
+          </li>
+          <li>
+            <a
+              href="https://www.baca-quran.id/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-sm text-slate-400 hover:text-white transition-colors"
+            >
+              Baca Quran
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Site -->
+      <div>
+        <h3 class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-4">Site</h3>
+        <ul class="space-y-1">
+          <li>
+            <a
+              href="https://github.com/mazipan/mini-games"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-sm text-slate-400 hover:text-white transition-colors"
+              >GitHub</a
+            >
+          </li>
+          <li>
+            <a href="../../design-system/" class="text-sm text-slate-400 hover:text-white transition-colors"
+              >Design System</a
+            >
+          </li>
+          <li>
+            <a
+              href="https://mazipan.space"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-sm text-slate-400 hover:text-white transition-colors"
+              >mazipan</a
+            >
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Bottom bar -->
+    <div class="border-t border-slate-800 pt-6 text-center text-xs text-slate-600">
+      © 2026 mazipan · Free to play, forever.
+    </div>
+  </div>
+</footer>
+
+  </body>
+</html>

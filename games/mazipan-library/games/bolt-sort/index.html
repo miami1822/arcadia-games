@@ -1,0 +1,1241 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Move nails between bolts until every bolt holds nails of only one color." />
+    <meta name="author" content="mazipan" />
+    <meta name="robots" content="index, follow" />
+    <meta name="google-site-verification" content="dX5C5vUSIubW3_nbheDlOWWIN8ECF-FrCsrsZdIf7pQ" />
+
+    <title>Bolt Sort — Mini Games</title>
+
+    
+    <link rel="canonical" href="https://games.mazipan.space/games/bolt-sort/" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Mini Games" />
+    <meta property="og:title" content="Bolt Sort — Mini Games" />
+    <meta property="og:description" content="Move nails between bolts until every bolt holds nails of only one color." />
+    <meta property="og:url" content="https://games.mazipan.space/games/bolt-sort/" />
+    <meta property="og:image" content="https://games.mazipan.space/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Bolt Sort — Mini Games" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Bolt Sort — Mini Games" />
+    <meta name="twitter:description" content="Move nails between bolts until every bolt holds nails of only one color." />
+    <meta name="twitter:image" content="https://games.mazipan.space/og-image.png" />
+
+    <link rel="stylesheet" href="../../css/main.css" />
+    <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-bolt-sort.png" />
+  <!-- Built from https://github.com/mazipan/mini-games (MIT). --></head>
+  <body class="min-h-screen bg-slate-900 flex flex-col">
+    <!-- Game Nav -->
+    <nav
+      class="flex items-center justify-between px-4 py-3 bg-slate-900/80 backdrop-blur border-b border-slate-800 sticky top-0 z-50"
+    >
+      <a href="../../" class="flex items-center gap-2 text-slate-300 hover:text-white transition-colors group">
+        <svg
+          class="w-4 h-4 group-hover:-translate-x-0.5 transition-transform"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+        <span class="text-sm font-medium">All Games</span>
+      </a>
+      <div class="flex items-center gap-2">
+        <span class="text-lg">🔩</span>
+        <span class="font-semibold text-white">Bolt Sort</span>
+        
+        <span class="badge bg-emerald-500/20 text-emerald-300 border-emerald-500/30">Puzzle</span>
+        
+      </div>
+      <a
+        href="https://github.com/mazipan/mini-games"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="text-slate-400 hover:text-white transition-colors"
+        title="View source"
+      >
+        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+          <path
+            d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"
+          />
+        </svg>
+      </a>
+    </nav>
+
+    <!-- Game Content -->
+    <div class="flex-1 flex flex-col">
+
+
+<style>
+  #game-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: calc(100vh - 60px);
+    gap: 1rem;
+    padding: 1rem;
+  }
+  .score-row {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .stat {
+    text-align: center;
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    padding: 0.6rem 1.2rem;
+  }
+  .stat-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #94a3b8;
+  }
+  .stat-value {
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: #e2e8f0;
+    font-family: monospace;
+  }
+  .diff-row {
+    display: flex;
+    gap: 0.5rem;
+  }
+  .diff-btn {
+    padding: 0.4rem 1rem;
+    background: #1e293b;
+    color: #94a3b8;
+    border: 1px solid #334155;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    transition:
+      background 0.15s,
+      color 0.15s,
+      border-color 0.15s;
+  }
+  .diff-btn.active {
+    background: #4c1d95;
+    color: #e9d5ff;
+    border-color: #7c3aed;
+  }
+  .diff-btn:hover:not(.active) {
+    background: #273449;
+    border-color: #7c3aed;
+  }
+  #bolts-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+    align-items: flex-end;
+    padding: 1rem;
+    background: #0f172a;
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+    max-width: min(600px, calc(100vw - 2rem));
+  }
+  .bolt-col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    outline: none;
+  }
+  .bolt-head {
+    width: 28px;
+    height: 14px;
+    background: #64748b;
+    border-radius: 4px 4px 2px 2px;
+    border: 2px solid #94a3b8;
+    position: relative;
+  }
+  .bolt-head::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 60%;
+    height: 3px;
+    background: #475569;
+    border-radius: 2px;
+  }
+  .bolt-body {
+    width: 44px;
+    height: 184px;
+    background: #1e293b;
+    border: 2px solid #334155;
+    border-radius: 6px;
+    display: flex;
+    flex-direction: column-reverse;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 4px;
+    gap: 3px;
+    position: relative;
+    transition:
+      border-color 0.15s,
+      box-shadow 0.15s;
+  }
+  .bolt-col.selected .bolt-body {
+    border-color: #a78bfa;
+    box-shadow: 0 0 0 3px rgba(167, 139, 250, 0.35);
+  }
+  .bolt-col.valid-target .bolt-body {
+    border-color: #34d399;
+    box-shadow: 0 0 0 2px rgba(52, 211, 153, 0.25);
+  }
+  .nail {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    transition: transform 0.15s;
+    border: 2px solid rgba(255, 255, 255, 0.18);
+  }
+  .bolt-col.selected .nail:last-child {
+    transform: translateY(-6px);
+  }
+  .bolt-col.selected .nail:nth-last-child(2) {
+    transform: translateY(-4px);
+  }
+  .bolt-col.selected .nail:nth-last-child(3) {
+    transform: translateY(-2px);
+  }
+  .nail-count {
+    font-size: 0.6rem;
+    color: #64748b;
+    font-family: monospace;
+    min-height: 14px;
+  }
+  #action-row {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .action-btn {
+    padding: 0.5rem 1.2rem;
+    background: #1e293b;
+    color: #e2e8f0;
+    border: 1px solid #334155;
+    border-radius: 6px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    transition: background 0.15s;
+  }
+  .action-btn:hover {
+    background: #273449;
+    border-color: #7c3aed;
+  }
+  #win-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.95);
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    z-index: 100;
+  }
+  #win-overlay h2 {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: white;
+  }
+  .summary-row {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .summary-stat {
+    text-align: center;
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    padding: 0.5rem 0.9rem;
+    min-width: 72px;
+  }
+  .summary-label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #94a3b8;
+  }
+  .summary-value {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #e2e8f0;
+    font-family: monospace;
+  }
+  .play-btn {
+    padding: 0.5rem 1.5rem;
+    background: #7c3aed;
+    color: white;
+    font-size: 1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .play-btn:hover {
+    background: #6d28d9;
+  }
+  .info-section {
+    width: 100%;
+    max-width: 480px;
+    padding: 0 1rem 2rem;
+    margin: 0 auto;
+  }
+  .info-details {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    margin-bottom: 0.75rem;
+    overflow: hidden;
+  }
+  .info-details summary {
+    padding: 0.75rem 1rem;
+    font-weight: 600;
+    color: #e2e8f0;
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    user-select: none;
+  }
+  .info-details summary::-webkit-details-marker {
+    display: none;
+  }
+  .info-details summary::after {
+    content: "+";
+    font-size: 1.1rem;
+    color: #64748b;
+  }
+  .info-details[open] summary::after {
+    content: "−";
+  }
+  .info-body {
+    padding: 0.75rem 1rem 1rem;
+    color: #94a3b8;
+    font-size: 0.875rem;
+    line-height: 1.6;
+    border-top: 1px solid #334155;
+  }
+  .info-body h4 {
+    color: #e2e8f0;
+    font-weight: 600;
+    margin: 0.75rem 0 0.25rem;
+    font-size: 0.875rem;
+  }
+  .info-body h4:first-child {
+    margin-top: 0;
+  }
+  .info-body ul {
+    padding-left: 1.25rem;
+    margin: 0.25rem 0;
+  }
+  .info-body li {
+    margin-bottom: 0.25rem;
+  }
+  .info-body p {
+    margin: 0.25rem 0;
+  }
+  .difficulty-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8rem;
+    margin: 0.5rem 0;
+  }
+  .difficulty-table th,
+  .difficulty-table td {
+    padding: 0.35rem 0.5rem;
+    border: 1px solid #334155;
+    text-align: center;
+  }
+  .difficulty-table th {
+    background: #0f172a;
+    color: #e2e8f0;
+  }
+</style>
+
+<div id="game-wrapper">
+  <div class="score-row">
+    
+<div class="stat">
+  <div class="stat-label" >Moves</div>
+  <div class="stat-value" id="moves-display">0</div>
+</div>
+ 
+<div class="stat">
+  <div class="stat-label" >Best</div>
+  <div class="stat-value" id="best-display">—</div>
+</div>
+ 
+<div class="stat">
+  <div class="stat-label" >Difficulty</div>
+  <div class="stat-value" id="diff-display">Medium</div>
+</div>
+
+  </div>
+
+  <div class="diff-row">
+    <button class="diff-btn" id="btn-easy" onclick="setDifficulty('easy')">Easy</button>
+    <button class="diff-btn active" id="btn-medium" onclick="setDifficulty('medium')">Medium</button>
+    <button class="diff-btn" id="btn-hard" onclick="setDifficulty('hard')">Hard</button>
+  </div>
+
+  <div id="bolts-container"></div>
+
+  <div id="action-row">
+    <button class="action-btn" onclick="undoMove()">↩ Undo</button>
+    <button class="action-btn" onclick="newGame()">New Game</button>
+  </div>
+</div>
+
+<div id="win-overlay">
+  <span style="font-size: 2.5rem">🏆</span>
+  <h2>You Win!</h2>
+  <div class="summary-row">
+    
+<div class="summary-stat">
+  <div class="summary-label">Moves</div>
+  <div class="summary-value" id="go-moves">0</div>
+</div>
+ 
+<div class="summary-stat">
+  <div class="summary-label">Best</div>
+  <div class="summary-value" id="go-best">0</div>
+</div>
+ 
+<div class="summary-stat">
+  <div class="summary-label">Difficulty</div>
+  <div class="summary-value" id="go-diff">0</div>
+</div>
+
+  </div>
+  <button class="play-btn" onclick="newGame()">New Game</button>
+</div>
+
+<div class="info-section">
+  
+<details class="info-details">
+  <summary>How to Play</summary>
+  <div class="info-body">
+  <h4>Goal</h4>
+  <p>Sort all nails so every bolt contains nails of exactly one color.</p>
+  <h4>Controls</h4>
+  <ul>
+    <li><strong>Click or tap</strong> a bolt to select it — the top nail lifts up</li>
+    <li>Click or tap a second bolt to move the nail(s) there</li>
+    <li>Consecutive same-color nails on top move together as a group</li>
+    <li>A move is valid only if the destination is empty or its top nail matches</li>
+    <li>Use <strong>Undo</strong> to reverse your last move (unlimited undos)</li>
+  </ul>
+  <h4>Difficulty</h4>
+  <table class="difficulty-table">
+    <tr>
+      <th>Level</th>
+      <th>Bolts</th>
+      <th>Colors</th>
+      <th>Nails each</th>
+    </tr>
+    <tr>
+      <td>Easy</td>
+      <td>4</td>
+      <td>2</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <td>Medium</td>
+      <td>6</td>
+      <td>4</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <td>Hard</td>
+      <td>8</td>
+      <td>6</td>
+      <td>4</td>
+    </tr>
+  </table>
+  </div>
+</details>
+ 
+<details class="info-details">
+  <summary>FAQ</summary>
+  <div class="info-body">
+  <h4>Can I always win from the starting position?</h4>
+  <p>Yes — the puzzle is generated by shuffling a solved state, so it is always solvable.</p>
+  <h4>Is my best score saved?</h4>
+  <p>
+    Yes — your best (fewest moves) is saved per difficulty in your browser's local storage and persists between
+    sessions.
+  </p>
+  <h4>Why can't I move to a bolt?</h4>
+  <p>
+    A destination bolt must either be empty or have a top nail of the same color as the nail you're moving. The bolt
+    also can't be full (4 nails).
+  </p>
+  <h4>Does switching difficulty reset my best score?</h4>
+  <p>No — each difficulty keeps its own independent best score.</p>
+  </div>
+</details>
+
+</div>
+
+<script>
+  function launchConfetti() {
+    const canvas = document.createElement("canvas");
+    canvas.style.cssText = "position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999";
+    document.body.appendChild(canvas);
+    const ctx = canvas.getContext("2d");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    const colors = ["#7c3aed", "#db2777", "#f59e0b", "#10b981", "#3b82f6", "#ef4444", "#fbbf24"];
+    const pieces = Array.from({ length: 80 }, () => ({
+      x: Math.random() * canvas.width,
+      y: -10 - Math.random() * 40,
+      r: Math.random() * 6 + 3,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      vx: (Math.random() - 0.5) * 5,
+      vy: Math.random() * 4 + 2,
+      angle: Math.random() * Math.PI * 2,
+      va: (Math.random() - 0.5) * 0.15,
+    }));
+    const start = performance.now();
+    function draw(now) {
+      if (now - start > 3000) {
+        canvas.remove();
+        return;
+      }
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      pieces.forEach((p) => {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.angle += p.va;
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.angle);
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.r, -p.r / 2, p.r * 2, p.r);
+        ctx.restore();
+      });
+      requestAnimationFrame(draw);
+    }
+    requestAnimationFrame(draw);
+  }
+
+  const NAIL_COLORS = {
+    red: "#ef4444",
+    blue: "#3b82f6",
+    green: "#10b981",
+    yellow: "#f59e0b",
+    orange: "#f97316",
+    purple: "#a855f7",
+  };
+  const COLOR_NAMES = Object.keys(NAIL_COLORS);
+
+  const DIFFICULTY = {
+    easy: { bolts: 4, colors: 2 },
+    medium: { bolts: 6, colors: 4 },
+    hard: { bolts: 8, colors: 6 },
+  };
+
+  const CAPACITY = 4;
+
+  const STORAGE_KEYS = {
+    easy: "mini-bolt-sort-best-easy",
+    medium: "mini-bolt-sort-best-medium",
+    hard: "mini-bolt-sort-best-hard",
+  };
+
+  let difficulty = "medium";
+  let bolts = [];
+  let selected = null;
+  let history = [];
+  let moves = 0;
+  let gameWon = false;
+
+  let bests = {
+    easy: parseInt(localStorage.getItem(STORAGE_KEYS.easy) || "0", 10) || null,
+    medium: parseInt(localStorage.getItem(STORAGE_KEYS.medium) || "0", 10) || null,
+    hard: parseInt(localStorage.getItem(STORAGE_KEYS.hard) || "0", 10) || null,
+  };
+
+  function getBestDisplay(diff) {
+    return bests[diff] !== null ? String(bests[diff]) : "—";
+  }
+
+  function deepCopy(arr) {
+    return arr.map((b) => b.slice());
+  }
+
+  function canMoveRaw(bts, from, to) {
+    const src = bts[from];
+    const dst = bts[to];
+    if (src.length === 0) return false;
+    if (dst.length >= CAPACITY) return false;
+    if (dst.length === 0) return true;
+    return dst[dst.length - 1] === src[src.length - 1];
+  }
+
+  function executeRawMove(bts, from, to) {
+    const src = bts[from];
+    const dst = bts[to];
+    const movingColor = src[src.length - 1];
+    let count = 0;
+    for (let i = src.length - 1; i >= 0 && src[i] === movingColor; i--) count++;
+    const space = CAPACITY - dst.length;
+    const toMove = Math.min(count, space);
+    dst.push(...src.splice(src.length - toMove, toMove));
+  }
+
+  function isSolvedState(bts) {
+    return bts.every((bolt) => bolt.length === 0 || (bolt.length === CAPACITY && bolt.every((n) => n === bolt[0])));
+  }
+
+  function generatePuzzle(numColors, diff) {
+    const colors = COLOR_NAMES.slice(0, numColors);
+
+    // Build a flat list of all nails in solved order, then shuffle it.
+    // Bypassing game-move rules during generation avoids the "always sorted" bug
+    // that occurred when starting from a solved state and only applying valid moves.
+    const allNails = [];
+    colors.forEach((c) => {
+      for (let i = 0; i < CAPACITY; i++) allNails.push(c);
+    });
+
+    // Swap count controls how scrambled the result is:
+    //   easy   → light mix (some runs of same color survive, easier to read)
+    //   medium → proper shuffle
+    //   hard   → heavy shuffle (maximum entropy)
+    const n = allNails.length;
+    const swaps = diff === "easy" ? n * 2 : diff === "hard" ? n * 8 : n * 4;
+    for (let i = 0; i < swaps; i++) {
+      const a = Math.floor(Math.random() * n);
+      const b = Math.floor(Math.random() * n);
+      [allNails[a], allNails[b]] = [allNails[b], allNails[a]];
+    }
+
+    // Distribute nails into bolts: numColors filled bolts + 2 empty
+    const bts = [];
+    for (let i = 0; i < numColors; i++) {
+      bts.push(allNails.slice(i * CAPACITY, (i + 1) * CAPACITY));
+    }
+    bts.push([], []);
+
+    // Extremely rare edge case: retry if already solved
+    if (isSolvedState(bts)) return generatePuzzle(numColors, diff);
+    return bts;
+  }
+
+  function isWon() {
+    return isSolvedState(bolts);
+  }
+
+  function handleBoltClick(idx) {
+    if (gameWon) return;
+
+    if (selected === null) {
+      if (bolts[idx].length === 0) return;
+      selected = idx;
+      renderBolts();
+      return;
+    }
+
+    if (selected === idx) {
+      selected = null;
+      renderBolts();
+      return;
+    }
+
+    if (!canMoveRaw(bolts, selected, idx)) {
+      if (bolts[idx].length > 0) {
+        selected = idx;
+        renderBolts();
+      } else {
+        selected = null;
+        renderBolts();
+      }
+      return;
+    }
+
+    history.push(deepCopy(bolts));
+    executeRawMove(bolts, selected, idx);
+    moves++;
+    document.getElementById("moves-display").textContent = moves;
+    selected = null;
+
+    if (isWon()) {
+      gameWon = true;
+      renderBolts();
+      handleWin();
+      return;
+    }
+
+    renderBolts();
+  }
+
+  function undoMove() {
+    if (history.length === 0 || gameWon) return;
+    bolts = history.pop();
+    selected = null;
+    renderBolts();
+  }
+
+  function handleWin() {
+    const isNewBest = bests[difficulty] === null || moves < bests[difficulty];
+    if (isNewBest) {
+      bests[difficulty] = moves;
+      localStorage.setItem(STORAGE_KEYS[difficulty], moves);
+      document.getElementById("best-display").textContent = String(moves);
+      launchConfetti();
+    } else {
+      launchConfetti();
+    }
+
+    document.getElementById("go-moves").textContent = moves;
+    document.getElementById("go-best").textContent = getBestDisplay(difficulty);
+    document.getElementById("go-diff").textContent = difficulty.charAt(0).toUpperCase() + difficulty.slice(1);
+
+    setTimeout(() => {
+      document.getElementById("win-overlay").style.display = "flex";
+    }, 600);
+  }
+
+  function renderBolts() {
+    const container = document.getElementById("bolts-container");
+    container.innerHTML = "";
+
+    bolts.forEach((bolt, idx) => {
+      const col = document.createElement("div");
+      col.className = "bolt-col";
+      col.setAttribute("role", "button");
+      col.setAttribute("tabindex", "0");
+      col.setAttribute("aria-label", `Bolt ${idx + 1}`);
+
+      if (selected === idx) col.classList.add("selected");
+      if (selected !== null && selected !== idx && canMoveRaw(bolts, selected, idx)) {
+        col.classList.add("valid-target");
+      }
+
+      const countEl = document.createElement("div");
+      countEl.className = "nail-count";
+      countEl.textContent = `${bolt.length}/${CAPACITY}`;
+
+      const head = document.createElement("div");
+      head.className = "bolt-head";
+
+      const body = document.createElement("div");
+      body.className = "bolt-body";
+
+      bolt.forEach((color) => {
+        const nail = document.createElement("div");
+        nail.className = "nail";
+        nail.style.background = NAIL_COLORS[color];
+        body.appendChild(nail);
+      });
+
+      col.appendChild(countEl);
+      col.appendChild(head);
+      col.appendChild(body);
+
+      col.addEventListener("click", () => handleBoltClick(idx));
+      col.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          handleBoltClick(idx);
+        }
+      });
+
+      container.appendChild(col);
+    });
+  }
+
+  function newGame() {
+    document.getElementById("win-overlay").style.display = "none";
+    gameWon = false;
+    moves = 0;
+    selected = null;
+    history = [];
+    document.getElementById("moves-display").textContent = "0";
+
+    const cfg = DIFFICULTY[difficulty];
+    bolts = generatePuzzle(cfg.colors, difficulty);
+    document.getElementById("best-display").textContent = getBestDisplay(difficulty);
+    renderBolts();
+  }
+
+  function setDifficulty(diff) {
+    difficulty = diff;
+    document.getElementById("btn-easy").classList.toggle("active", diff === "easy");
+    document.getElementById("btn-medium").classList.toggle("active", diff === "medium");
+    document.getElementById("btn-hard").classList.toggle("active", diff === "hard");
+    document.getElementById("diff-display").textContent = diff.charAt(0).toUpperCase() + diff.slice(1);
+    newGame();
+  }
+
+  document.getElementById("diff-display").textContent = "Medium";
+  document.getElementById("best-display").textContent = getBestDisplay(difficulty);
+
+  const cfg = DIFFICULTY[difficulty];
+  bolts = generatePuzzle(cfg.colors, difficulty);
+  renderBolts();
+</script>
+</div>
+
+    <section class="border-t border-slate-800 py-6">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6">
+    <div class="flex items-center gap-3 mb-4">
+      <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">More Games</span>
+      <div class="flex-1 h-px bg-slate-800"></div>
+      <a href="../../#games" class="text-xs text-violet-400 hover:text-violet-300 transition-colors">View all →</a>
+    </div>
+
+    <div class="flex flex-wrap gap-2">
+       
+      <a
+        href="../../games/2048/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🔢</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >2048</span
+        >
+      </a>
+        
+      <a
+        href="../../games/blackjack/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🃏</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Blackjack</span
+        >
+      </a>
+          
+      <a
+        href="../../games/breakout/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🧱</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Breakout</span
+        >
+      </a>
+        
+      <a
+        href="../../games/checkers/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🔴</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Checkers</span
+        >
+      </a>
+        
+      <a
+        href="../../games/color-block/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🟦</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Color Block</span
+        >
+      </a>
+        
+      <a
+        href="../../games/color-connect/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🔗</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Color Connect</span
+        >
+      </a>
+        
+      <a
+        href="../../games/connect-four/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🟡</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Connect Four</span
+        >
+      </a>
+        
+      <a
+        href="../../games/domino/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🎲</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Domino</span
+        >
+      </a>
+        
+      <a
+        href="../../games/flappy-bird/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🐦</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Flappy Bird</span
+        >
+      </a>
+        
+      <a
+        href="../../games/freecell/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🂠</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >FreeCell</span
+        >
+      </a>
+        
+      <a
+        href="../../games/hangman/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🪢</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Hangman</span
+        >
+      </a>
+        
+      <a
+        href="../../games/mancala/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🪨</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Mancala</span
+        >
+      </a>
+        
+      <a
+        href="../../games/match-three/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🍬</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Match Three</span
+        >
+      </a>
+        
+      <a
+        href="../../games/memory-match/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🧠</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Memory Match</span
+        >
+      </a>
+        
+      <a
+        href="../../games/minesweeper/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">💣</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Minesweeper</span
+        >
+      </a>
+        
+      <a
+        href="../../games/number-merge/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🔀</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Number Merge</span
+        >
+      </a>
+        
+      <a
+        href="../../games/onet-connect/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🀄</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Onet Connect Classic</span
+        >
+      </a>
+        
+      <a
+        href="../../games/piano-tiles/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🎹</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Piano Tiles</span
+        >
+      </a>
+        
+      <a
+        href="../../games/pong/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🏓</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Pong</span
+        >
+      </a>
+        
+      <a
+        href="../../games/reversi/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">⚫</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Reversi</span
+        >
+      </a>
+        
+      <a
+        href="../../games/solitaire/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">♠️</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Solitaire</span
+        >
+      </a>
+        
+      <a
+        href="../../games/sliding-puzzle/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🔲</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Sliding Puzzle</span
+        >
+      </a>
+        
+      <a
+        href="../../games/snake/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🐍</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Snake</span
+        >
+      </a>
+        
+      <a
+        href="../../games/space-invaders/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">👾</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Space Invaders</span
+        >
+      </a>
+        
+      <a
+        href="../../games/stack/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">📦</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Stack</span
+        >
+      </a>
+        
+      <a
+        href="../../games/sudoku/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🧩</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Sudoku</span
+        >
+      </a>
+        
+      <a
+        href="../../games/tetris/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🟥</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Tetris</span
+        >
+      </a>
+        
+      <a
+        href="../../games/tictactoe/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">⭕</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Tic-Tac-Toe</span
+        >
+      </a>
+        
+      <a
+        href="../../games/whack-a-mole/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🦔</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Whack-a-Mole</span
+        >
+      </a>
+        
+      <a
+        href="../../games/word-search/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🔤</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Word Search</span
+        >
+      </a>
+        
+      <a
+        href="../../games/wordle/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🟩</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Wordle</span
+        >
+      </a>
+        
+      <a
+        href="../../games/yahtzee/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🎯</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Yahtzee</span
+        >
+      </a>
+       
+    </div>
+  </div>
+</section>
+ <footer class="border-t border-slate-800 pt-12 pb-8 mt-20">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-10">
+      <!-- Brand -->
+      <div class="lg:col-span-1">
+        <div class="flex items-center gap-2 mb-3">
+          <span class="text-2xl">🎮</span>
+          <span class="font-bold text-white">Mini Games</span>
+        </div>
+        <p class="text-sm text-slate-400 leading-relaxed">
+          Free browser-based games.<br />No login. No downloads.<br />Play instantly.
+        </p>
+      </div>
+
+      <!-- Games -->
+      <div>
+        <h3 class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-4">Games</h3>
+        <ul class="space-y-1">
+          <li><a href="../../#games" class="text-sm text-slate-400 hover:text-white transition-colors">All Games</a></li>
+          <li><a href="../../#arcade" class="text-sm text-slate-400 hover:text-white transition-colors">Arcade</a></li>
+          <li><a href="../../#puzzle" class="text-sm text-slate-400 hover:text-white transition-colors">Puzzle</a></li>
+          <li><a href="../../#board" class="text-sm text-slate-400 hover:text-white transition-colors">Board</a></li>
+          <li><a href="../../#word" class="text-sm text-slate-400 hover:text-white transition-colors">Word</a></li>
+        </ul>
+      </div>
+
+      <!-- Other Projects -->
+      <div>
+        <h3 class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-4">Other Projects</h3>
+        <ul class="space-y-1">
+          <li>
+            <a
+              href="https://tools.mazipan.space/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-sm text-slate-400 hover:text-white transition-colors"
+            >
+              HTML Tools
+            </a>
+          </li>
+          <li>
+            <a
+              href="https://www.baca-quran.id/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-sm text-slate-400 hover:text-white transition-colors"
+            >
+              Baca Quran
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Site -->
+      <div>
+        <h3 class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-4">Site</h3>
+        <ul class="space-y-1">
+          <li>
+            <a
+              href="https://github.com/mazipan/mini-games"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-sm text-slate-400 hover:text-white transition-colors"
+              >GitHub</a
+            >
+          </li>
+          <li>
+            <a href="../../design-system/" class="text-sm text-slate-400 hover:text-white transition-colors"
+              >Design System</a
+            >
+          </li>
+          <li>
+            <a
+              href="https://mazipan.space"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-sm text-slate-400 hover:text-white transition-colors"
+              >mazipan</a
+            >
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Bottom bar -->
+    <div class="border-t border-slate-800 pt-6 text-center text-xs text-slate-600">
+      © 2026 mazipan · Free to play, forever.
+    </div>
+  </div>
+</footer>
+
+  </body>
+</html>

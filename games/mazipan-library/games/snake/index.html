@@ -1,0 +1,1150 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Guide the snake to eat food and grow — but don&#39;t hit the walls or yourself!" />
+    <meta name="author" content="mazipan" />
+    <meta name="robots" content="index, follow" />
+    <meta name="google-site-verification" content="dX5C5vUSIubW3_nbheDlOWWIN8ECF-FrCsrsZdIf7pQ" />
+
+    <title>Snake — Mini Games</title>
+
+    
+    <link rel="canonical" href="https://games.mazipan.space/games/snake/" />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Mini Games" />
+    <meta property="og:title" content="Snake — Mini Games" />
+    <meta property="og:description" content="Guide the snake to eat food and grow — but don&#39;t hit the walls or yourself!" />
+    <meta property="og:url" content="https://games.mazipan.space/games/snake/" />
+    <meta property="og:image" content="https://games.mazipan.space/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Snake — Mini Games" />
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Snake — Mini Games" />
+    <meta name="twitter:description" content="Guide the snake to eat food and grow — but don&#39;t hit the walls or yourself!" />
+    <meta name="twitter:image" content="https://games.mazipan.space/og-image.png" />
+
+    <link rel="stylesheet" href="../../css/main.css" />
+    <link rel="icon" type="image/png" sizes="32x32" href="../../favicon-snake.png" />
+  <!-- Built from https://github.com/mazipan/mini-games (MIT). --></head>
+  <body class="min-h-screen bg-slate-900 flex flex-col">
+    <!-- Game Nav -->
+    <nav
+      class="flex items-center justify-between px-4 py-3 bg-slate-900/80 backdrop-blur border-b border-slate-800 sticky top-0 z-50"
+    >
+      <a href="../../" class="flex items-center gap-2 text-slate-300 hover:text-white transition-colors group">
+        <svg
+          class="w-4 h-4 group-hover:-translate-x-0.5 transition-transform"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+        <span class="text-sm font-medium">All Games</span>
+      </a>
+      <div class="flex items-center gap-2">
+        <span class="text-lg">🐍</span>
+        <span class="font-semibold text-white">Snake</span>
+        
+        <span class="badge bg-violet-500/20 text-violet-300 border-violet-500/30">Arcade</span>
+        
+      </div>
+      <a
+        href="https://github.com/mazipan/mini-games"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="text-slate-400 hover:text-white transition-colors"
+        title="View source"
+      >
+        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+          <path
+            d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"
+          />
+        </svg>
+      </a>
+    </nav>
+
+    <!-- Game Content -->
+    <div class="flex-1 flex flex-col">
+
+
+<style>
+  #game-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    min-height: calc(100vh - 60px);
+    gap: 1rem;
+    padding: 1rem;
+  }
+  canvas {
+    border: 2px solid #14532d;
+    border-radius: 4px;
+    max-width: 100%;
+    display: block;
+  }
+  .canvas-wrapper {
+    position: relative;
+  }
+  #overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(15, 23, 42, 0.82);
+    border-radius: 4px;
+    gap: 1rem;
+  }
+  #overlay h2 {
+    font-size: 1.6rem;
+    font-weight: bold;
+    color: white;
+  }
+  .score-row {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .stat {
+    text-align: center;
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    padding: 0.6rem 1.2rem;
+  }
+  .stat-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #94a3b8;
+  }
+  .stat-value {
+    font-size: 1.4rem;
+    font-weight: bold;
+    color: #e2e8f0;
+    font-family: monospace;
+  }
+  .play-btn {
+    padding: 0.5rem 1.5rem;
+    background: #16a34a;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .play-btn:hover {
+    background: #15803d;
+  }
+  .controls-hint {
+    font-size: 0.75rem;
+    color: #64748b;
+    text-align: center;
+  }
+  .demo-label {
+    font-size: 0.7rem;
+    color: #22c55e;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  #gameover-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: rgba(15, 23, 42, 0.96);
+    border-radius: 4px;
+    gap: 0.75rem;
+  }
+  #gameover-overlay h2 {
+    font-size: 1.6rem;
+    font-weight: bold;
+    color: white;
+  }
+  .summary-row {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .summary-stat {
+    text-align: center;
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    padding: 0.5rem 0.9rem;
+    min-width: 72px;
+  }
+  .summary-label {
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: #94a3b8;
+  }
+  .summary-value {
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: #e2e8f0;
+    font-family: monospace;
+  }
+  #dpad {
+    display: none;
+    grid-template-columns: repeat(3, 56px);
+    grid-template-rows: repeat(3, 56px);
+    gap: 4px;
+  }
+  @media (max-width: 640px) {
+    #dpad {
+      display: grid;
+    }
+  }
+  .dpad-btn {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 6px;
+    color: white;
+    font-size: 1.4rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .dpad-btn:active {
+    background: #334155;
+  }
+  .info-section {
+    width: 100%;
+    max-width: 420px;
+    padding: 0 1rem 2rem;
+    margin: 0 auto;
+  }
+  .info-details {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    margin-bottom: 0.75rem;
+    overflow: hidden;
+  }
+  .info-details summary {
+    padding: 0.75rem 1rem;
+    font-weight: 600;
+    color: #e2e8f0;
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    user-select: none;
+  }
+  .info-details summary::-webkit-details-marker {
+    display: none;
+  }
+  .info-details summary::after {
+    content: "+";
+    font-size: 1.1rem;
+    color: #64748b;
+  }
+  .info-details[open] summary::after {
+    content: "−";
+  }
+  .info-body {
+    padding: 0.75rem 1rem 1rem;
+    color: #94a3b8;
+    font-size: 0.875rem;
+    line-height: 1.6;
+    border-top: 1px solid #334155;
+  }
+  .info-body h4 {
+    color: #e2e8f0;
+    font-weight: 600;
+    margin: 0.75rem 0 0.25rem;
+    font-size: 0.875rem;
+  }
+  .info-body h4:first-child {
+    margin-top: 0;
+  }
+  .info-body ul {
+    padding-left: 1.25rem;
+    margin: 0.25rem 0;
+  }
+  .info-body li {
+    margin-bottom: 0.25rem;
+  }
+  .info-body p {
+    margin: 0.25rem 0;
+  }
+</style>
+
+<div id="game-wrapper">
+  <div class="score-row">
+    
+<div class="stat">
+  <div class="stat-label" >Score</div>
+  <div class="stat-value" id="score">0</div>
+</div>
+ 
+<div class="stat">
+  <div class="stat-label" >Level</div>
+  <div class="stat-value" id="level-display">1</div>
+</div>
+ 
+<div class="stat">
+  <div class="stat-label" >Best</div>
+  <div class="stat-value" id="high-score">0</div>
+</div>
+
+  </div>
+  <div class="canvas-wrapper">
+    <canvas id="snake-canvas" width="400" height="400"></canvas>
+    <div id="overlay">
+      <span class="demo-label" id="demo-label">Live Demo</span>
+      <span style="font-size: 3rem">🐍</span>
+      <h2 id="overlay-title">Snake</h2>
+      <p id="overlay-msg" class="controls-hint" style="color: #94a3b8"></p>
+      <button class="play-btn" onclick="startGame()">Play Game</button>
+    </div>
+    <div id="gameover-overlay" style="display: none">
+      <span style="font-size: 2.5rem">💀</span>
+      <h2>Game Over</h2>
+      <div class="summary-row">
+        
+<div class="summary-stat">
+  <div class="summary-label">Score</div>
+  <div class="summary-value" id="go-score">0</div>
+</div>
+ 
+<div class="summary-stat">
+  <div class="summary-label">Best</div>
+  <div class="summary-value" id="go-best">0</div>
+</div>
+ 
+<div class="summary-stat">
+  <div class="summary-label">Level</div>
+  <div class="summary-value" id="go-level">1</div>
+</div>
+
+      </div>
+      <button class="play-btn" onclick="startGame()">New Game</button>
+    </div>
+  </div>
+  <div id="dpad">
+    <div></div>
+    <button class="dpad-btn" data-dir="0,-1">▲</button>
+    <div></div>
+    <button class="dpad-btn" data-dir="-1,0">◀</button>
+    <div></div>
+    <button class="dpad-btn" data-dir="1,0">▶</button>
+    <div></div>
+    <button class="dpad-btn" data-dir="0,1">▼</button>
+    <div></div>
+  </div>
+  <p class="controls-hint">Arrow keys or WASD to move</p>
+</div>
+
+<div class="info-section">
+  
+<details class="info-details">
+  <summary>How to Play</summary>
+  <div class="info-body">
+  <h4>Goal</h4>
+  <p>
+    Guide the snake to eat the red food dots. Each food makes the snake grow longer. Avoid hitting the walls or your own
+    tail!
+  </p>
+  <h4>Controls</h4>
+  <ul>
+    <li><strong>Arrow keys</strong> or <strong>WASD</strong> — change direction (desktop)</li>
+    <li><strong>D-pad buttons</strong> — tap to change direction (mobile)</li>
+  </ul>
+  <h4>Levels &amp; Speed</h4>
+  <ul>
+    <li>Starts at <strong>Level 1</strong> with a comfortable pace</li>
+    <li>Every <strong>5 foods eaten</strong> = level up &amp; speed increase</li>
+    <li>Maximum speed is reached at Level 8</li>
+  </ul>
+  <h4>Scoring</h4>
+  <ul>
+    <li>Each food eaten = <strong>10 points</strong></li>
+    <li>Your best score is saved in your browser</li>
+  </ul>
+  </div>
+</details>
+ 
+<details class="info-details">
+  <summary>FAQ</summary>
+  <div class="info-body">
+  <h4>What is the Live Demo?</h4>
+  <p>Before you start, an AI snake plays automatically in the background so you can see how the game works.</p>
+  <h4>Is my best score saved?</h4>
+  <p>Yes — saved automatically in your browser's local storage, persisting between sessions on the same device.</p>
+  <h4>Can I play on mobile?</h4>
+  <p>Yes! The D-pad appears automatically on small screens. Tap the direction buttons to move.</p>
+  </div>
+</details>
+
+</div>
+
+<script>
+  function launchConfetti() {
+    const canvas = document.createElement("canvas");
+    canvas.style.cssText = "position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:9999";
+    document.body.appendChild(canvas);
+    const ctx = canvas.getContext("2d");
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    const colors = ["#7c3aed", "#db2777", "#f59e0b", "#10b981", "#3b82f6", "#ef4444", "#fbbf24"];
+    const pieces = Array.from({ length: 80 }, () => ({
+      x: Math.random() * canvas.width,
+      y: -10 - Math.random() * 40,
+      r: Math.random() * 6 + 3,
+      color: colors[Math.floor(Math.random() * colors.length)],
+      vx: (Math.random() - 0.5) * 5,
+      vy: Math.random() * 4 + 2,
+      angle: Math.random() * Math.PI * 2,
+      va: (Math.random() - 0.5) * 0.15,
+    }));
+    const start = performance.now();
+    function draw(now) {
+      if (now - start > 1500) {
+        canvas.remove();
+        return;
+      }
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      pieces.forEach((p) => {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.angle += p.va;
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.angle);
+        ctx.fillStyle = p.color;
+        ctx.fillRect(-p.r, -p.r / 2, p.r * 2, p.r);
+        ctx.restore();
+      });
+      requestAnimationFrame(draw);
+    }
+    requestAnimationFrame(draw);
+  }
+
+  const CELL = 20,
+    COLS = 20,
+    ROWS = 20;
+  const canvas = document.getElementById("snake-canvas");
+  const ctx = canvas.getContext("2d");
+  const STORAGE_KEY = "mini-snake-best";
+
+  let snake,
+    dir,
+    nextDir,
+    food,
+    score,
+    foodEaten,
+    level,
+    highScore = parseInt(localStorage.getItem(STORAGE_KEY) || "0", 10),
+    running = false,
+    holding = false,
+    interval,
+    demoInterval;
+
+  document.getElementById("high-score").textContent = highScore;
+
+  function getSpeed(lvl) {
+    return Math.max(100, 450 - (lvl - 1) * 25);
+  }
+  function getFastSpeed(lvl) {
+    return Math.max(70, Math.floor(getSpeed(lvl) * 0.4));
+  }
+  function applySpeed() {
+    if (!running) return;
+    clearInterval(interval);
+    interval = setInterval(tick, holding ? getFastSpeed(level) : getSpeed(level));
+  }
+  function startHold() {
+    if (holding || !running) return;
+    holding = true;
+    applySpeed();
+  }
+  function stopHold() {
+    if (!holding) return;
+    holding = false;
+    applySpeed();
+  }
+  function rnd(n) {
+    return Math.floor(Math.random() * n);
+  }
+
+  function spawnFood() {
+    let pos;
+    do {
+      pos = { x: rnd(COLS), y: rnd(ROWS) };
+    } while (snake.some((s) => s.x === pos.x && s.y === pos.y));
+    food = pos;
+  }
+
+  // Simple greedy AI for demo mode
+  function demoAI() {
+    const head = snake[0];
+    const dx = food.x - head.x,
+      dy = food.y - head.y;
+    const preferred = [];
+    if (Math.abs(dx) >= Math.abs(dy)) {
+      if (dx > 0) preferred.push({ x: 1, y: 0 });
+      else if (dx < 0) preferred.push({ x: -1, y: 0 });
+      if (dy > 0) preferred.push({ x: 0, y: 1 });
+      else if (dy < 0) preferred.push({ x: 0, y: -1 });
+    } else {
+      if (dy > 0) preferred.push({ x: 0, y: 1 });
+      else if (dy < 0) preferred.push({ x: 0, y: -1 });
+      if (dx > 0) preferred.push({ x: 1, y: 0 });
+      else if (dx < 0) preferred.push({ x: -1, y: 0 });
+    }
+    const all = [
+      { x: 1, y: 0 },
+      { x: -1, y: 0 },
+      { x: 0, y: 1 },
+      { x: 0, y: -1 },
+    ];
+    for (const d of [...preferred, ...all]) {
+      if (d.x === -dir.x && d.y === -dir.y) continue;
+      const nx = head.x + d.x,
+        ny = head.y + d.y;
+      if (nx < 0 || nx >= COLS || ny < 0 || ny >= ROWS) continue;
+      if (snake.some((s) => s.x === nx && s.y === ny)) continue;
+      nextDir = d;
+      return;
+    }
+  }
+
+  function initDemoSnake() {
+    snake = [
+      { x: 10, y: 10 },
+      { x: 9, y: 10 },
+      { x: 8, y: 10 },
+    ];
+    dir = { x: 1, y: 0 };
+    nextDir = { x: 1, y: 0 };
+    spawnFood();
+  }
+
+  function demoTick() {
+    demoAI();
+    dir = nextDir;
+    const head = { x: snake[0].x + dir.x, y: snake[0].y + dir.y };
+    if (
+      head.x < 0 ||
+      head.x >= COLS ||
+      head.y < 0 ||
+      head.y >= ROWS ||
+      snake.some((s) => s.x === head.x && s.y === head.y)
+    ) {
+      initDemoSnake(); // restart demo on death
+      return;
+    }
+    snake.unshift(head);
+    if (head.x === food.x && head.y === food.y) {
+      spawnFood();
+    } else {
+      snake.pop();
+    }
+    draw();
+  }
+
+  function startDemo() {
+    clearInterval(demoInterval);
+    initDemoSnake();
+    draw();
+    demoInterval = setInterval(demoTick, 150);
+  }
+
+  function startGame() {
+    clearInterval(demoInterval);
+    document.getElementById("demo-label").style.display = "none";
+    document.getElementById("gameover-overlay").style.display = "none";
+    snake = [
+      { x: 10, y: 10 },
+      { x: 9, y: 10 },
+      { x: 8, y: 10 },
+    ];
+    dir = { x: 1, y: 0 };
+    nextDir = { x: 1, y: 0 };
+    score = 0;
+    foodEaten = 0;
+    level = 1;
+    document.getElementById("score").textContent = "0";
+    document.getElementById("level-display").textContent = "1";
+    spawnFood();
+    running = true;
+    holding = false;
+    document.getElementById("overlay").style.display = "none";
+    clearInterval(interval);
+    interval = setInterval(tick, getSpeed(1));
+  }
+
+  function setDir(x, y) {
+    if (x !== 0 && dir.x !== 0) return;
+    if (y !== 0 && dir.y !== 0) return;
+    nextDir = { x, y };
+  }
+
+  function tick() {
+    dir = nextDir;
+    const head = { x: snake[0].x + dir.x, y: snake[0].y + dir.y };
+    if (
+      head.x < 0 ||
+      head.x >= COLS ||
+      head.y < 0 ||
+      head.y >= ROWS ||
+      snake.some((s) => s.x === head.x && s.y === head.y)
+    ) {
+      endGame();
+      return;
+    }
+    snake.unshift(head);
+    if (head.x === food.x && head.y === food.y) {
+      score += 10;
+      foodEaten++;
+      document.getElementById("score").textContent = score;
+      const newLevel = Math.floor(foodEaten / 5) + 1;
+      if (newLevel !== level) {
+        level = newLevel;
+        document.getElementById("level-display").textContent = level;
+        clearInterval(interval);
+        launchConfetti();
+        setTimeout(() => {
+          if (running) applySpeed();
+        }, 1500);
+      }
+      spawnFood();
+    } else {
+      snake.pop();
+    }
+    draw();
+  }
+
+  function draw() {
+    ctx.fillStyle = "#0f172a";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.strokeStyle = "#1e293b";
+    ctx.lineWidth = 0.5;
+    for (let r = 0; r < ROWS; r++) for (let c = 0; c < COLS; c++) ctx.strokeRect(c * CELL, r * CELL, CELL, CELL);
+    snake.forEach((s, i) => {
+      ctx.fillStyle = i === 0 ? "#22c55e" : "#16a34a";
+      ctx.beginPath();
+      ctx.roundRect(s.x * CELL + 1, s.y * CELL + 1, CELL - 2, CELL - 2, 3);
+      ctx.fill();
+    });
+    ctx.fillStyle = "#f43f5e";
+    ctx.beginPath();
+    ctx.arc(food.x * CELL + CELL / 2, food.y * CELL + CELL / 2, CELL / 2 - 2, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  function endGame() {
+    running = false;
+    holding = false;
+    clearInterval(interval);
+    if (score > highScore) {
+      highScore = score;
+      localStorage.setItem(STORAGE_KEY, highScore);
+      document.getElementById("high-score").textContent = highScore;
+      launchConfetti();
+    }
+    document.getElementById("go-score").textContent = score;
+    document.getElementById("go-best").textContent = highScore;
+    document.getElementById("go-level").textContent = level;
+    document.getElementById("overlay").style.display = "none";
+    document.getElementById("gameover-overlay").style.display = "flex";
+  }
+
+  const KEY_MAP = {
+    ArrowUp: [0, -1],
+    ArrowDown: [0, 1],
+    ArrowLeft: [-1, 0],
+    ArrowRight: [1, 0],
+    w: [0, -1],
+    s: [0, 1],
+    a: [-1, 0],
+    d: [1, 0],
+  };
+
+  document.addEventListener("keydown", (e) => {
+    if (!KEY_MAP[e.key]) return;
+    e.preventDefault();
+    if (!e.repeat) {
+      setDir(...KEY_MAP[e.key]);
+      startHold();
+    }
+  });
+
+  document.addEventListener("keyup", (e) => {
+    if (KEY_MAP[e.key]) stopHold();
+  });
+
+  document.querySelectorAll(".dpad-btn").forEach((btn) => {
+    const [x, y] = btn.dataset.dir.split(",").map(Number);
+    btn.addEventListener(
+      "touchstart",
+      (e) => {
+        e.preventDefault();
+        setDir(x, y);
+        startHold();
+      },
+      { passive: false }
+    );
+    btn.addEventListener("touchend", stopHold);
+    btn.addEventListener("touchcancel", stopHold);
+    btn.addEventListener("mousedown", () => {
+      setDir(x, y);
+      startHold();
+    });
+    btn.addEventListener("mouseup", stopHold);
+    btn.addEventListener("mouseleave", stopHold);
+  });
+
+  // Start demo immediately
+  startDemo();
+</script>
+</div>
+
+    <section class="border-t border-slate-800 py-6">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6">
+    <div class="flex items-center gap-3 mb-4">
+      <span class="text-xs font-semibold text-slate-500 uppercase tracking-wider">More Games</span>
+      <div class="flex-1 h-px bg-slate-800"></div>
+      <a href="../../#games" class="text-xs text-violet-400 hover:text-violet-300 transition-colors">View all →</a>
+    </div>
+
+    <div class="flex flex-wrap gap-2">
+       
+      <a
+        href="../../games/2048/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🔢</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >2048</span
+        >
+      </a>
+        
+      <a
+        href="../../games/blackjack/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🃏</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Blackjack</span
+        >
+      </a>
+        
+      <a
+        href="../../games/bolt-sort/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🔩</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Bolt Sort</span
+        >
+      </a>
+        
+      <a
+        href="../../games/breakout/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🧱</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Breakout</span
+        >
+      </a>
+        
+      <a
+        href="../../games/checkers/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🔴</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Checkers</span
+        >
+      </a>
+        
+      <a
+        href="../../games/color-block/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🟦</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Color Block</span
+        >
+      </a>
+        
+      <a
+        href="../../games/color-connect/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🔗</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Color Connect</span
+        >
+      </a>
+        
+      <a
+        href="../../games/connect-four/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🟡</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Connect Four</span
+        >
+      </a>
+        
+      <a
+        href="../../games/domino/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🎲</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Domino</span
+        >
+      </a>
+        
+      <a
+        href="../../games/flappy-bird/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🐦</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Flappy Bird</span
+        >
+      </a>
+        
+      <a
+        href="../../games/freecell/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🂠</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >FreeCell</span
+        >
+      </a>
+        
+      <a
+        href="../../games/hangman/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🪢</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Hangman</span
+        >
+      </a>
+        
+      <a
+        href="../../games/mancala/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🪨</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Mancala</span
+        >
+      </a>
+        
+      <a
+        href="../../games/match-three/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🍬</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Match Three</span
+        >
+      </a>
+        
+      <a
+        href="../../games/memory-match/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🧠</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Memory Match</span
+        >
+      </a>
+        
+      <a
+        href="../../games/minesweeper/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">💣</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Minesweeper</span
+        >
+      </a>
+        
+      <a
+        href="../../games/number-merge/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🔀</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Number Merge</span
+        >
+      </a>
+        
+      <a
+        href="../../games/onet-connect/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🀄</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Onet Connect Classic</span
+        >
+      </a>
+        
+      <a
+        href="../../games/piano-tiles/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🎹</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Piano Tiles</span
+        >
+      </a>
+        
+      <a
+        href="../../games/pong/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🏓</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Pong</span
+        >
+      </a>
+        
+      <a
+        href="../../games/reversi/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">⚫</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Reversi</span
+        >
+      </a>
+        
+      <a
+        href="../../games/solitaire/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">♠️</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Solitaire</span
+        >
+      </a>
+        
+      <a
+        href="../../games/sliding-puzzle/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🔲</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Sliding Puzzle</span
+        >
+      </a>
+          
+      <a
+        href="../../games/space-invaders/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">👾</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Space Invaders</span
+        >
+      </a>
+        
+      <a
+        href="../../games/stack/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">📦</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Stack</span
+        >
+      </a>
+        
+      <a
+        href="../../games/sudoku/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🧩</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Sudoku</span
+        >
+      </a>
+        
+      <a
+        href="../../games/tetris/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🟥</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Tetris</span
+        >
+      </a>
+        
+      <a
+        href="../../games/tictactoe/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">⭕</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Tic-Tac-Toe</span
+        >
+      </a>
+        
+      <a
+        href="../../games/whack-a-mole/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🦔</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Whack-a-Mole</span
+        >
+      </a>
+        
+      <a
+        href="../../games/word-search/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🔤</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Word Search</span
+        >
+      </a>
+        
+      <a
+        href="../../games/wordle/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🟩</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Wordle</span
+        >
+      </a>
+        
+      <a
+        href="../../games/yahtzee/"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-800 border border-slate-700 hover:border-violet-500/50 hover:bg-slate-700 transition-all duration-150 group"
+      >
+        <span class="text-sm leading-none">🎯</span>
+        <span class="text-xs font-medium text-slate-300 group-hover:text-white transition-colors whitespace-nowrap"
+          >Yahtzee</span
+        >
+      </a>
+       
+    </div>
+  </div>
+</section>
+ <footer class="border-t border-slate-800 pt-12 pb-8 mt-20">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10 mb-10">
+      <!-- Brand -->
+      <div class="lg:col-span-1">
+        <div class="flex items-center gap-2 mb-3">
+          <span class="text-2xl">🎮</span>
+          <span class="font-bold text-white">Mini Games</span>
+        </div>
+        <p class="text-sm text-slate-400 leading-relaxed">
+          Free browser-based games.<br />No login. No downloads.<br />Play instantly.
+        </p>
+      </div>
+
+      <!-- Games -->
+      <div>
+        <h3 class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-4">Games</h3>
+        <ul class="space-y-1">
+          <li><a href="../../#games" class="text-sm text-slate-400 hover:text-white transition-colors">All Games</a></li>
+          <li><a href="../../#arcade" class="text-sm text-slate-400 hover:text-white transition-colors">Arcade</a></li>
+          <li><a href="../../#puzzle" class="text-sm text-slate-400 hover:text-white transition-colors">Puzzle</a></li>
+          <li><a href="../../#board" class="text-sm text-slate-400 hover:text-white transition-colors">Board</a></li>
+          <li><a href="../../#word" class="text-sm text-slate-400 hover:text-white transition-colors">Word</a></li>
+        </ul>
+      </div>
+
+      <!-- Other Projects -->
+      <div>
+        <h3 class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-4">Other Projects</h3>
+        <ul class="space-y-1">
+          <li>
+            <a
+              href="https://tools.mazipan.space/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-sm text-slate-400 hover:text-white transition-colors"
+            >
+              HTML Tools
+            </a>
+          </li>
+          <li>
+            <a
+              href="https://www.baca-quran.id/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-sm text-slate-400 hover:text-white transition-colors"
+            >
+              Baca Quran
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Site -->
+      <div>
+        <h3 class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-4">Site</h3>
+        <ul class="space-y-1">
+          <li>
+            <a
+              href="https://github.com/mazipan/mini-games"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-sm text-slate-400 hover:text-white transition-colors"
+              >GitHub</a
+            >
+          </li>
+          <li>
+            <a href="../../design-system/" class="text-sm text-slate-400 hover:text-white transition-colors"
+              >Design System</a
+            >
+          </li>
+          <li>
+            <a
+              href="https://mazipan.space"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-sm text-slate-400 hover:text-white transition-colors"
+              >mazipan</a
+            >
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <!-- Bottom bar -->
+    <div class="border-t border-slate-800 pt-6 text-center text-xs text-slate-600">
+      © 2026 mazipan · Free to play, forever.
+    </div>
+  </div>
+</footer>
+
+  </body>
+</html>
