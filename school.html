@@ -1,1 +1,53 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Arcadia School Edition — Free Games</title><link rel="stylesheet" href="assets/style.css"><style>body{background:#10121d}.school-wrap{max-width:1100px;margin:0 auto;padding:35px 18px}.school-hero{padding:30px 0 24px}.school-hero h1{font-size:clamp(2rem,5vw,3.5rem);margin:10px 0}.school-hero p{max-width:620px;line-height:1.6;color:#b8bdcf}.school-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px}.school-card{border:1px solid #343848;border-radius:18px;padding:20px;background:#1b1e2b;text-decoration:none;color:white;display:block}.school-card:hover,.school-card:focus-visible{border-color:#8cf0be}.school-icon{font-size:48px;display:block;margin-bottom:16px}.school-card span{font-size:12px;color:#aeb8ce}.school-card h2{font-size:20px;margin:6px 0}.school-card p{line-height:1.45;color:#c0c6d5;font-size:14px}.school-note{color:#aeb8ce;margin-top:30px;font-size:13px}input{width:100%;max-width:400px;padding:14px;background:#222637;border:1px solid #42475b;color:white;border-radius:12px;margin:18px 0}a{color:inherit}</style></head><body><main class="school-wrap"><div class="school-hero"><span class="eyebrow">ARCADIA / SCHOOL EDITION</span><h1>A little break. A lot of play.</h1><p>A lighter, free version of Arcadia designed for devices that support browser games. Play responsibly and follow your school's device and network policies.</p><input type="search" id="school-search" placeholder="Search free games…" aria-label="Search games"></div><section class="school-grid" id="school-games" aria-live="polite"></section><p id="school-error" role="status"></p><p class="school-note">Independent games, same library as Arcadia. No account required. Ads and payments are not included in this edition. Games launch on the main hosted domain.</p></main><script src="assets/catalog.js"></script><script>const grid=document.getElementById('school-games');const search=document.getElementById('school-search');let games=[];function draw(){const q=search.value.toLowerCase().trim();const visible=games.filter(g=>!g.premium&&(g.title+' '+g.description+' '+g.category).toLowerCase().includes(q));grid.replaceChildren(...visible.map(g=>{const a=document.createElement('a');a.className='school-card';a.href='game.html?id='+encodeURIComponent(g.id);a.target='_blank';a.rel='noopener noreferrer';const icon=document.createElement('strong');icon.className='school-icon';icon.textContent=g.emoji||'🎮';const c=document.createElement('span');c.textContent=g.category;const h=document.createElement('h2');h.textContent=g.title;const p=document.createElement('p');p.textContent=g.description;a.append(icon,c,h,p);return a}));document.getElementById('school-error').textContent=visible.length?'':'No games match your search.'}search.addEventListener('input',draw);Arcadia.published().then(data=>{games=data.filter(Arcadia.validGame);draw()}).catch(()=>document.getElementById('school-error').textContent='Games are temporarily unavailable.');</script></body></html>
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#10121d"><title>Arcadia | School Edition</title><meta name="description" content="Play original free browser games in Arcadia School Edition, without leaving the page."><link rel="stylesheet" href="assets/style.css">
+<style>
+body{background:#10121d}.school-wrap{max-width:1100px;margin:0 auto;padding:25px 18px 50px;min-height:100vh}
+.school-top{display:flex;justify-content:space-between;align-items:center;gap:12px;border-bottom:1px solid #343848;padding-bottom:17px;flex-wrap:wrap}.school-logo{font-weight:900;letter-spacing:2px;font-size:23px;color:#fff}.school-label{font-size:11px;color:#8cf0be;font-weight:800;letter-spacing:1.5px}
+.school-hero{padding:32px 0 22px}.school-hero h1{font-size:clamp(2rem,5vw,3.4rem);line-height:1.1;margin:10px 0}.school-hero p{max-width:650px;line-height:1.6;color:#b8bdcf}.school-search{width:100%;max-width:440px;padding:14px;background:#222637;border:1px solid #42475b;color:white;border-radius:12px;margin:15px 0 5px}
+.school-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px}.school-card{border:1px solid #343848;border-radius:18px;padding:20px;background:#1b1e2b;text-decoration:none;color:white;display:block;transition:border-color .18s,transform .18s}.school-card:hover,.school-card:focus-visible{border-color:#8cf0be;transform:translateY(-2px)}.school-icon{font-size:42px;display:block;margin-bottom:10px}.school-card .category{font-size:12px;color:#aeb8ce}.school-card h2{font-size:20px;margin:6px 0}.school-card p{line-height:1.5;color:#c0c6d5;font-size:14px;margin:0}.school-note{color:#aeb8ce;margin-top:32px;font-size:13px}
+.school-player{margin-top:25px}.school-player-head{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap}.school-player-head h1{margin:12px 0 6px;font-size:clamp(25px,4vw,38px)}.school-actions{display:flex;gap:9px;align-items:center;flex-wrap:wrap}.school-btn{display:inline-flex;align-items:center;justify-content:center;min-height:42px;padding:10px 15px;background:#252b40;color:#fff;border:1px solid #4b5368;border-radius:12px;text-decoration:none}.school-btn:hover,.school-btn:focus-visible{border-color:#8cf0be}.school-game-stage{padding:24px 10px;min-height:460px;background:#191c2a;border:1px solid #343848;border-radius:18px;margin-top:18px;display:grid;place-items:center}.school-player-desc{color:#b8bdcf;line-height:1.5}.school-game-instructions{color:#c0c6d5;margin:18px 0}.school-empty{color:#ced3df;margin:20px 0}.school-embed{display:block;width:100%;min-height:500px;border:0}.ttt-grid{display:grid;grid-template-columns:repeat(3,75px);gap:9px;justify-content:center;margin:10px auto}.ttt-cell{width:75px;height:75px;background:#292f45;color:#ecf9f3;border:1px solid #65708a;border-radius:12px;font-size:38px}.ttt-cell:disabled{cursor:default}@media(max-width:550px){.school-game-stage{min-height:350px;padding:12px 5px}.school-player-head{align-items:flex-start}}
+</style></head><body><main class="school-wrap">
+<header class="school-top"><a class="school-logo" href="school.html" aria-label="Arcadia School Edition home">✳ ARCADIA<span class="brand-dot">.</span></a><span class="school-label">SCHOOL EDITION · FREE TO PLAY</span></header>
+<section id="school-library"><div class="school-hero"><span class="eyebrow">YOUR GAME LIBRARY</span><h1>A little break.<br>A lot of play.</h1><p>Quick, original browser games. Search and play right here, without opening another tab. Follow your school's device and network rules.</p><input class="school-search" type="search" id="school-search" placeholder="Find your next game…" aria-label="Search free games"></div><section class="school-grid" id="school-games" aria-label="Available games" aria-live="polite"></section><p class="school-empty" id="school-error" role="status"></p></section>
+<section id="school-player" class="school-player" hidden><div class="school-player-head"><div><span class="eyebrow">NOW PLAYING · SCHOOL EDITION</span><h1 id="game-title">Loading game…</h1><p class="school-player-desc" id="game-desc"></p></div><div class="school-actions"><a class="school-btn" href="school.html" id="back-to-games">← All games</a><button class="school-btn" id="restart" type="button">↻ Restart</button></div></div><div class="school-game-stage" id="game-stage" aria-label="Game area"></div><p class="school-game-instructions" id="instructions"></p><a class="school-btn" href="school.html">← Back to School Edition</a></section>
+<p class="school-note">Arcadia School Edition · No sign-in required · Games run within this edition. External games, if added later, must allow embedding.</p></main>
+<script src="assets/catalog.js"></script><script>
+(function(){
+"use strict";
+const params=new URLSearchParams(window.location.search),gameId=params.get("game");
+const library=document.getElementById("school-library"),player=document.getElementById("school-player");
+const grid=document.getElementById("school-games"),search=document.getElementById("school-search");
+function showError(msg){document.getElementById("school-error").textContent=msg}
+Arcadia.published().then(data=>{
+const games=data.filter(g=>Arcadia.validGame(g)&&!g.premium);
+if(!gameId){
+function draw(){
+const q=search.value.trim().toLowerCase(),visible=games.filter(g=>(g.title+" "+g.description+" "+g.category).toLowerCase().includes(q));
+grid.replaceChildren(...visible.map(g=>{
+const a=document.createElement("a");a.className="school-card";a.href="school.html?game="+encodeURIComponent(g.id); // same embedded frame, never a new tab
+const emoji=document.createElement("span");emoji.className="school-icon";emoji.textContent=g.emoji||"🎮";
+const cat=document.createElement("span");cat.className="category";cat.textContent=g.category;
+const title=document.createElement("h2");title.textContent=g.title;
+const desc=document.createElement("p");desc.textContent=g.description;
+a.append(emoji,cat,title,desc);return a;
+}));
+showError(visible.length?"":"No games match your search.");
+}
+search.addEventListener("input",draw);draw();return;
+}
+library.hidden=true;player.hidden=false;
+const game=games.find(g=>g.id===gameId),stage=document.getElementById("game-stage");
+if(!game){document.getElementById("game-title").textContent="Game not found";stage.textContent="This game isn't available in School Edition.";return}
+document.title=game.title+" | Arcadia School Edition";
+document.getElementById("game-title").textContent=game.title;
+document.getElementById("game-desc").textContent=game.description;
+document.getElementById("restart").addEventListener("click",()=>window.location.reload());
+if(game.type==="built-in"){
+const s=document.createElement("script");s.src=encodeURIComponent(game.id)+".js";
+s.onerror=()=>{stage.textContent="Game file unavailable."};document.body.appendChild(s);
+}else if(game.type==="external"&&game.url){
+const f=document.createElement("iframe");f.src=game.url;f.title=game.title;f.className="school-embed";f.sandbox="allow-scripts allow-pointer-lock";stage.appendChild(f);
+}else{stage.textContent="Game not available."}
+}).catch(()=>{if(gameId){library.hidden=true;player.hidden=false;document.getElementById("game-stage").textContent="Games are temporarily unavailable."}else showError("Games are temporarily unavailable.")});
+})();
+</script></body></html>
