@@ -145,5 +145,49 @@
     "type": "hosted",
     "path": "games/afterglow-arcade/index.html",
     "featured": true
+  },
+  {
+    "id": "funhtml-pacman",
+    "title": "Pacman",
+    "category": "Arcade",
+    "description": "A classic maze-chase game embedded from Fun HTML5 Games.",
+    "emoji": "🟡",
+    "url": "https://funhtml5games.com/pacman/index.html",
+    "accent": "#a68dff",
+    "type": "external",
+    "featured": false
+  },
+  {
+    "id": "funhtml-2048",
+    "title": "2048 Classic",
+    "category": "Puzzle",
+    "description": "Slide tiles and combine numbers toward 2048.",
+    "emoji": "🔢",
+    "url": "https://funhtml5games.com/2048/index.html",
+    "accent": "#a68dff",
+    "type": "external",
+    "featured": false
+  },
+  {
+    "id": "funhtml-jelly",
+    "title": "Jelly Blocks",
+    "category": "Puzzle",
+    "description": "Connect matching colored jelly blocks.",
+    "emoji": "🟦",
+    "url": "https://funhtml5games.com/jelly/index.html",
+    "accent": "#a68dff",
+    "type": "external",
+    "featured": false
+  },
+  {
+    "id": "funhtml-tappyplanes",
+    "title": "Tappy Planes",
+    "category": "Arcade",
+    "description": "Fly through a fast-moving obstacle course.",
+    "emoji": "✈️",
+    "url": "https://funhtml5games.com/tappyplanes/index.html",
+    "accent": "#a68dff",
+    "type": "external",
+    "featured": false
   }
 ]
