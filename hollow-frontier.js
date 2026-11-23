@@ -6,8 +6,8 @@
 const stage=document.getElementById('game-stage');
 if(!stage)return;
 const VERSION=1, STORAGE='hollow-frontier-worlds-v1', CW=960,CH=820, W=2400,H=1800, DAY_SECONDS=180;
-const COSTS={pulse:{wood:5,stone:3,scrap:2},campfire:{wood:4,stone:3},generator:{wood:8,stone:5,scrap:2},collector:{wood:6,stone:2,scrap:4},lamp:{stone:2,scrap:3},wall:{wood:4,stone:2}};
-const LABELS={pulse:'Pulse tool',campfire:'Campfire',generator:'Generator',collector:'Collector',lamp:'Floodlight',wall:'Barricade'};
+const COSTS={scanner:{wood:5,stone:3,scrap:2},campfire:{wood:4,stone:3},generator:{wood:8,stone:5,scrap:2},collector:{wood:6,stone:2,scrap:4},lamp:{stone:2,scrap:3},wall:{wood:4,stone:2}};
+const LABELS={scanner:'Signal scanner',campfire:'Campfire',generator:'Generator',collector:'Collector',lamp:'Floodlight',wall:'Barricade'};
 const ICONS={wood:'🌲',stone:'🪨',scrap:'⚙',berry:'🫐',lumen:'✧'};
 const css=`
 #hf{color:#e7f2ec;width:min(1120px,100%);font-family:system-ui,-apple-system,Segoe UI,sans-serif;line-height:1.35;--hf-accent:#a8ffba;--hf-edge:#32534b}
@@ -78,7 +78,7 @@ function start(index){slot=index;current=worlds[index]||newWorld(index);if(!Arra
  worlds[index]=current;enemies=[];spawnTimer=0;saveTimer=0;buildMode=null;keys.clear();renderGame();lastFrame=performance.now();cancelAnimationFrame(raf);raf=requestAnimationFrame(frame);
  if(!current.chapter)showScene(0);else alertUser('Welcome back to '+current.name);
 }
-function renderGame(){root.innerHTML=`<div class="hf-shell"><div class="hf-top"><div class="hf-title">HOLLOW FRONTIER <small>ARCADIA EDITION · LUCION GAMES</small></div><div class="hf-status"><span class="hf-chip" id="hf-day">DAY 1</span><span class="hf-chip" id="hf-phase">DAYLIGHT</span><button class="hf-btn" data-action="save">Save</button><button class="hf-btn" data-action="menu">Worlds</button></div></div><div class="hf-game"><div class="hf-viewport" id="hf-viewport"><canvas id="hf-canvas" width="${CW}" height="${CH}" tabindex="0" aria-label="Hollow Frontier game world. Move with WASD or arrow keys, E to gather, Space to use pulse tool."></canvas><div class="hf-legend" id="hf-legend">✦ REACH THE RELAY TOWER</div><div class="hf-toast" id="hf-toast" hidden></div><div class="hf-message" id="hf-message"></div><div class="hf-touch"><button type="button" class="up" data-key="arrowup" aria-label="Move up">▲</button><button type="button" class="left" data-key="arrowleft" aria-label="Move left">◀</button><button type="button" class="down" data-key="arrowdown" aria-label="Move down">▼</button><button type="button" class="right" data-key="arrowright" aria-label="Move right">▶</button></div><div class="hf-touchact"><button type="button" data-action="gather">GATHER</button><button type="button" data-action="attack">PULSE</button></div></div><aside class="hf-sidebar"><div class="hf-panel"><h3>Survival</h3><div class="hf-stat"><span>Health</span><span id="hf-hp">100</span></div><div class="hf-meter"><i id="hf-hp-meter" style="width:100%"></i></div><div class="hf-stat"><span>Hunger</span><span id="hf-hunger">100</span></div><div class="hf-meter"><i id="hf-hunger-meter" style="width:100%;background:#e9c781"></i></div><div class="hf-stat"><span>Stamina</span><span id="hf-stamina">100</span></div><div class="hf-meter"><i id="hf-stamina-meter" style="width:100%;background:#83bfe3"></i></div></div><div class="hf-panel"><h3>Backpack</h3><div class="hf-items" id="hf-items"></div><div class="hf-actions"><button class="hf-btn" data-action="eat">Eat berries</button><button class="hf-btn" data-action="pulsecraft">Craft pulse</button></div></div><div class="hf-panel"><h3>Build near your character</h3><div class="hf-build" id="hf-build"></div></div><div class="hf-panel"><h3>Engineering &amp; story</h3><div id="hf-power" class="hf-stat"></div><div class="hf-actions"><button class="hf-btn" data-action="fuel">Fuel generator</button><button class="hf-btn" data-action="journal">Journal</button><button class="hf-btn" data-action="expedition">Expedition</button></div><p class="hf-prompt" id="hf-prompt"></p></div></aside></div><div class="hf-footer"><span>WASD / arrows · E gather · Space pulse · Shift sprint · Click to place · J journal</span><span id="hf-save-status">Local autosave active</span></div></div>`;
+function renderGame(){root.innerHTML=`<div class="hf-shell"><div class="hf-top"><div class="hf-title">HOLLOW FRONTIER <small>ARCADIA EDITION · LUCION GAMES</small></div><div class="hf-status"><span class="hf-chip" id="hf-day">DAY 1</span><span class="hf-chip" id="hf-phase">DAYLIGHT</span><button class="hf-btn" data-action="save">Save</button><button class="hf-btn" data-action="menu">Worlds</button></div></div><div class="hf-game"><div class="hf-viewport" id="hf-viewport"><canvas id="hf-canvas" width="${CW}" height="${CH}" tabindex="0" aria-label="Hollow Frontier game world. Move with WASD or arrow keys, E to gather, Space to scan nearby resources."></canvas><div class="hf-legend" id="hf-legend">✦ REACH THE RELAY TOWER</div><div class="hf-toast" id="hf-toast" hidden></div><div class="hf-message" id="hf-message"></div><div class="hf-touch"><button type="button" class="up" data-key="arrowup" aria-label="Move up">▲</button><button type="button" class="left" data-key="arrowleft" aria-label="Move left">◀</button><button type="button" class="down" data-key="arrowdown" aria-label="Move down">▼</button><button type="button" class="right" data-key="arrowright" aria-label="Move right">▶</button></div><div class="hf-touchact"><button type="button" data-action="gather">GATHER</button><button type="button" data-action="scan">SCAN</button></div></div><aside class="hf-sidebar"><div class="hf-panel"><h3>Survival</h3><div class="hf-stat"><span>Health</span><span id="hf-hp">100</span></div><div class="hf-meter"><i id="hf-hp-meter" style="width:100%"></i></div><div class="hf-stat"><span>Hunger</span><span id="hf-hunger">100</span></div><div class="hf-meter"><i id="hf-hunger-meter" style="width:100%;background:#e9c781"></i></div><div class="hf-stat"><span>Stamina</span><span id="hf-stamina">100</span></div><div class="hf-meter"><i id="hf-stamina-meter" style="width:100%;background:#83bfe3"></i></div></div><div class="hf-panel"><h3>Backpack</h3><div class="hf-items" id="hf-items"></div><div class="hf-actions"><button class="hf-btn" data-action="eat">Eat berries</button><button class="hf-btn" data-action="scannercraft">Craft scanner</button></div></div><div class="hf-panel"><h3>Build near your character</h3><div class="hf-build" id="hf-build"></div></div><div class="hf-panel"><h3>Engineering &amp; story</h3><div id="hf-power" class="hf-stat"></div><div class="hf-actions"><button class="hf-btn" data-action="fuel">Fuel generator</button><button class="hf-btn" data-action="journal">Journal</button><button class="hf-btn" data-action="expedition">Expedition</button></div><p class="hf-prompt" id="hf-prompt"></p></div></aside></div><div class="hf-footer"><span>WASD / arrows · E gather · Space scan · Shift sprint · Click to place · J journal</span><span id="hf-save-status">Local autosave active</span></div></div>`;
  canvas=root.querySelector('#hf-canvas');ctx=canvas.getContext('2d');ctx.imageSmoothingEnabled=true;
  const build=root.querySelector('#hf-build');for(const k of ['campfire','generator','collector','lamp','wall']){const b=document.createElement('button');b.className='hf-btn';b.type='button';b.dataset.action='build';b.dataset.kind=k;b.innerHTML=escape(LABELS[k])+`<small>${Object.entries(COSTS[k]).map(([m,v])=>v+' '+m).join(' · ')}</small>`;build.append(b)}
  canvas.addEventListener('pointerdown',clickCanvas);canvas.focus({preventScroll:true});updateUI();}
@@ -91,7 +91,7 @@ function build(kind,x,y){if(!current||current.scene!=='home'){alertUser('Return 
  current.buildings.push({kind,x:Math.round(x),y:Math.round(y),fuel:0,tick:0});buildMode=null;alertUser(LABELS[kind]+' placed.');save();updateUI();}
 function clickCanvas(e){if(overlay)return;const bounds=canvas.getBoundingClientRect();const x=(e.clientX-bounds.left)*CW/bounds.width+camera.x;const y=(e.clientY-bounds.top)*CH/bounds.height+camera.y;
  if(buildMode){build(buildMode,x,y);return}
- const enemy=enemies.find(en=>Math.hypot(en.x-x,en.y-y)<32);if(enemy)attack(enemy);else interact();}
+ const enemy=enemies.find(en=>Math.hypot(en.x-x,en.y-y)<32);if(enemy)alertUser('A strange creature is nearby. Find light or move away.');else interact();}
 function sceneData(){return current.scene==='expedition'?current.expNodes:current.nodes}
 function nearestNode(){let best=null,d=72;for(const n of sceneData()){if(n.qty<1)continue;const z=dist(current.player,n);if(z<d){d=z;best=n}}return best}
 function gather(){if(!current||overlay)return;const p=current.player;
@@ -102,10 +102,12 @@ function gather(){if(!current||overlay)return;const p=current.player;
  if(n.type==='lumen'&&!current.discoveries.includes('Lumen Sample')){current.discoveries.push('Lumen Sample');if(current.relay){current.chapter=Math.max(current.chapter,2);showScene(2)}}
  alertUser('Collected '+(ICONS[n.type]||'✦')+' '+n.type);updateUI();}
 function interact(){gather()}
-function attack(target){if(!current||overlay)return;if(!current.tool){alertUser('Craft a pulse tool from the backpack first.');return}
- if(!target){let d=125;for(const en of enemies){const v=dist(en,current.player);if(v<d){d=v;target=en}}}
- if(!target){alertUser('No creature in pulse range.');return}if(dist(target,current.player)>130){alertUser('Creature is out of range.');return}
- const now=performance.now();if(current.lastAttack&&now-current.lastAttack<600)return;current.lastAttack=now;target.hp-=2;fx.push({x:target.x,y:target.y,age:0,kind:'pulse'});if(target.hp<=0){enemies=enemies.filter(e=>e!==target);current.inv.scrap++;alertUser('Threat dispersed. Salvaged 1 scrap.')}updateUI();}
+function scan(){if(!current||overlay)return;if(!current.tool){alertUser('Craft a signal scanner from your backpack first.');return}
+ const now=performance.now();if(current.lastScan&&now-current.lastScan<1200)return;current.lastScan=now;
+ let nearest=null,range=260;for(const n of sceneData()){if(n.qty<1)continue;const d=dist(n,current.player);if(d<range){range=d;nearest=n}}
+ fx.push({x:current.player.x,y:current.player.y,age:0,kind:'scan'});
+ if(nearest)alertUser('Scanner detects '+nearest.type+' nearby ('+Math.round(range)+' m).');else alertUser('No resource signals nearby. Keep exploring.');
+}
 function supplyPower(){let gens=current.buildings.filter(b=>b.kind==='generator'&&b.fuel>0);let uses=current.buildings.filter(b=>b.kind==='collector'||b.kind==='lamp').length;return {available:gens.length*3,used:uses,active:gens.length*3>=uses&&gens.length>0,gens}}
 function fuel(){const gen=current?.buildings.find(b=>b.kind==='generator');if(!gen){alertUser('Build a generator before adding fuel.');return}if(!spend({wood:3})){return}gen.fuel=Math.min(300,(gen.fuel||0)+90);alertUser('Generator fueled: +90 seconds.');updateUI()}
 function eat(){if((current?.inv.berry||0)<1){alertUser('Gather berries in the wilderness first.');return}current.inv.berry--;current.player.hunger=clamp(current.player.hunger+28,0,100);current.player.hp=clamp(current.player.hp+6,0,100);alertUser('You ate some berries.');updateUI()}
@@ -119,9 +121,9 @@ function updateUI(){if(!current||!root.querySelector('#hf-items'))return;const p
  root.querySelector('#hf-power').textContent=`⚡ ${q.available} power / ${q.used} demand · ${q.gens.length} generators fueled`;
  root.querySelector('#hf-prompt').textContent=buildMode?'Click a clear space near your character to place '+LABELS[buildMode]+'.':current.scene==='expedition'?'Collect Lumen crystals. Return with the Expedition button.':!current.relay?'Find the eastern relay tower. Restore it using 12 scrap and 8 stone.':'Explore the Frontier, automate your camp and uncover Lumen.';
  root.querySelector('[data-action="expedition"]').textContent=current.scene==='home'?'Begin expedition':'Return to camp';
- root.querySelector('[data-action="pulsecraft"]').textContent=current.tool?'Pulse tool ✓':'Craft pulse';
+ root.querySelector('[data-action="scannercraft"]').textContent=current.tool?'Scanner ✓':'Craft scanner';
  for(const b of root.querySelectorAll('[data-action="build"]')){b.disabled=!canSpend(COSTS[b.dataset.kind])||current.scene!=='home'}
- root.querySelector('[data-action="pulsecraft"]').disabled=current.tool||!canSpend(COSTS.pulse);
+ root.querySelector('[data-action="scannercraft"]').disabled=current.tool||!canSpend(COSTS.scanner);
  const obj=root.querySelector('#hf-legend');obj.textContent=current.scene==='expedition'?'✦ EXPEDITION · RECOVER LUMEN':current.relay?'✦ MERIDIAN RELAY RESTORED':'✦ FIND THE EASTERN RELAY TOWER';
 }
 function showScene(id){overlay={id,page:0};drawOverlay()}
@@ -133,16 +135,16 @@ function storyJournal(){if(!current)return;const items=current.discoveries||[];
 function keyHandler(e,down){const k=e.key.toLowerCase();if(!current)return;
  if(['arrowup','arrowdown','arrowleft','arrowright',' ','shift','e','j','w','a','s','d','escape'].includes(k)&&e.target?.tagName!=='INPUT')e.preventDefault();
  if(down){if(overlay){if(k==='escape')overlay.journal?closeJournal():finishScene();else if(k==='enter'&&overlay.id!==undefined)nextScene();return}
- if(k==='e')interact();else if(k===' '){attack()}else if(k==='j')storyJournal();else if(k==='escape')buildMode=null;}
+ if(k==='e')interact();else if(k===' '){scan()}else if(k==='j')storyJournal();else if(k==='escape')buildMode=null;}
  if(down)keys.add(k);else keys.delete(k);
 }
 function nextScene(){if(!overlay||overlay.id===undefined)return;const s=phases[overlay.id];if(++overlay.page>=s.lines.length)finishScene();else drawOverlay()}
 function closeJournal(){overlay=null;root.querySelector('.hf-overlay')?.remove();canvas?.focus({preventScroll:true})}
 function takeAction(action,el){if(action==='slot'){start(Number(el.dataset.index));return}if(action==='menu'){save();makeHome();return}if(action==='save'){save();alertUser('World saved on this browser.');return}
- if(action==='gather'){gather();return}if(action==='attack'){attack();return}if(action==='build'){buildMode=el.dataset.kind;alertUser('Placement: click an empty space near your character.');updateUI();return}
+ if(action==='gather'){gather();return}if(action==='scan'){scan();return}if(action==='build'){buildMode=el.dataset.kind;alertUser('Placement: click an empty space near your character.');updateUI();return}
  if(action==='eat'){eat();return}if(action==='fuel'){fuel();return}if(action==='journal'){storyJournal();return}if(action==='closejournal'){closeJournal();return}if(action==='nextscene'){nextScene();return}if(action==='skipscene'){finishScene();return}if(action==='expedition'){startExpedition();return}
- if(action==='pulsecraft'){if(current&&!current.tool&&spend(COSTS.pulse)){current.tool=true;alertUser('Pulse tool crafted! Press Space to use.');updateUI()}return}
- if(action==='help'){root.querySelector('.hf-home p').textContent='Move with WASD or arrow keys; Shift to sprint; E (or GATHER) to collect nearby resources; Space (or PULSE) to repel creatures after crafting your pulse tool. Use the build menu to select a structure, then click near your character. Click an existing world to continue it. All progress autosaves on this browser.';return;}
+ if(action==='scannercraft'){if(current&&!current.tool&&spend(COSTS.scanner)){current.tool=true;alertUser('Signal scanner crafted! Press Space to scan.');updateUI()}return}
+ if(action==='help'){root.querySelector('.hf-home p').textContent='Move with WASD or arrow keys; Shift to sprint; E (or GATHER) to collect nearby resources; Space (or SCAN) to detect resources after crafting a signal scanner. Use the build menu to select a structure, then click near your character. Click an existing world to continue it. All progress autosaves on this browser.';return;}
 }
 root.addEventListener('click',e=>{const b=e.target.closest('[data-action]');if(b)takeAction(b.dataset.action,b)});
 root.addEventListener('pointerdown',e=>{const b=e.target.closest('[data-key]');if(b){keys.add(b.dataset.key);e.preventDefault()}});
@@ -221,8 +223,8 @@ function draw(){if(!ctx||!current)return;const p=current.player;
  // characters and creatures
  for(const e of enemies){circle(e.x+3,e.y+8,18,'#163a35');circle(e.x,e.y,14,'#152d3b');circle(e.x-5,e.y-3,3,'#b6f3c3');circle(e.x+5,e.y-3,3,'#b6f3c3');}
  circle(p.x+3,p.y+10,14,'#1e4741');circle(p.x,p.y,13,'#d5e1d7');circle(p.x,p.y-7,8,'#7eb0b2');circle(p.x+4,p.y-8,3,'#edffeb');
- if(current.tool){ctx.strokeStyle='#bfecc7';ctx.lineWidth=4;ctx.beginPath();ctx.moveTo(p.x+7,p.y+5);ctx.lineTo(p.x+22,p.y-3);ctx.stroke()}
- for(const f of fx){ctx.strokeStyle=f.kind==='pulse'?'#a2fbec':'#ffb5a2';ctx.lineWidth=3;ctx.beginPath();ctx.arc(f.x,f.y,12+f.age*60,0,Math.PI*2);ctx.stroke()}
+ if(current.tool){circle(p.x+16,p.y-7,5,'#bfecc7')}
+ for(const f of fx){ctx.strokeStyle=f.kind==='scan'?'#a2fbec':'#ffb5a2';ctx.lineWidth=3;ctx.beginPath();ctx.arc(f.x,f.y,12+f.age*60,0,Math.PI*2);ctx.stroke()}
  // world boundary
  ctx.strokeStyle='#8bb79b';ctx.lineWidth=10;ctx.strokeRect(0,0,W,H);ctx.restore();
  // day/night shade and warm lights
