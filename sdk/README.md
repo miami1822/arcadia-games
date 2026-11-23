@@ -95,6 +95,16 @@ The example game configures `allowedParentOrigins: [location.origin]` and the ho
 - Don't treat `postMessage` events as verified account identity, and don't supply tokens or secret keys to game code.
 - A sandboxed Creator preview that blocks same-origin access cannot rely on localStorage or a same-origin host handshake. The current Creator alpha is a local editor, not a hosted SDK service.
 
+## Arcadia Creator Playtest support
+
+Arcadia Creator automatically exposes `window.arcadiaGame` in Playtest, so games can call storage, scores, achievements, sessions and event APIs without constructing another SDK instance.
+
+The game iframe has an opaque sandboxed origin and no direct localStorage access. The host sends a private MessagePort with a fresh nonce; the SDK connects using `previewMode` and `attachPreviewPort(port, nonce)`. Only allowlisted SDK operations are executed in a per-project namespace. The preview never receives Creator's unrelated data.
+
+The **Run SDK Test** button submits a 250-point score, unlocks `sdk-ready` and saves/loads slot `sdk-test`. The inspector can refresh and clear those project-specific records. Limits: 16 save slots at 48 KiB each, 64 achievements, 100 scores, and 60 requests per 10 seconds.
+
+Exports bundle SDK setup automatically; their `game-<project-id>` local storage is distinct from the `preview-<project-id>` sandbox test namespace. No player accounts, cloud saves or global leaderboards exist. Manual content review is still required before public publication.
+
 ## Source files
 
 - `arcadia-sdk.js` — game SDK global `ArcadiaSDK`
