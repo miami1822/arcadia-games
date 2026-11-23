@@ -9,9 +9,9 @@ body{background:#10121d}.school-wrap{max-width:1100px;margin:0 auto;padding:25px
 </style></head><body><main class="school-wrap">
 <header class="school-top"><a class="school-logo" href="school.html" aria-label="Arcadia School Edition home">✳ ARCADIA<span class="brand-dot">.</span></a><span class="school-label">SCHOOL EDITION · FREE TO PLAY</span></header>
 <section id="school-library"><div class="school-hero"><span class="eyebrow">YOUR GAME LIBRARY</span><h1>A little break.<br>A lot of play.</h1><p>Quick, original browser games. Search and play right here, without opening another tab. Follow your school's device and network rules.</p><input class="school-search" type="search" id="school-search" placeholder="Find your next game…" aria-label="Search free games"></div><section class="school-grid" id="school-games" aria-label="Available games" aria-live="polite"></section><p class="school-empty" id="school-error" role="status"></p></section>
-<section id="school-player" class="school-player" hidden><div class="school-player-head"><div><span class="eyebrow">NOW PLAYING · SCHOOL EDITION</span><h1 id="game-title">Loading game…</h1><p class="school-player-desc" id="game-desc"></p></div><div class="school-actions"><a class="school-btn" href="school.html" id="back-to-games">← All games</a><button class="school-btn" id="restart" type="button">↻ Restart</button></div></div><div class="school-game-stage" id="game-stage" aria-label="Game area"></div><p class="school-game-instructions" id="instructions"></p><a class="school-btn" href="school.html">← Back to School Edition</a></section>
+<section id="school-player" class="school-player" hidden><div class="school-player-head"><div><span class="eyebrow">NOW PLAYING · SCHOOL EDITION</span><h1 id="game-title">Loading game…</h1><p class="school-player-desc" id="game-desc"></p></div><div class="school-actions"><a class="school-btn" href="school.html" id="back-to-games">← All games</a><button class="school-btn" id="restart" type="button">↻ Restart</button><button class="school-btn" id="fullscreen-toggle" type="button" aria-pressed="false">⛶ Fullscreen</button></div></div><div class="school-game-stage" id="game-stage" aria-label="Game area"></div><p class="school-game-instructions" id="instructions"></p><p class="school-game-instructions" id="fullscreen-feedback" role="status" hidden></p><a class="school-btn" href="school.html">← Back to School Edition</a></section>
 <p class="school-note">Arcadia School Edition · No sign-in required · Games run within this edition. External games, if added later, must allow embedding.</p></main>
-<script src="assets/catalog.js"></script><script>
+<script src="assets/catalog.js"></script><script src="assets/fullscreen.js"></script><script>
 (function(){
 "use strict";
 const params=new URLSearchParams(window.location.search),gameId=params.get("game");
@@ -36,6 +36,7 @@ showError(visible.length?"":"No games match your search.");
 search.addEventListener("input",draw);draw();return;
 }
 library.hidden=true;player.hidden=false;
+ArcadiaFullscreen.mount({button:document.getElementById("fullscreen-toggle"),stage:player,message:document.getElementById("fullscreen-feedback")});
 const game=games.find(g=>g.id===gameId),stage=document.getElementById("game-stage");
 if(!game){document.getElementById("game-title").textContent="Game not found";stage.textContent="This game isn't available in School Edition.";return}
 document.title=game.title+" | Arcadia School Edition";
