@@ -8,6 +8,9 @@ The Creator UI is also linked from the main `index.html`.
 - Responsive Creator Hub with real local project counts and search/sort.
 - Create, duplicate, rename, delete, and persist draft projects in browser `localStorage`.
 - 2D Visual Builder: add, select, drag, resize, recolor, and remove players, platforms, coins, hazards, and goals.
+- **Advanced Block Studio:** Blockly-powered, Scratch-style coding with 22 custom Arcadia blocks, including events, movement, physics, looks, sounds, scores, achievements and saves; standard control/logic/math/text/variables blocks are also available.
+- **Convert to Code:** One-way conversion of visual scene and blocks into editable HTML and JavaScript, retaining the original block snapshot. Reverse conversion is not supported.
+- **Asset Library:** Ten original starter sprites, curated Kenney and OpenGameArt links, image imports, and filtered ZIP pack importing. Import metadata follows assets into exported game manifests.
 - Generated playable platformer, keyboard controls, collision, collectibles, score, finish zone.
 - Code Studio for `index.html`, `style.css`, and `game.js`.
 - Sandboxed game preview, restart and fullscreen.
@@ -18,7 +21,7 @@ The Creator UI is also linked from the main `index.html`.
 
 **This is a local-first alpha, not a public user-upload service.**
 
-**Developer accounts are not required.** There is no sign-in, cloud sync, published game catalog ingestion, server-side moderation, or automatic submission endpoint. Drafts remain in the user's current browser. Export a ZIP to share with Arcadia staff for manual review. There is no fictional 'submitted' state.
+**Developer accounts remain optional.** No sign-in is required to build or export. Lucion Identity profile linking is planned for the Main Creator only, never the School Edition. The public Creator is still static; live uploading is off by default until the private API is configured. There is no cloud sync, automatic catalog ingestion or online moderation panel yet. Drafts remain in the user's current browser. Export a ZIP to share with Arcadia staff for manual review. There is no fictional 'submitted' state.
 
 The game runner uses `iframe sandbox="allow-scripts allow-pointer-lock"` **without** `allow-same-origin` and injects a restrictive Content Security Policy that prevents external network requests. This improves isolation but means some complex third-party games will not run. Imported code may still be unsafe as data, so never treat ZIP upload or local playtesting as an approval for publishing.
 
@@ -58,11 +61,20 @@ Serve the repository using `python -m http.server 8000` and open `http://localho
 
 **GitHub Pages is the preferred static hosting target.** Enable it in repository Settings → Pages → Deploy from a branch → `main` / `/(root)`. The repository includes `.nojekyll`; see [GITHUB_PAGES.md](GITHUB_PAGES.md). The previous Render site is a fallback until the Pages site is confirmed active.
 
-## Future work (without developer accounts)
+## Anonymous publishing and optional creator profiles
 
-1. Improve the importer and runtime for larger HTML5 games while keeping previews isolated.
-2. Standardize manual ZIP review and distribution-rights checks for Arcadia staff.
-3. Add approved game files and catalog entries to GitHub through maintainer review.
-4. Keep School Edition eligibility and safety review independent of Main Edition.
-5. If anonymous direct uploads are added later, use a protected intake service with rate limits, strict file checks, and human approval; do not give anonymous users write access to GitHub.
-6. Perform browser, mobile, and fullscreen smoke tests after GitHub Pages is active.
+The codebase now includes a **gated private review API** under `server/`, with ZIP validation, CAPTCHA verification, rate limits, staff-protected review endpoints and anonymous receipt-based status. **The API is not deployed or configured**, and public Creator submissions remain unavailable by default. Do not expose it without a persistent database, CAPTCHA keys, staff moderation, upload scanning and browser testing.
+
+Public `assets/creator-config.js` contains empty flags for the API URL and CAPTCHA public site key. Enabling them without a properly configured review service will not provide working uploads.
+
+Signing in to link a game to a verified Lucion Identity profile is **not implemented yet**. It needs a dedicated OIDC application, authorization-code + PKCE, verified subject binding and server sessions. It will remain optional, with additional quotas/features for linked creators and no sign-in controls in School Edition.
+
+See [PUBLISHING.md](PUBLISHING.md) and [server/README.md](server/README.md) for security, backend and deployment requirements.
+
+## Known limitations
+
+- Blockly is currently loaded from a pinned CDN version, so the block editor requires network access to that CDN.
+- The block system generates game-specific JavaScript but isn't a full Scratch-compatible runtime. Not every arbitrary block program can be safely converted back from source code.
+- Starter art ships as original in-browser SVG; Kenney/OpenGameArt items are linked to their original download pages. Imports require license verification.
+- Browser localStorage is size-limited. Keep exported ZIP backups, especially when importing large art packs.
+- Public game submissions, creator profiles and verified Lucion Identity are not live yet.
