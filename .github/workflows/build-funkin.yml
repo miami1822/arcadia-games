@@ -49,7 +49,7 @@ jobs:
           haxe compile.hxml
           popd
           pushd .haxelib/lime/git
-          haxelib run hxcpp Build.xml -Dlinux -Dstatic_link
+          haxelib run hxcpp project/Build.xml -Dlinux -Dstatic_link
           popd
           haxelib run lime rebuild cpp -64
           haxelib run lime setup
