@@ -18,3 +18,9 @@ Upstream repository: https://github.com/mohandesghorbany809-cmyk/Poor-Man-PlaySt
 Source revision: 0950b384aeb8e682f673cc6a471738d74bd2e87f
 Imported games: poor-awesome-memol, poor-candy-orchard-crush, poor-cheerful-challeng, poor-dart-hero, poor-find-the-treasure, poor-find-the-right-color, poor-full-or-empty, poor-hue-gues, poor-melt-the-ice, poor-memoryloss, poor-ping-pong-funtime, poor-ring-alert, poor-rock-paper-scissors, poor-sliding-puzzle, poor-snake-game, poor-sudoku-trio, poor-tile-rus
 The source repository license and the owner's reported permissions apply; review upstream license files and downstream assets before commercial reuse. Some games depend on third-party CDNs.
+
+## CoolDude2349/Offline-HTML-Games-Pack
+Upstream repository: https://github.com/CoolDude2349/Offline-HTML-Games-Pack
+Source revision: 237c5beada5f5bad68c097c1deb927213c642618
+Imported games: offline-2048, offline-9007199254740992, offline-agar-io-lite, offline-coreball
+The source repository license and the owner's reported permissions apply; review upstream license files and downstream assets before commercial reuse. Some games depend on third-party CDNs.

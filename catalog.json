@@ -1223,5 +1223,49 @@
     "type": "hosted",
     "path": "games/poor-tile-rus/index.html",
     "featured": false
+  },
+  {
+    "id": "offline-2048",
+    "title": "2048",
+    "description": "Browser game provided by CoolDude2349/Offline-HTML-Games-Pack.",
+    "category": "Puzzle",
+    "emoji": "🎮",
+    "accent": "#83cfff",
+    "type": "hosted",
+    "path": "games/offline-2048/index.html",
+    "featured": false
+  },
+  {
+    "id": "offline-9007199254740992",
+    "title": "9007199254740992",
+    "description": "Browser game provided by CoolDude2349/Offline-HTML-Games-Pack.",
+    "category": "Arcade",
+    "emoji": "🎮",
+    "accent": "#83cfff",
+    "type": "hosted",
+    "path": "games/offline-9007199254740992/index.html",
+    "featured": false
+  },
+  {
+    "id": "offline-agar-io-lite",
+    "title": "Agar Io Lite",
+    "description": "Browser game provided by CoolDude2349/Offline-HTML-Games-Pack.",
+    "category": "Arcade",
+    "emoji": "🎮",
+    "accent": "#83cfff",
+    "type": "hosted",
+    "path": "games/offline-agar-io-lite/index.html",
+    "featured": false
+  },
+  {
+    "id": "offline-coreball",
+    "title": "Coreball",
+    "description": "Browser game provided by CoolDude2349/Offline-HTML-Games-Pack.",
+    "category": "Arcade",
+    "emoji": "🎮",
+    "accent": "#83cfff",
+    "type": "hosted",
+    "path": "games/offline-coreball/index.html",
+    "featured": false
   }
 ]
