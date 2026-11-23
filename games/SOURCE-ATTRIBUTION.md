@@ -1,0 +1,8 @@
+# Imported games source and attribution
+
+
+## he-is-talha/html-css-javascript-games
+Upstream repository: https://github.com/he-is-talha/html-css-javascript-games
+Source revision: aafbeac2119b9442790aee50cd143cdc4aeb1f88
+Imported games: talha-candy-crush-game, talha-pac-man-game, talha-chess-game, talha-doodle-jump-game, talha-solitaire-game, talha-sudoku-game, talha-crossy-road-game, talha-rock-paper-scissors, talha-flappy-bird-game, talha-2048-game, talha-wordle-game, talha-hangman-game, talha-tower-blocks, talha-archery-game, talha-tic-tac-toe, talha-minesweeper-game, talha-speed-typing-game, talha-breakout-game, talha-ping-pong-game, talha-tetris-game, talha-tilting-maze-game, talha-memory-card-game, talha-type-number-guessing-game, talha-snake-game, talha-connect-four-game, talha-insect-catch-game, talha-typing-game, talha-dice-roll-simulator, talha-shape-clicker-game, talha-speak-number-guessing-game, talha-fruit-slicer-game, talha-quiz-game, talha-emoji-catcher-game, talha-whack-a-mole-game, talha-simon-says-game, talha-sliding-puzzle-game, talha-mastermind-game, talha-bubble-shooter-game, talha-checkers-game, talha-space-invaders-game, talha-asteroids-game, talha-reversi-game, talha-mahjong-solitaire-game, talha-frogger-game, talha-battleship-game, talha-nonogram-game, talha-lights-out-game
+The source repository license and the owner's reported permissions apply; review upstream license files and downstream assets before commercial reuse. Some games depend on third-party CDNs.
