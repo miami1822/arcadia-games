@@ -1,7 +1,7 @@
 /* Ambient browser-global types for <script src="arcadia-sdk.js">. */
-interface ArcadiaEnvironment { gameId:string; version:string; protocol:number; connected:boolean; capabilities: { storage:'local'|'cloud'; scores:'local'|'cloud'; achievements:'local'|'cloud'; accounts:boolean } }
+interface ArcadiaEnvironment { gameId:string; version:string; protocol:number; connected:boolean; capabilities: { storage:'local'|'cloud'; scores:'local'|'cloud'; achievements:'local'|'cloud'; accounts:boolean; preview?:boolean } }
 interface ArcadiaScore { score:number; mode:string; metadata:Record<string,unknown>; createdAt:string; id:string }
-interface ArcadiaSDKOptions { gameId:string; version?:string; allowedParentOrigins?:string[] }
+interface ArcadiaSDKOptions { gameId:string; version?:string; allowedParentOrigins?:string[]; previewMode?:boolean }
 declare class ArcadiaSDK {
  static version:string;
  constructor(options:ArcadiaSDKOptions);
@@ -18,5 +18,6 @@ declare class ArcadiaSDK {
  off(event:string,handler:(data:unknown)=>void):void;
  emit(name:string,data?:Record<string,unknown>):void;
  getEnvironment():ArcadiaEnvironment;
+ attachPreviewPort(port:MessagePort,nonce:string):this;
  destroy():void;
 }
