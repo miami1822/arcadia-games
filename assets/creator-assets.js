@@ -88,6 +88,38 @@ async function importImages(files){
  }
  onSave&&onSave(project);render();onNotify&&onNotify('Imported '+result.length+' image(s). Please verify asset rights before publishing.');
 }
+async function importPack(file){
+ if(!project||!file)return;
+ if(!/\.zip$/i.test(file.name)||file.size>5*1024*1024)throw Error('Choose a ZIP pack smaller than 5 MB.');
+ if(!global.JSZip)throw Error('The ZIP importer could not load. Check your connection and try again.');
+ const zip=await global.JSZip.loadAsync(file,{checkCRC32:true});
+ const entries=Object.values(zip.files).filter(x=>!x.dir);
+ if(entries.length>1200)throw Error('Pack contains too many files for the browser importer.');
+ const q=(document.getElementById('asset-zip-filter')?.value||'').toLowerCase().trim();
+ const supported=/\.(png|jpe?g|webp|gif)$/i;
+ const candidates=entries.filter(x=>{
+  const name=x.name.split('/').pop();
+  return name&&supported.test(name)&&(!q||x.name.toLowerCase().includes(q))&&x._data&&x._data.uncompressedSize<=350*1024;
+ });
+ const available=Math.max(0,32-Object.keys(project.assets).length);
+ const chosen=candidates.slice(0,Math.min(12,available));
+ if(!chosen.length)throw Error('No matching compatible images. Try another ZIP filter or make room in your project.');
+ const images=[];
+ for(const entry of chosen){
+  const extension=entry.name.split('.').pop().toLowerCase();
+  const mime=extension==='png'?'image/png':extension==='webp'?'image/webp':extension==='gif'?'image/gif':'image/jpeg';
+  const bytes=await entry.async('base64');
+  const name=entry.name.split('/').pop().replace(/[^a-zA-Z0-9._-]/g,'-').slice(0,70);
+  images.push({name,data:'data:'+mime+';base64,'+bytes});
+ }
+ project.assetMeta??={};
+ for(const image of images){
+  let key='sprites/'+image.name,n=1;while(project.assets[key])key='sprites/'+n+++'-'+image.name;
+  project.assets[key]=image.data;project.assetMeta[key]={name:image.name,source:'Imported from '+file.name.slice(0,70),license:'User verification required'};
+ }
+ onSave&&onSave(project);render();
+ onNotify&&onNotify('Imported '+images.length+' of '+candidates.length+' matching images. Check each pack’s license before publishing.');
+}
 function mount(p,opts={}){
  project=p;project.assets??={};project.assetMeta??={};
  onSave=opts.save;onNotify=opts.notify;onSelected=opts.selected;onRepaint=opts.renderScene;
@@ -99,6 +131,7 @@ function init(){
  document.querySelectorAll('[data-asset-filter]').forEach(button=>button.addEventListener('click',()=>{filter=button.dataset.assetFilter;document.querySelectorAll('[data-asset-filter]').forEach(b=>b.classList.toggle('active',b===button));render()}));
  const input=document.getElementById('asset-upload');
  input.addEventListener('change',async()=>{try{await importImages(Array.from(input.files))}catch(e){if(onNotify)onNotify(e.message)}finally{input.value=''}});
+ const pack=document.getElementById('asset-zip-upload');pack?.addEventListener('change',async()=>{try{await importPack(pack.files[0])}catch(e){if(onNotify)onNotify(e.message)}finally{pack.value=''}});
 }
 global.ArcadiaCreatorAssets={mount,init,render,packs};
 })(window);
