@@ -1,8 +1,8 @@
 # Arcadia Creator: anonymous publishing and optional Lucion Identity
 
-**Status: implementation design; not an active upload or authentication service.**
+**Status: an anonymous intake API implementation exists under `server/`, but it is not deployed, configured or verified for public use. Optional Lucion Identity linking is still a design.**
 
-Arcadia Creator has a local-first visual editor, Block Studio, Code Studio, Asset Library, and ZIP exporting. The currently deployed website is static. Public game publishing requires a protected submission backend, moderation, immutable builds, and approved release promotion. This document defines the contract so the anonymous and signed-in pathways can share one pipeline.
+Arcadia Creator has a local-first visual editor, Block Studio, Code Studio, Asset Library, and ZIP exporting. The currently deployed website is static. The codebase contains a gated review intake and feature-flagged frontend submission control, but public game publishing still requires a configured persistent database, CAPTCHA keys, moderation, independent security testing, immutable builds and approved release promotion. This document defines the contract so the anonymous and signed-in pathways can share one pipeline.
 
 ## Product principles
 
