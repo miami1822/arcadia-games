@@ -838,5 +838,203 @@
     "type": "hosted",
     "path": "games/talha-lights-out-game/index.html",
     "featured": false
+  },
+  {
+    "id": "minteez-clockwork-clash",
+    "title": "Clockwork Clash",
+    "description": "Browser game provided by minteez/browser-game-hub.",
+    "category": "Arcade",
+    "emoji": "🎮",
+    "accent": "#83cfff",
+    "type": "hosted",
+    "path": "games/minteez-clockwork-clash/index.html",
+    "featured": false
+  },
+  {
+    "id": "minteez-cosmic-sentinel",
+    "title": "Cosmic Sentinel",
+    "description": "Browser game provided by minteez/browser-game-hub.",
+    "category": "Arcade",
+    "emoji": "🎮",
+    "accent": "#83cfff",
+    "type": "hosted",
+    "path": "games/minteez-cosmic-sentinel/index.html",
+    "featured": false
+  },
+  {
+    "id": "minteez-desert-camel-runner",
+    "title": "Desert Camel Runner",
+    "description": "Browser game provided by minteez/browser-game-hub.",
+    "category": "Arcade",
+    "emoji": "🎮",
+    "accent": "#83cfff",
+    "type": "hosted",
+    "path": "games/minteez-desert-camel-runner/index.html",
+    "featured": false
+  },
+  {
+    "id": "minteez-magnet-catch",
+    "title": "Magnet Catch",
+    "description": "Browser game provided by minteez/browser-game-hub.",
+    "category": "Arcade",
+    "emoji": "🎮",
+    "accent": "#83cfff",
+    "type": "hosted",
+    "path": "games/minteez-magnet-catch/index.html",
+    "featured": false
+  },
+  {
+    "id": "minteez-magnet-mayhem-arcade-game",
+    "title": "Magnet Mayhem Arcade Game",
+    "description": "Browser game provided by minteez/browser-game-hub.",
+    "category": "Arcade",
+    "emoji": "🎮",
+    "accent": "#83cfff",
+    "type": "hosted",
+    "path": "games/minteez-magnet-mayhem-arcade-game/index.html",
+    "featured": false
+  },
+  {
+    "id": "minteez-neon-cyberpunk-snake",
+    "title": "Neon Cyberpunk Snake",
+    "description": "Browser game provided by minteez/browser-game-hub.",
+    "category": "Arcade",
+    "emoji": "🎮",
+    "accent": "#83cfff",
+    "type": "hosted",
+    "path": "games/minteez-neon-cyberpunk-snake/index.html",
+    "featured": false
+  },
+  {
+    "id": "minteez-neon-dodge",
+    "title": "Neon Dodge",
+    "description": "Browser game provided by minteez/browser-game-hub.",
+    "category": "Arcade",
+    "emoji": "🎮",
+    "accent": "#83cfff",
+    "type": "hosted",
+    "path": "games/minteez-neon-dodge/index.html",
+    "featured": false
+  },
+  {
+    "id": "minteez-neon-racer-pro",
+    "title": "Neon Racer Pro",
+    "description": "Browser game provided by minteez/browser-game-hub.",
+    "category": "Arcade",
+    "emoji": "🎮",
+    "accent": "#83cfff",
+    "type": "hosted",
+    "path": "games/minteez-neon-racer-pro/index.html",
+    "featured": false
+  },
+  {
+    "id": "minteez-neon-rail-rescue",
+    "title": "Neon Rail Rescue",
+    "description": "Browser game provided by minteez/browser-game-hub.",
+    "category": "Arcade",
+    "emoji": "🎮",
+    "accent": "#83cfff",
+    "type": "hosted",
+    "path": "games/minteez-neon-rail-rescue/index.html",
+    "featured": false
+  },
+  {
+    "id": "minteez-neon-survivor",
+    "title": "Neon Survivor",
+    "description": "Browser game provided by minteez/browser-game-hub.",
+    "category": "Arcade",
+    "emoji": "🎮",
+    "accent": "#83cfff",
+    "type": "hosted",
+    "path": "games/minteez-neon-survivor/index.html",
+    "featured": false
+  },
+  {
+    "id": "minteez-oasis-whack-a-mole",
+    "title": "Oasis Whack A Mole",
+    "description": "Browser game provided by minteez/browser-game-hub.",
+    "category": "Arcade",
+    "emoji": "🎮",
+    "accent": "#83cfff",
+    "type": "hosted",
+    "path": "games/minteez-oasis-whack-a-mole/index.html",
+    "featured": false
+  },
+  {
+    "id": "minteez-quiz-battle-royale",
+    "title": "Quiz Battle Royale",
+    "description": "Browser game provided by minteez/browser-game-hub.",
+    "category": "Arcade",
+    "emoji": "🎮",
+    "accent": "#83cfff",
+    "type": "hosted",
+    "path": "games/minteez-quiz-battle-royale/index.html",
+    "featured": false
+  },
+  {
+    "id": "minteez-retro-maze-chomper",
+    "title": "Retro Maze Chomper",
+    "description": "Browser game provided by minteez/browser-game-hub.",
+    "category": "Puzzle",
+    "emoji": "🎮",
+    "accent": "#83cfff",
+    "type": "hosted",
+    "path": "games/minteez-retro-maze-chomper/index.html",
+    "featured": false
+  },
+  {
+    "id": "minteez-samurai-slice-arcade",
+    "title": "Samurai Slice Arcade",
+    "description": "Browser game provided by minteez/browser-game-hub.",
+    "category": "Arcade",
+    "emoji": "🎮",
+    "accent": "#83cfff",
+    "type": "hosted",
+    "path": "games/minteez-samurai-slice-arcade/index.html",
+    "featured": false
+  },
+  {
+    "id": "minteez-skyhook-scramble",
+    "title": "Skyhook Scramble",
+    "description": "Browser game provided by minteez/browser-game-hub.",
+    "category": "Arcade",
+    "emoji": "🎮",
+    "accent": "#83cfff",
+    "type": "hosted",
+    "path": "games/minteez-skyhook-scramble/index.html",
+    "featured": false
+  },
+  {
+    "id": "minteez-superhero-platformer",
+    "title": "Superhero Platformer",
+    "description": "Browser game provided by minteez/browser-game-hub.",
+    "category": "Arcade",
+    "emoji": "🎮",
+    "accent": "#83cfff",
+    "type": "hosted",
+    "path": "games/minteez-superhero-platformer/index.html",
+    "featured": false
+  },
+  {
+    "id": "minteez-titan-defense",
+    "title": "Titan Defense",
+    "description": "Browser game provided by minteez/browser-game-hub.",
+    "category": "Arcade",
+    "emoji": "🎮",
+    "accent": "#83cfff",
+    "type": "hosted",
+    "path": "games/minteez-titan-defense/index.html",
+    "featured": false
+  },
+  {
+    "id": "minteez-treasure-quest-island-radar",
+    "title": "Treasure Quest Island Radar",
+    "description": "Browser game provided by minteez/browser-game-hub.",
+    "category": "Arcade",
+    "emoji": "🎮",
+    "accent": "#83cfff",
+    "type": "hosted",
+    "path": "games/minteez-treasure-quest-island-radar/index.html",
+    "featured": false
   }
 ]

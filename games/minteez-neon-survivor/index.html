@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<!-- Arcadia authorized import; source: https://github.com/minteez/browser-game-hub -->
+
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Neon Survivor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { margin: 0; overflow: hidden; background: #050000; font-family: 'Inter', sans-serif; }
+        #gameCanvas { display: block; touch-action: none; cursor: crosshair; }
+        .ui-panel { pointer-events: auto; }
+        .menu-overlay { transition: opacity 0.3s ease; }
+        .hidden { display: none; }
+        
+        @keyframes flicker {
+            0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% { opacity: 1; }
+            20%, 24%, 55% { opacity: 0.3; }
+        }
+        .horror-flicker { animation: flicker 3s infinite; }
+    </style>
+</head>
+<body class="bg-black text-white">
+
+    <div id="ui-layer" class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
+        
+        <!-- Main Menu -->
+        <div id="main-menu" class="menu-overlay ui-panel p-10 bg-black/80 rounded-sm border border-red-900 shadow-[0_0_50px_rgba(255,0,0,0.2)] backdrop-blur-md text-center w-full max-w-lg">
+            <h1 class="horror-flicker text-6xl font-black mb-2 text-red-600 tracking-tighter drop-shadow-[0_0_15px_rgba(220,38,38,0.8)]">NEON SURVIVOR</h1>
+            <p class="text-red-900 mb-8 font-mono tracking-widest text-sm">THE DARKNESS IS COMING</p>
+            <button onclick="game.start()" class="w-full px-8 py-4 bg-red-950 border border-red-700 hover:bg-red-900 text-red-500 font-black text-xl transition-all hover:scale-105 active:scale-95 shadow-[0_0_10px_rgba(153,27,27,0.5)]">LAUNCH GAME</button>
+            <div class="mt-8 text-[10px] text-red-900 font-mono">
+                Engineered by Minteez & Gemini AI. © 2026. All data streams reserved.
+            </div>
+        </div>
+
+        <!-- Pause Menu -->
+        <div id="pause-menu" class="hidden menu-overlay ui-panel p-8 bg-slate-900/90 rounded-2xl border border-slate-700 backdrop-blur-sm text-center w-64">
+            <h2 class="text-2xl font-bold mb-6 text-slate-200">PAUSED</h2>
+            <button onclick="game.resume()" class="block w-full px-6 py-2 bg-blue-600 hover:bg-blue-500 rounded-lg font-bold mb-3">RESUME</button>
+            <button onclick="game.toggleSound()" id="sound-toggle" class="block w-full px-6 py-2 bg-slate-700 hover:bg-slate-600 rounded-lg font-bold mb-3">SOUND: ON</button>
+            <button onclick="location.reload()" class="block w-full px-6 py-2 bg-red-900 hover:bg-red-800 rounded-lg font-bold">QUIT</button>
+        </div>
+
+        <!-- HUD -->
+        <div id="hud" class="hidden absolute top-0 left-0 w-full p-6 flex justify-between items-start pointer-events-none">
+            <div>
+                <div class="text-2xl font-mono font-bold" id="score-display">SCORE: 0</div>
+                <div class="text-lg text-slate-400" id="wave-display">WAVE: 1</div>
+            </div>
+            <div class="text-right">
+                <div class="text-sm uppercase tracking-widest text-slate-400">Health</div>
+                <div id="hp-bar" class="w-48 h-4 bg-slate-700 rounded-full overflow-hidden">
+                    <div id="hp-fill" class="h-full bg-green-500 transition-all duration-300" style="width: 100%"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <canvas id="gameCanvas"></canvas>
+
+    <script>
+        const AudioEngine = {
+            ctx: null,
+            enabled: true,
+            ambientSource: null,
+            
+            init() {
+                if (!this.ctx) {
+                    this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+            },
+
+            startHorrorLoop() {
+                if (!this.enabled || !this.ctx) return;
+                
+                // Low, smooth drone
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                const filter = this.ctx.createBiquadFilter();
+                
+                osc.type = 'triangle';
+                osc.frequency.value = 55; // Deep A
+                
+                filter.type = 'lowpass';
+                filter.frequency.value = 150; // Remove harsh frequencies
+                
+                gain.gain.value = 0.08;
+                
+                osc.connect(filter);
+                filter.connect(gain);
+                gain.connect(this.ctx.destination);
+                osc.start();
+                this.ambientSource = { osc, gain };
+
+                const playChirp = () => {
+                    if (!this.ambientSource) return;
+                    const cOsc = this.ctx.createOscillator();
+                    const cGain = this.ctx.createGain();
+                    cOsc.type = 'sine';
+                    cOsc.frequency.value = 440 + Math.random() * 200;
+                    cGain.gain.setValueAtTime(0, this.ctx.currentTime);
+                    cGain.gain.linearRampToValueAtTime(0.01, this.ctx.currentTime + 0.5);
+                    cGain.gain.linearRampToValueAtTime(0, this.ctx.currentTime + 1.5);
+                    cOsc.connect(cGain);
+                    cGain.connect(this.ctx.destination);
+                    cOsc.start();
+                    cOsc.stop(this.ctx.currentTime + 1.5);
+                    setTimeout(playChirp, 5000 + Math.random() * 5000);
+                };
+                playChirp();
+            },
+
+            stopHorrorLoop() {
+                if (this.ambientSource) {
+                    this.ambientSource.osc.stop();
+                    this.ambientSource = null;
+                }
+            },
+
+            play(type) {
+                if (!this.enabled || !this.ctx) return;
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+                
+                osc.connect(gain);
+                gain.connect(this.ctx.destination);
+
+                if (type === 'shoot') {
+                    osc.type = 'square';
+                    osc.frequency.setValueAtTime(440, now);
+                    osc.frequency.exponentialRampToValueAtTime(100, now + 0.05);
+                    gain.gain.setValueAtTime(0.1, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+                    osc.start();
+                    osc.stop(now + 0.05);
+                } else if (type === 'hit') {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(200, now);
+                    gain.gain.setValueAtTime(0.1, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+                    osc.start();
+                    osc.stop(now + 0.05);
+                }
+            }
+        };
+
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+        const ui = {
+            main: document.getElementById('main-menu'),
+            pause: document.getElementById('pause-menu'),
+            hud: document.getElementById('hud'),
+            score: document.getElementById('score-display'),
+            wave: document.getElementById('wave-display'),
+            hp: document.getElementById('hp-fill'),
+            soundBtn: document.getElementById('sound-toggle')
+        };
+
+        const keys = {};
+        const mouse = { x: 0, y: 0 };
+        let gameActive = false;
+
+        // Music trigger: Start horror loop on first interaction
+        let musicStarted = false;
+        document.addEventListener('mousedown', () => {
+            if (!musicStarted) {
+                AudioEngine.init();
+                AudioEngine.startHorrorLoop();
+                musicStarted = true;
+            }
+        }, { once: true });
+
+        class Game {
+            constructor() {
+                this.entities = [];
+                this.particles = [];
+                this.score = 0;
+                this.wave = 1;
+                this.time = 0;
+                this.player = new Player(window.innerWidth/2, window.innerHeight/2);
+                this.lastSpawn = 0;
+                this.spawnRate = 2000;
+            }
+
+            start() {
+                AudioEngine.stopHorrorLoop();
+                ui.main.classList.add('hidden');
+                ui.hud.classList.remove('hidden');
+                gameActive = true;
+                this.loop();
+            }
+
+            resume() {
+                ui.pause.classList.add('hidden');
+                gameActive = true;
+                this.loop();
+            }
+
+            pause() {
+                gameActive = false;
+                ui.pause.classList.remove('hidden');
+            }
+            
+            toggleSound() {
+                AudioEngine.enabled = !AudioEngine.enabled;
+                ui.soundBtn.innerText = `SOUND: ${AudioEngine.enabled ? 'ON' : 'OFF'}`;
+            }
+
+            update() {
+                if (!gameActive) return;
+                this.time++;
+
+                if (Date.now() - this.lastSpawn > Math.max(500, this.spawnRate - this.wave * 50)) {
+                    this.spawnZombie();
+                    this.lastSpawn = Date.now();
+                }
+
+                this.player.update();
+                this.entities.forEach(e => e.update());
+                this.particles.forEach(p => p.update());
+                
+                this.entities = this.entities.filter(e => e.active);
+                this.particles = this.particles.filter(p => p.life > 0);
+
+                if (this.player.hp <= 0) {
+                    gameActive = false;
+                    alert("Game Over! Final Score: " + this.score);
+                    location.reload();
+                }
+            }
+
+            spawnZombie() {
+                const side = Math.floor(Math.random() * 4);
+                let x, y;
+                if (side === 0) { x = Math.random() * canvas.width; y = -50; }
+                else if (side === 1) { x = canvas.width + 50; y = Math.random() * canvas.height; }
+                else if (side === 2) { x = Math.random() * canvas.width; y = canvas.height + 50; }
+                else { x = -50; y = Math.random() * canvas.height; }
+                this.entities.push(new Zombie(x, y));
+            }
+
+            draw() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                // Background cycle
+                const nightness = Math.sin(this.time * 0.005) * 0.1 + 0.15;
+                ctx.fillStyle = `rgba(10, 0, 20, ${nightness})`;
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                this.particles.forEach(p => p.draw());
+                this.entities.forEach(e => e.draw());
+                this.player.draw();
+            }
+
+            loop() {
+                if (!gameActive) return;
+                this.update();
+                this.draw();
+                requestAnimationFrame(() => this.loop());
+            }
+        }
+
+        class Player {
+            constructor(x, y) {
+                this.x = x; this.y = y;
+                this.hp = 100;
+                this.speed = 4;
+            }
+
+            update() {
+                if (keys['w']) this.y -= this.speed;
+                if (keys['s']) this.y += this.speed;
+                if (keys['a']) this.x -= this.speed;
+                if (keys['d']) this.x += this.speed;
+                ui.hp.style.width = this.hp + '%';
+            }
+
+            draw() {
+                ctx.save();
+                ctx.translate(this.x, this.y);
+                ctx.fillStyle = '#3b82f6';
+                ctx.beginPath(); ctx.arc(0, 0, 15, 0, Math.PI * 2); ctx.fill();
+                ctx.restore();
+            }
+        }
+
+        class Zombie {
+            constructor(x, y) {
+                this.x = x; this.y = y;
+                this.hp = 20;
+                this.speed = 1.5;
+                this.active = true;
+            }
+
+            update() {
+                const dx = game.player.x - this.x;
+                const dy = game.player.y - this.y;
+                const dist = Math.hypot(dx, dy);
+                this.x += (dx / dist) * this.speed;
+                this.y += (dy / dist) * this.speed;
+                if (dist < 30) game.player.hp -= 0.2;
+            }
+
+            draw() {
+                ctx.fillStyle = '#ef4444';
+                ctx.beginPath(); ctx.arc(this.x, this.y, 12, 0, Math.PI * 2); ctx.fill();
+            }
+        }
+
+        class Particle {
+            constructor(x, y, color) {
+                this.x = x; this.y = y;
+                this.vx = (Math.random() - 0.5) * 5;
+                this.vy = (Math.random() - 0.5) * 5;
+                this.life = 1;
+                this.color = color;
+            }
+            update() { this.x += this.vx; this.y += this.vy; this.life -= 0.05; }
+            draw() {
+                ctx.globalAlpha = this.life;
+                ctx.fillStyle = this.color;
+                ctx.fillRect(this.x, this.y, 4, 4);
+                ctx.globalAlpha = 1;
+            }
+        }
+
+        const game = new Game();
+
+        window.addEventListener('keydown', e => { keys[e.key] = true; if(e.key === 'Escape') game.pause(); });
+        window.addEventListener('keyup', e => keys[e.key] = false);
+        window.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
+        window.addEventListener('mousedown', () => {
+            if (!gameActive) return;
+            AudioEngine.play('shoot');
+            game.entities.forEach(e => {
+                if (e instanceof Zombie) {
+                    const dist = Math.hypot(e.x - mouse.x, e.y - mouse.y);
+                    if (dist < 30) {
+                        e.active = false;
+                        game.score += 10;
+                        ui.score.innerText = 'SCORE: ' + game.score;
+                        AudioEngine.play('hit');
+                        for(let i=0; i<5; i++) game.particles.push(new Particle(e.x, e.y, '#991b1b'));
+                    }
+                }
+            });
+        });
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        });
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+    </script>
+</body>
+</html>
