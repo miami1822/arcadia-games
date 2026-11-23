@@ -1,0 +1,63 @@
+name: Build and import mazipan mini-games
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  import:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: 1.3.12
+      - name: Build upstream mini-games
+        run: |
+          set -euo pipefail
+          git clone --depth 1 https://github.com/mazipan/mini-games.git /tmp/mazipan-src
+          cd /tmp/mazipan-src
+          bun install --frozen-lockfile --ignore-scripts
+          bun run build
+          test -f _site/games/2048/index.html
+      - name: Copy game site under Arcadia and register games
+        run: |
+          python3 - <<'PY'
+          import json, re, shutil
+          from pathlib import Path
+          root=Path.cwd()
+          src=Path('/tmp/mazipan-src/_site')
+          dest=root/'games/mazipan-library'
+          if dest.exists(): shutil.rmtree(dest)
+          shutil.copytree(src,dest)
+          shutil.copy2('/tmp/mazipan-src/LICENSE',dest/'LICENSE')
+          catalogue=root/'catalog.json'
+          games=json.loads(catalogue.read_text())
+          new=[]
+          for entry in sorted((dest/'games').iterdir()):
+              if not entry.is_dir() or not (entry/'index.html').exists(): continue
+              slug=entry.name
+              if slug in {'blackjack'}: continue
+              html=entry/'index.html'
+              c=html.read_text()
+              c=re.sub(r'''(href|src)=(["'])/(?!/)''',lambda m:m.group(1)+'='+m.group(2)+'../../',c)
+              c=c.replace('</head>','<!-- Built from https://github.com/mazipan/mini-games (MIT). --></head>')
+              html.write_text(c)
+              identity='mazipan-'+slug
+              if any(g['id']==identity for g in games): continue
+              title=slug.replace('-',' ').title()
+              item={'id':identity,'title':title,'description':title+" from mazipan's MIT-licensed Mini Games collection.",'category':'Puzzle' if slug in {'2048','sudoku','minesweeper','color-connect','match-three','sliding-puzzle','number-merge','bolt-sort','color-block','onet-connect'} else 'Arcade','emoji':'🎮','accent':'#a89dfc','type':'hosted','path':'games/mazipan-library/games/'+slug+'/index.html','featured':False}
+              games.append(item);new.append(identity)
+          catalogue.write_text(json.dumps(games,ensure_ascii=False,indent=2)+'\n')
+          print('Imported mazipan games:',len(new),new)
+          if len(new)<15:raise SystemExit('Unexpectedly small build; not committing partial catalog')
+          PY
+      - name: Commit compiled games
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add games/mazipan-library catalog.json
+          git commit -m "Import compiled mazipan mini-games with MIT attribution"
+          git push origin HEAD:main
