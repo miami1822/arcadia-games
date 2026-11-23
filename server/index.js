@@ -36,7 +36,7 @@ async function captcha(token,ip){
  const controller=new AbortController(),timeout=setTimeout(()=>controller.abort(),7000);
  try{
   const r=await fetch('https://challenges.cloudflare.com/turnstile/v0/siteverify',{method:'POST',body:new URLSearchParams({secret:process.env.TURNSTILE_SECRET_KEY,response:token,remoteip:ip||''}),signal:controller.signal});
-  return r.ok&&(await r.json()).success===true;
+  if(!r.ok)return false;const outcome=await r.json();const host=String(outcome.hostname||'');const allowedHosts=[...allowed].map(x=>{try{return new URL(x).hostname}catch{return ''}});return outcome.success===true&&outcome.action==='arcadia-submit'&&allowedHosts.includes(host);
  }catch{return false}finally{clearTimeout(timeout)}
 }
 function validateZip(bytes){
