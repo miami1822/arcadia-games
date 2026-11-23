@@ -12,3 +12,9 @@ Upstream repository: https://github.com/minteez/browser-game-hub
 Source revision: a245a51010d7ce04b25bfd1592106c04f85bbeb7
 Imported games: minteez-clockwork-clash, minteez-cosmic-sentinel, minteez-desert-camel-runner, minteez-magnet-catch, minteez-magnet-mayhem-arcade-game, minteez-neon-cyberpunk-snake, minteez-neon-dodge, minteez-neon-racer-pro, minteez-neon-rail-rescue, minteez-neon-survivor, minteez-oasis-whack-a-mole, minteez-quiz-battle-royale, minteez-retro-maze-chomper, minteez-samurai-slice-arcade, minteez-skyhook-scramble, minteez-superhero-platformer, minteez-titan-defense, minteez-treasure-quest-island-radar
 The source repository license and the owner's reported permissions apply; review upstream license files and downstream assets before commercial reuse. Some games depend on third-party CDNs.
+
+## mohandesghorbany809-cmyk/Poor-Man-PlayStation
+Upstream repository: https://github.com/mohandesghorbany809-cmyk/Poor-Man-PlayStation
+Source revision: 0950b384aeb8e682f673cc6a471738d74bd2e87f
+Imported games: poor-awesome-memol, poor-candy-orchard-crush, poor-cheerful-challeng, poor-dart-hero, poor-find-the-treasure, poor-find-the-right-color, poor-full-or-empty, poor-hue-gues, poor-melt-the-ice, poor-memoryloss, poor-ping-pong-funtime, poor-ring-alert, poor-rock-paper-scissors, poor-sliding-puzzle, poor-snake-game, poor-sudoku-trio, poor-tile-rus
+The source repository license and the owner's reported permissions apply; review upstream license files and downstream assets before commercial reuse. Some games depend on third-party CDNs.

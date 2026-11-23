@@ -1036,5 +1036,192 @@
     "type": "hosted",
     "path": "games/minteez-treasure-quest-island-radar/index.html",
     "featured": false
+  },
+  {
+    "id": "poor-awesome-memol",
+    "title": "Awesome Memol",
+    "description": "Browser game provided by mohandesghorbany809-cmyk/Poor-Man-PlayStation.",
+    "category": "Arcade",
+    "emoji": "🎮",
+    "accent": "#83cfff",
+    "type": "hosted",
+    "path": "games/poor-awesome-memol/index.html",
+    "featured": false
+  },
+  {
+    "id": "poor-candy-orchard-crush",
+    "title": "Candy Orchard Crush",
+    "description": "Browser game provided by mohandesghorbany809-cmyk/Poor-Man-PlayStation.",
+    "category": "Arcade",
+    "emoji": "🎮",
+    "accent": "#83cfff",
+    "type": "hosted",
+    "path": "games/poor-candy-orchard-crush/index.html",
+    "featured": false
+  },
+  {
+    "id": "poor-cheerful-challeng",
+    "title": "Cheerful Challeng",
+    "description": "Browser game provided by mohandesghorbany809-cmyk/Poor-Man-PlayStation.",
+    "category": "Arcade",
+    "emoji": "🎮",
+    "accent": "#83cfff",
+    "type": "hosted",
+    "path": "games/poor-cheerful-challeng/index.html",
+    "featured": false
+  },
+  {
+    "id": "poor-dart-hero",
+    "title": "Dart Hero",
+    "description": "Browser game provided by mohandesghorbany809-cmyk/Poor-Man-PlayStation.",
+    "category": "Arcade",
+    "emoji": "🎮",
+    "accent": "#83cfff",
+    "type": "hosted",
+    "path": "games/poor-dart-hero/index.html",
+    "featured": false
+  },
+  {
+    "id": "poor-find-the-treasure",
+    "title": "Find The Treasure",
+    "description": "Browser game provided by mohandesghorbany809-cmyk/Poor-Man-PlayStation.",
+    "category": "Arcade",
+    "emoji": "🎮",
+    "accent": "#83cfff",
+    "type": "hosted",
+    "path": "games/poor-find-the-treasure/index.html",
+    "featured": false
+  },
+  {
+    "id": "poor-find-the-right-color",
+    "title": "Find The Right Color",
+    "description": "Browser game provided by mohandesghorbany809-cmyk/Poor-Man-PlayStation.",
+    "category": "Arcade",
+    "emoji": "🎮",
+    "accent": "#83cfff",
+    "type": "hosted",
+    "path": "games/poor-find-the-right-color/index.html",
+    "featured": false
+  },
+  {
+    "id": "poor-full-or-empty",
+    "title": "Full Or Empty",
+    "description": "Browser game provided by mohandesghorbany809-cmyk/Poor-Man-PlayStation.",
+    "category": "Arcade",
+    "emoji": "🎮",
+    "accent": "#83cfff",
+    "type": "hosted",
+    "path": "games/poor-full-or-empty/index.html",
+    "featured": false
+  },
+  {
+    "id": "poor-hue-gues",
+    "title": "Hue Gues",
+    "description": "Browser game provided by mohandesghorbany809-cmyk/Poor-Man-PlayStation.",
+    "category": "Arcade",
+    "emoji": "🎮",
+    "accent": "#83cfff",
+    "type": "hosted",
+    "path": "games/poor-hue-gues/index.html",
+    "featured": false
+  },
+  {
+    "id": "poor-melt-the-ice",
+    "title": "Melt The Ice",
+    "description": "Browser game provided by mohandesghorbany809-cmyk/Poor-Man-PlayStation.",
+    "category": "Arcade",
+    "emoji": "🎮",
+    "accent": "#83cfff",
+    "type": "hosted",
+    "path": "games/poor-melt-the-ice/index.html",
+    "featured": false
+  },
+  {
+    "id": "poor-memoryloss",
+    "title": "Memoryloss",
+    "description": "Browser game provided by mohandesghorbany809-cmyk/Poor-Man-PlayStation.",
+    "category": "Puzzle",
+    "emoji": "🎮",
+    "accent": "#83cfff",
+    "type": "hosted",
+    "path": "games/poor-memoryloss/index.html",
+    "featured": false
+  },
+  {
+    "id": "poor-ping-pong-funtime",
+    "title": "Ping Pong Funtime",
+    "description": "Browser game provided by mohandesghorbany809-cmyk/Poor-Man-PlayStation.",
+    "category": "Arcade",
+    "emoji": "🎮",
+    "accent": "#83cfff",
+    "type": "hosted",
+    "path": "games/poor-ping-pong-funtime/index.html",
+    "featured": false
+  },
+  {
+    "id": "poor-ring-alert",
+    "title": "Ring Alert",
+    "description": "Browser game provided by mohandesghorbany809-cmyk/Poor-Man-PlayStation.",
+    "category": "Arcade",
+    "emoji": "🎮",
+    "accent": "#83cfff",
+    "type": "hosted",
+    "path": "games/poor-ring-alert/index.html",
+    "featured": false
+  },
+  {
+    "id": "poor-rock-paper-scissors",
+    "title": "Rock Paper Scissors",
+    "description": "Browser game provided by mohandesghorbany809-cmyk/Poor-Man-PlayStation.",
+    "category": "Arcade",
+    "emoji": "🎮",
+    "accent": "#83cfff",
+    "type": "hosted",
+    "path": "games/poor-rock-paper-scissors/index.html",
+    "featured": false
+  },
+  {
+    "id": "poor-sliding-puzzle",
+    "title": "Sliding Puzzle",
+    "description": "Browser game provided by mohandesghorbany809-cmyk/Poor-Man-PlayStation.",
+    "category": "Puzzle",
+    "emoji": "🎮",
+    "accent": "#83cfff",
+    "type": "hosted",
+    "path": "games/poor-sliding-puzzle/index.html",
+    "featured": false
+  },
+  {
+    "id": "poor-snake-game",
+    "title": "Snake Game",
+    "description": "Browser game provided by mohandesghorbany809-cmyk/Poor-Man-PlayStation.",
+    "category": "Arcade",
+    "emoji": "🎮",
+    "accent": "#83cfff",
+    "type": "hosted",
+    "path": "games/poor-snake-game/index.html",
+    "featured": false
+  },
+  {
+    "id": "poor-sudoku-trio",
+    "title": "Sudoku Trio",
+    "description": "Browser game provided by mohandesghorbany809-cmyk/Poor-Man-PlayStation.",
+    "category": "Puzzle",
+    "emoji": "🎮",
+    "accent": "#83cfff",
+    "type": "hosted",
+    "path": "games/poor-sudoku-trio/index.html",
+    "featured": false
+  },
+  {
+    "id": "poor-tile-rus",
+    "title": "Tile Rus🧩",
+    "description": "Browser game provided by mohandesghorbany809-cmyk/Poor-Man-PlayStation.",
+    "category": "Arcade",
+    "emoji": "🎮",
+    "accent": "#83cfff",
+    "type": "hosted",
+    "path": "games/poor-tile-rus/index.html",
+    "featured": false
   }
 ]
