@@ -25,9 +25,9 @@ function localOperation(gameId,method,payload){
  }
 }
 class ArcadiaSDK{
- constructor({gameId,version='1.0.0',allowedParentOrigins=[]}={}){
+ constructor({gameId,version='1.0.0',allowedParentOrigins=[],previewMode=false}={}){
   if(!validId(gameId))throw Error('ArcadiaSDK requires a gameId: 2-64 lowercase letters, digits, hyphens, or underscores');
-  this.gameId=gameId;this.version=version;this.protocol=PROTOCOL;this.connected=false;this.capabilities={storage:'local',scores:'local',achievements:'local',accounts:false};this._id='ac_'+Math.random().toString(36).slice(2,12);this._counter=0;this._manifest=null;this._pending=new Map();this._handlers=new Map();this._allowed=new Set(allowedParentOrigins.filter(o=>typeof o==='string'&&o!=='*'&&o!=='null'));
+  this.gameId=gameId;this.version=version;this.protocol=PROTOCOL;this.connected=false;this.previewMode=!!previewMode;this._previewPort=null;this._previewWaiters=[];this._previewNotifications=[];this.capabilities={storage:'local',scores:'local',achievements:'local',accounts:false,preview:!!previewMode};this._id='ac_'+Math.random().toString(36).slice(2,12);this._counter=0;this._manifest=null;this._pending=new Map();this._handlers=new Map();this._allowed=new Set(allowedParentOrigins.filter(o=>typeof o==='string'&&o!=='*'&&o!=='null'));
   this._parent=global.parent!==global?global.parent:null;
   this._messageHandler=e=>this._receive(e);global.addEventListener('message',this._messageHandler);
   if(this._parent&&this._allowed.size)queueMicrotask(()=>this._hello());
@@ -44,15 +44,41 @@ class ArcadiaSDK{
   if(m.type==='RESPONSE'){const pending=this._pending.get(m.requestId);if(!pending)return;clearTimeout(pending.timer);this._pending.delete(m.requestId);if(m.ok)pending.resolve(m.result);else pending.reject(Error(m.error||'Arcadia host request failed'));return}
   if(m.type==='EVENT'&&typeof m.name==='string')this._dispatch(m.name,m.data||{});
  }
- async _rpc(method,payload){if(!this.connected)return localOperation(this.gameId,method,payload);const requestId=++this._counter;return new Promise((resolve,reject)=>{const timer=setTimeout(()=>{this._pending.delete(requestId);reject(Error('Arcadia host timed out'))},4000);this._pending.set(requestId,{resolve,reject,timer});this._send('REQUEST',{requestId,method,payload})})}
- _notify(type,payload){this._send(type,payload);return true}
+ attachPreviewPort(port){
+  if(!this.previewMode||this._previewPort||!port||typeof port.postMessage!=='function')throw Error('Invalid preview port');
+  this._previewPort=port;
+  port.onmessage=e=>{
+   const m=e.data;if(!m||m.__arcadiaPreview!==1||m.protocol!==PROTOCOL||m.gameId!==this.gameId)return;
+   if(m.type==='RESPONSE'){const pending=this._pending.get(m.requestId);if(!pending)return;clearTimeout(pending.timer);this._pending.delete(m.requestId);if(m.ok)pending.resolve(m.result);else pending.reject(Error(m.error||'Preview request failed'))}
+   else if(m.type==='EVENT'&&typeof m.name==='string')this._dispatch(m.name,m.data||{});
+  };
+  if(typeof port.start==='function')port.start();
+  this.connected=true;
+  for(const n of this._previewNotifications.splice(0))this._notify(n.type,n.payload);
+  for(const w of this._previewWaiters.splice(0)){clearTimeout(w.timer);this._rpc(w.method,w.payload).then(w.resolve,w.reject)}
+  this._dispatch('connected',{capabilities:this.capabilities});return this;
+ }
+ async _rpc(method,payload){if(this.previewMode){
+  if(!this._previewPort)return new Promise((resolve,reject)=>{const w={method,payload,resolve,reject,timer:null};w.timer=setTimeout(()=>{this._previewWaiters=this._previewWaiters.filter(x=>x!==w);reject(Error('Playtest bridge unavailable'))},6000);this._previewWaiters.push(w)});
+  const requestId=++this._counter;return new Promise((resolve,reject)=>{
+   const timer=setTimeout(()=>{this._pending.delete(requestId);reject(Error('Playtest request timed out'))},4000);
+   this._pending.set(requestId,{resolve,reject,timer});
+   try{this._previewPort.postMessage({__arcadiaPreview:1,protocol:PROTOCOL,gameId:this.gameId,type:'REQUEST',requestId,method,payload})}catch(err){clearTimeout(timer);this._pending.delete(requestId);reject(err)}
+  });
+ }
+ if(!this.connected)return localOperation(this.gameId,method,payload);const requestId=++this._counter;return new Promise((resolve,reject)=>{const timer=setTimeout(()=>{this._pending.delete(requestId);reject(Error('Arcadia host timed out'))},4000);this._pending.set(requestId,{resolve,reject,timer});this._send('REQUEST',{requestId,method,payload})})}
+ _notify(type,payload){if(this.previewMode){
+  if(this._previewPort){try{this._previewPort.postMessage({__arcadiaPreview:1,protocol:PROTOCOL,gameId:this.gameId,type,payload})}catch{return false}}
+  else if(this._previewNotifications.length<30)this._previewNotifications.push({type,payload});
+  return true;
+ }this._send(type,payload);return true}
  ready(manifest={}){this._manifest={title:String(manifest.title||this.gameId).slice(0,128),features:Array.isArray(manifest.features)?manifest.features:[]};if(this.connected)this._notify('READY',{manifest:this._manifest});return this}
  on(event,fn){if(typeof fn!=='function')throw Error('Callback must be a function');const set=this._handlers.get(event)||new Set();set.add(fn);this._handlers.set(event,set);return()=>this.off(event,fn)}
  off(event,fn){this._handlers.get(event)?.delete(fn)}
  emit(name,data={}){if(typeof name!=='string'||name.length>90)throw Error('Invalid event name');this._notify('GAME_EVENT',{name,data})}
  _dispatch(name,data){for(const cb of this._handlers.get(name)||[]){try{cb(data)}catch(e){console.error('Arcadia event listener failed',e)}}}
  getEnvironment(){return {gameId:this.gameId,version:this.version,protocol:PROTOCOL,connected:this.connected,capabilities:{...this.capabilities}}}
- destroy(){global.removeEventListener('message',this._messageHandler);for(const p of this._pending.values()){clearTimeout(p.timer);p.reject(Error('SDK destroyed'))}this._pending.clear();this._handlers.clear()}
+ destroy(){global.removeEventListener('message',this._messageHandler);if(this._previewPort){this._previewPort.close();this._previewPort=null}for(const w of this._previewWaiters){clearTimeout(w.timer);w.reject(Error('SDK destroyed'))}this._previewWaiters=[];for(const p of this._pending.values()){clearTimeout(p.timer);p.reject(Error('SDK destroyed'))}this._pending.clear();this._handlers.clear()}
 }
 ArcadiaSDK.version='0.1.0';ArcadiaSDK.localOperation=localOperation;
 global.ArcadiaSDK=ArcadiaSDK;
