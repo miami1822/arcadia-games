@@ -56,3 +56,19 @@ body{font-family:Inter,"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-seri
 @media(max-width:750px){.hero-art{display:none}.topbar nav{overflow-x:auto;flex-wrap:nowrap;width:100%;scrollbar-width:none}.topbar nav a{white-space:nowrap}.topbar{position:static}.game-grid{grid-template-columns:1fr 1fr;gap:12px}.thumb{min-height:110px}.game-emoji{font-size:46px}.game-meta{padding:12px}.card-play{display:none}}
 @media(max-width:420px){.game-grid{grid-template-columns:1fr}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important}.game-card:hover,.spot:hover,.primary:hover{transform:none}.game-card:hover .game-emoji{transform:none}}
+
+/* Game-specific custom artwork, 16:9 covers */
+.thumb{min-height:0;aspect-ratio:16/9;overflow:hidden;isolation:isolate}
+.thumb-image{display:block;width:100%;height:100%;aspect-ratio:16/9;object-fit:cover;transform:scale(1);transition:transform .25s ease,filter .25s ease}
+.game-card:hover .thumb-image,.game-card:focus-within .thumb-image{transform:scale(1.045);filter:saturate(1.08)}
+.spot .spot-art{display:block;flex:none;width:74px;height:48px;overflow:hidden;border-radius:10px;background:color-mix(in srgb,var(--c) 22%,#10131e)}
+.spot .spot-image{display:block;width:100%;height:100%;object-fit:cover;aspect-ratio:16/9}
+.spot .spot-fallback{display:grid;place-items:center;width:100%;height:100%;font-size:28px}
+.spot .spot-copy{min-width:0}
+.spot .spot-copy b{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.game-intro{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:24px;margin:30px 0}
+.game-intro .game-heading{flex:1 1 320px;margin:0}
+.game-intro .game-cover{flex:0 1 420px;min-width:240px}
+.game-cover img{display:block;width:100%;height:auto;aspect-ratio:16/9;object-fit:cover;border-radius:18px;box-shadow:0 16px 38px rgba(0,0,0,.34);border:1px solid rgba(255,255,255,.14)}
+@media(max-width:750px){.game-intro{align-items:stretch}.game-intro .game-cover{flex:1 1 100%;min-width:0}.spot .spot-art{width:64px;height:44px}}
+@media(prefers-reduced-motion:reduce){.thumb-image{transition:none!important}.game-card:hover .thumb-image,.game-card:focus-within .thumb-image{transform:none!important}}
