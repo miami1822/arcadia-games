@@ -33,6 +33,8 @@ jobs:
           if dest.exists(): shutil.rmtree(dest)
           shutil.copytree(src,dest)
           shutil.copy2('/tmp/mazipan-src/LICENSE',dest/'LICENSE')
+          # Exclude gambling-themed titles from Arcadia distribution, not only catalog.
+          if (dest/'games'/'blackjack').exists(): shutil.rmtree(dest/'games'/'blackjack')
           catalogue=root/'catalog.json'
           games=json.loads(catalogue.read_text())
           new=[]
