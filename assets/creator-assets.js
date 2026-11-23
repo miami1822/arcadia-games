@@ -14,8 +14,26 @@ const originals=[
  ['asteroid','Asteroid','Environment',svg('<path d="M36 9 63 15 83 38 72 70 42 86 14 64 11 35Z" fill="#8799b7"/><circle cx="38" cy="42" r="10" fill="#5d6b85"/><circle cx="66" cy="53" r="7" fill="#5d6b85"/>')],
  ['flag','Victory Flag','UI',svg('<path d="M25 7v82" stroke="#e1e7fc" stroke-width="8"/><path d="M29 11h51L66 35l14 23H29Z" fill="#a58af7"/>')]
 ];
+/* Additional original 2D sprites for platformers, top-down and puzzle games. */
+originals.push(
+ ['grass','Grass Tile','Terrain',svg('<rect x="6" y="24" width="84" height="62" rx="6" fill="#9a6747"/><path d="M6 23h84v19H6Z" fill="#51d291"/><path d="m12 23 7-13 8 13m10 0 8-15 9 15m11 0 8-13 8 13" fill="#77f6b5"/>')],
+ ['stone','Stone Tile','Terrain',svg('<rect x="6" y="7" width="84" height="83" rx="8" fill="#748ba8"/><path d="M6 44h84M45 7v37M64 44v46M24 44v46" stroke="#40526e" stroke-width="5"/><path d="M13 14h25M52 52h20" stroke="#a9c0dd" stroke-width="6"/>')],
+ ['water','Water Tile','Terrain',svg('<rect x="4" y="13" width="88" height="74" rx="7" fill="#268bc2"/><path d="M8 33q20-16 40 0t40 0M8 58q20-16 40 0t40 0" stroke="#85e3ff" stroke-width="7" fill="none"/>')],
+ ['spikes','Crystal Spikes','Hazard',svg('<path d="M10 80 24 24 38 80ZM32 80 51 13 70 80ZM57 80 75 31 88 80Z" fill="#fb8197" stroke="#c44970" stroke-width="3"/>')],
+ ['checkpoint','Checkpoint Flag','Gameplay',svg('<path d="M25 8v82" stroke="#aebcdb" stroke-width="8"/><path d="M29 13h54L69 36l14 21H29Z" fill="#58d5b5"/><path d="M23 87h42" stroke="#b4d3e8" stroke-width="7"/>')],
+ ['heart','Health Heart','UI',svg('<path d="M48 85 12 48C-1 31 15 10 33 17q10 4 15 15 5-11 15-15c18-7 34 14 21 31Z" fill="#fb7797" stroke="#d94a72" stroke-width="4"/>')],
+ ['shield','Energy Shield','UI',svg('<path d="M48 7 83 20v28q0 27-35 42Q13 75 13 48V20Z" fill="#6ed8f3" stroke="#8aa2ec" stroke-width="4"/><path d="M48 19v54M25 37h46" stroke="#eaffff" stroke-width="6"/>')],
+ ['spring','Bounce Pad','Gameplay',svg('<rect x="13" y="72" width="70" height="14" rx="5" fill="#7484a8"/><path d="m26 67 14-14-14-13 14-13-14-13m44 53L56 53l14-13-14-13 14-13" fill="none" stroke="#ffcf70" stroke-width="7"/><rect x="13" y="7" width="70" height="12" rx="4" fill="#9b91e8"/>')],
+ ['portal','Arcadia Portal','Gameplay',svg('<ellipse cx="48" cy="48" rx="34" ry="42" fill="#2a335f" stroke="#a688ff" stroke-width="8"/><ellipse cx="48" cy="48" rx="24" ry="30" fill="#58b6e7"/><ellipse cx="48" cy="48" rx="12" ry="22" fill="#d2f4ff"/>')],
+ ['cloud','Soft Cloud','Environment',svg('<path d="M21 74C5 73 7 51 22 46c-3-20 23-31 34-15 13-7 29 3 27 18 17 8 12 26-4 26Z" fill="#e9f4ff" stroke="#afcbe4" stroke-width="4"/>')],
+ ['moon','Moon','Background',svg('<circle cx="48" cy="48" r="39" fill="#fee2a8"/><circle cx="69" cy="34" r="35" fill="#18284a"/>')],
+ ['compass','Compass','UI',svg('<circle cx="48" cy="48" r="38" fill="#293b63" stroke="#96b8e2" stroke-width="6"/><path d="m48 15 14 47-14-8-14 8Z" fill="#fbb972"/><path d="m48 79 14-17-14 8-14-8Z" fill="#79d7db"/>')]
+);
 const packs=[
  ['New Platformer Pack','Kenney','https://kenney.nl/assets/new-platformer-pack','CC0','2D','🏞️'],
+ ['Abstract Platformer','Kenney','https://kenney.nl/assets/abstract-platformer','CC0','2D','🎨'],
+ ['Platformer Pack Medieval','Kenney','https://kenney.nl/assets/platformer-pack-medieval','CC0','2D','🏰'],
+ ['2D Platformer Characters','Kenney','https://kenney.nl/assets/platformer-characters','CC0','2D','🧍'],
  ['Pixel Platformer','Kenney','https://kenney.nl/assets/pixel-platformer','CC0','Pixel','👾'],
  ['Pixel Platformer Blocks','Kenney','https://kenney.nl/assets/pixel-platformer-blocks','CC0','Pixel','🧱'],
  ['UI Pack','Kenney','https://kenney.nl/assets/ui-pack','CC0','UI','🖱️'],
