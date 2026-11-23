@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "description": "Arcadia candidate sources. Site-level permission is user-reported; game-specific sublicensing and embedding conditions must be checked before publishing.",
+  "sources": [
+    {
+      "id": "yandex-games",
+      "name": "Yandex Games",
+      "url": "https://yandex.com/games/",
+      "reported_permission": "user-reported",
+      "preferred_method": "official publisher/distribution integration",
+      "distribution_info": "https://yandex.com/project/games/publishers",
+      "review_status": "publisher onboarding and individual game terms required",
+      "notes": "Publisher program exists; not every game is freely redistributable. Do not scrape or mirror game assets."
+    },
+    {
+      "id": "drive-u-7",
+      "name": "Classroom Resources / Drive U 7",
+      "url": "https://sites.google.com/view/drive-u-7-home/home?authuser=0",
+      "reported_permission": "user-reported",
+      "preferred_method": "per-game authorized embed or licensed self-host",
+      "review_status": "per-game rights and embedding verification required",
+      "notes": "Third-party Google Sites catalog; site permission may not cover original publishers."
+    },
+    {
+      "id": "classroom6x",
+      "name": "Classroom 6x",
+      "url": "https://sites.google.com/view/classroom6x/home?authuser=0",
+      "reported_permission": "user-reported",
+      "preferred_method": "per-game authorized embed or licensed self-host",
+      "review_status": "per-game rights and embedding verification required",
+      "notes": "Third-party Google Sites catalog; source files should be independently vetted."
+    },
+    {
+      "id": "unblockedgames77",
+      "name": "Unblocked Games Premium 77",
+      "url": "https://sites.google.com/site/unblockedgames77/home",
+      "reported_permission": "user-reported",
+      "preferred_method": "per-game authorized embed or licensed self-host",
+      "review_status": "per-game rights and embedding verification required",
+      "notes": "Directory includes links to external developers and publishers; a listing does not transfer rights."
+    }
+  ],
+  "requirements": [
+    "Record source URL, developer, redistribution scope, license/permission evidence, and permitted monetization for each game.",
+    "Confirm iframe compatibility and fullscreen behavior without navigation outside School Edition.",
+    "Review third-party scripts and ad trackers before importing.",
+    "Only add to catalog after approval, compatible embed, and functionality checks.",
+    "Respect school IT policies; do not implement filter bypasses."
+  ]
+}
