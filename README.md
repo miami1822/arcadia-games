@@ -78,7 +78,7 @@ Try [`sdk/example.html`](sdk/example.html) for a standalone demo or [`sdk/host-d
 
 ## Advanced Creator: Blocks, sprites and publishing intake
 
-Arcadia Creator now includes an advanced Blockly-based Block Studio with **22 custom game blocks** plus built-in control, logic, math, text and variable blocks. Visual games can be **converted one-way** into editable JavaScript in Code Studio. The sprite library includes ten original starter assets and browsable links to Kenney CC0 packs and per-license community packs, along with filtered ZIP/image imports. All changes remain account-free during the editor alpha.
+Arcadia Creator now includes an advanced Blockly-based Block Studio with **25 custom game blocks** plus built-in control, logic, math, text and variable blocks. Visual games can be **converted one-way** into editable JavaScript in Code Studio. The sprite library includes 22 original starter assets and browsable links to Kenney CC0 packs and per-license community packs, along with filtered ZIP/image imports. All changes remain account-free during the editor alpha.
 
 A gated **anonymous game review API** now exists under [`server/`](server/README.md), but **is not deployed or configured for public submissions**. The main website continues to export game ZIPs locally; enabling web uploads requires a durable database, CAPTCHA, approved moderation workflow and tests. Future optional Lucion Identity profile linking will remain outside School Edition. See [PUBLISHING.md](PUBLISHING.md) for the planned anonymous/linked release model.
 
@@ -86,3 +86,10 @@ A gated **anonymous game review API** now exists under [`server/`](server/README
 ## Sound & Music Studio
 
 Arcadia Creator now includes **13 original previewable sounds and music loops**, 3 additional game-audio blocks, per-project WAV/MP3/OGG imports and filtered audio ZIP importing. The curated library has 24 added links to official CC0 or individually licensed audio, art, texture and model sources. Some are external references only, not files already included in the game. Game exports include source metadata and `ASSET-CREDITS.txt`. See [ASSET_SOURCES.md](ASSET_SOURCES.md) and [CREATOR.md](CREATOR.md).
+
+
+## 2D Sprite Sheet Cutter and 3D Model Arsenal
+
+Arcadia Creator now includes a **2D Sprite Sheet Cutter** (PNG/JPEG/WebP sheet → individual sprites) and a **3D Model Arsenal** with eight original, generated GLB models, a WebGL viewer, compact GLB uploads, and ZIP pack import. The 2D sprites work in the existing game runtime; GLB models are previewable and exported as assets, but **full 3D gameplay is not implemented**. The release ZIP contains any imported `models/*.glb`, a `arcadia-3d-assets.json` manifest, and source credits.
+
+For use and limitations, see [ASSET_PIPELINE_2D_3D.md](ASSET_PIPELINE_2D_3D.md).
