@@ -122,32 +122,56 @@ var scene=window.ARCADIA_SCENE||[];
 var canvas=document.getElementById('arcadia-game'),ctx=canvas.getContext('2d');
 var objs=scene.map(function(o){return Object.assign({},o)});
 var player=objs.find(function(o){return o.type==='player'})||{x:40,y:40,w:36,h:44,color:'#ad9aff'};
-var spawn={x:player.x,y:player.y},keys={},velocity=0,score=0,done=false,last=performance.now(),sdk=window.arcadiaGame||null;
+var spawn={x:player.x,y:player.y},keys={},velocity=0,score=0,done=false,last=performance.now(),sdk=window.arcadiaGame||null,speed=4.2,gravity=.54,notice='',noticeUntil=0;
+var handlers={};var sprites={};
+Object.keys(window.ARCADIA_ASSETS||{}).forEach(function(path){if(!/^sprites\//.test(path))return;var image=new Image();image.src=window.ARCADIA_ASSETS[path];sprites[path]=image});
+function emit(event){(handlers[event]||[]).slice().forEach(function(cb){try{cb()}catch(error){console.error('Arcadia block error:',error)}})}
+window.ArcadiaLogic={
+ on:function(event,callback){if(typeof callback!=='function')return;(handlers[event]??=[]).push(callback)},
+ move:function(dx,dy){player.x=Math.max(0,Math.min(960-player.w,player.x+(Number(dx)||0)));player.y=Math.max(0,Math.min(540-player.h,player.y+(Number(dy)||0)))},
+ jump:function(force){velocity=-Math.max(1,Math.min(30,Number(force)||12))},
+ setSpeed:function(n){speed=Math.max(.1,Math.min(20,Number(n)||4))},
+ setGravity:function(n){gravity=Math.max(0,Math.min(5,Number(n)||.54))},
+ setColor:function(color){if(/^#[a-f0-9]{6}$/i.test(color))player.color=color},
+ message:function(text){notice=String(text).slice(0,100);noticeUntil=performance.now()+3200},
+ spawnCoin:function(x,y){objs.push({type:'coin',x:Math.max(0,Math.min(920,Number(x)||0)),y:Math.max(0,Math.min(500,Number(y)||0)),w:26,h:26,color:'#ffcb6b'})},
+ addScore:function(n){score=Math.max(0,Math.min(999999,score+(Number(n)||0)))},
+ setScore:function(n){score=Math.max(0,Math.min(999999,Number(n)||0))},
+ unlock:function(id){if(sdk&&typeof id==='string')sdk.achievements.unlock(id).catch(function(){})},
+ save:function(slot){if(sdk&&typeof slot==='string')sdk.storage.save(slot,{score:score,x:player.x,y:player.y}).catch(function(){})},
+ sound:function(name){try{var Audio=window.AudioContext||window.webkitAudioContext;if(!Audio)return;var ac=window.__arcadiaSoundContext||(window.__arcadiaSoundContext=new Audio());var tone=ac.createOscillator(),gain=ac.createGain();tone.type='sine';tone.frequency.value=({coin:800,jump:500,win:1100,hit:180})[name]||500;gain.gain.value=.05;tone.connect(gain);gain.connect(ac.destination);tone.start();tone.stop(ac.currentTime+.11)}catch(_){}},
+ isKeyDown:function(key){return !!keys[String(key).toLowerCase()]},
+ score:function(){return score},
+ playerX:function(){return player.x},
+ playerY:function(){return player.y}
+};
+setTimeout(function(){emit('start')},0);
 if(sdk)sdk.session.start();
 function intersect(a,b){return a.x<b.x+b.w&&a.x+a.w>b.x&&a.y<b.y+b.h&&a.y+a.h>b.y}
 function reset(){player.x=spawn.x;player.y=spawn.y;velocity=0}
-addEventListener('keydown',function(e){keys[e.key.toLowerCase()]=true;if(['arrowleft','arrowright','arrowup',' ','a','d','w'].includes(e.key.toLowerCase()))e.preventDefault()});
+addEventListener('keydown',function(e){var key=e.key.toLowerCase();keys[key]=true;emit('key:'+key);if(['arrowleft','arrowright','arrowup',' ','a','d','w'].includes(e.key.toLowerCase()))e.preventDefault()});
 addEventListener('keyup',function(e){keys[e.key.toLowerCase()]=false});
 function loop(time){
  var dt=Math.min((time-last)/16.667,2);last=time;
  if(!done){
   var move=(keys.arrowright||keys.d?1:0)-(keys.arrowleft||keys.a?1:0);
-  player.x=Math.max(0,Math.min(960-player.w,player.x+move*4.2*dt));
+  player.x=Math.max(0,Math.min(960-player.w,player.x+move*speed*dt));
   var floors=objs.filter(function(o){return o.type==='platform'});
   var previousBottom=player.y+player.h;
-  velocity=Math.min(velocity+.54*dt,13);
+  velocity=Math.min(velocity+gravity*dt,13);
   player.y+=velocity*dt;
   var grounded=false;
   floors.forEach(function(o){if(velocity>=0&&player.x+player.w>o.x&&player.x<o.x+o.w&&previousBottom<=o.y+8&&player.y+player.h>=o.y){player.y=o.y-player.h;velocity=0;grounded=true}});
   if((keys[' ']||keys.arrowup||keys.w)&&grounded){velocity=-11.7}
   if(player.y>580)reset();
-  objs.forEach(function(o){if(o.type==='coin'&&!o.collected&&intersect(player,o)){o.collected=true;score+=10;if(sdk&&score===10)sdk.achievements.unlock('first-coin').catch(function(){})}if(o.type==='hazard'&&intersect(player,o))reset();if(o.type==='goal'&&intersect(player,o)){done=true;if(sdk){sdk.achievements.unlock('level-complete').catch(function(){});sdk.scores.submit(score,{mode:'platformer'}).catch(function(){});sdk.session.end({score:score,result:'completed'})}}});
+  objs.forEach(function(o){if(o.type==='coin'&&!o.collected&&intersect(player,o)){o.collected=true;score+=10;emit('collect');if(sdk&&score===10)sdk.achievements.unlock('first-coin').catch(function(){})}if(o.type==='hazard'&&intersect(player,o)){reset();emit('hit')}if(o.type==='goal'&&intersect(player,o)){done=true;emit('finish');if(sdk){sdk.achievements.unlock('level-complete').catch(function(){});sdk.scores.submit(score,{mode:'platformer'}).catch(function(){});sdk.session.end({score:score,result:'completed'})}}});
+  emit('update');
  }
  var gradient=ctx.createLinearGradient(0,0,0,540);gradient.addColorStop(0,'#1b2444');gradient.addColorStop(1,'#0d1526');ctx.fillStyle=gradient;ctx.fillRect(0,0,960,540);
  ctx.fillStyle='#ffffff10';for(var j=0;j<30;j++){ctx.fillRect((j*157)%960,(j*97)%310,2,2)}
- objs.forEach(function(o){if(o.type==='player'||o.collected)return;ctx.fillStyle=o.color;if(o.type==='coin'){ctx.beginPath();ctx.arc(o.x+o.w/2,o.y+o.h/2,o.w/2,0,Math.PI*2);ctx.fill()}else{ctx.fillRect(o.x,o.y,o.w,o.h)}if(o.type==='goal'){ctx.fillStyle='#fff';ctx.font='32px system-ui';ctx.fillText('⚑',o.x+7,o.y+37)}});
- ctx.fillStyle=player.color;ctx.fillRect(player.x,player.y,player.w,player.h);
- ctx.font='bold 23px system-ui';ctx.fillStyle='#ffffff';ctx.fillText('SCORE: '+score,25,38);
+ objs.forEach(function(o){if(o.type==='player'||o.collected)return;var img=o.sprite&&sprites[o.sprite];if(img&&img.complete&&img.naturalWidth){ctx.drawImage(img,o.x,o.y,o.w,o.h);return}ctx.fillStyle=o.color;if(o.type==='coin'){ctx.beginPath();ctx.arc(o.x+o.w/2,o.y+o.h/2,o.w/2,0,Math.PI*2);ctx.fill()}else{ctx.fillRect(o.x,o.y,o.w,o.h)}if(o.type==='goal'){ctx.fillStyle='#fff';ctx.font='32px system-ui';ctx.fillText('⚑',o.x+7,o.y+37)}});
+ var playerImage=player.sprite&&sprites[player.sprite];if(playerImage&&playerImage.complete&&playerImage.naturalWidth)ctx.drawImage(playerImage,player.x,player.y,player.w,player.h);else{ctx.fillStyle=player.color;ctx.fillRect(player.x,player.y,player.w,player.h)}
+ ctx.font='bold 23px system-ui';ctx.fillStyle='#ffffff';ctx.fillText('SCORE: '+score,25,38);if(notice&&time<noticeUntil){ctx.font='22px system-ui';ctx.fillText(notice,25,74)}
  if(done){ctx.fillStyle='#070b18c9';ctx.fillRect(0,0,960,540);ctx.textAlign='center';ctx.fillStyle='#b9a5ff';ctx.font='bold 52px system-ui';ctx.fillText('LEVEL COMPLETE!',480,260);ctx.fillStyle='#fff';ctx.font='24px system-ui';ctx.fillText('Final score: '+score,480,303)}
  requestAnimationFrame(loop)
 }
@@ -155,7 +179,13 @@ requestAnimationFrame(loop)
 }
 function safetyCSP(){return "<meta http-equiv=\"Content-Security-Policy\" content=\"default-src 'none'; base-uri 'none'; object-src 'none'; connect-src 'none'; form-action 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; media-src data: blob:; font-src data:;\">"}
 function safeInline(s){return String(s||'').replace(/<\/script/gi,'<\\/script').replace(/<\/style/gi,'<\\/style')}
-function visualHTML(p){var scene=JSON.stringify(p.scene).replace(/</g,'\\u003c');return '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'+safetyCSP()+'<title>'+escapeHTML(p.title)+'</title><style>*{box-sizing:border-box}body{background:#0b1020;margin:0;color:#fff;font-family:system-ui,sans-serif;display:grid;min-height:100vh;place-items:center}canvas{width:100%;height:auto;max-height:100vh;object-fit:contain}div{width:100%;max-width:960px}</style></head><body><div><canvas width="960" height="540" id="arcadia-game"></canvas></div><script>window.ARCADIA_SCENE='+scene+';('+visualRuntime.toString()+')();</script></body></html>'}
+function visualHTML(p){
+ var scene=JSON.stringify(p.scene).replace(/</g,'\\u003c');
+ var assets=JSON.stringify(p.assets||{}).replace(/</g,'\\u003c');
+ var logic=safeInline(p.blockCode||'');
+ var js='window.ARCADIA_SCENE='+scene+';window.ARCADIA_ASSETS='+assets+';('+visualRuntime.toString()+')();\n'+logic;
+ return '<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'+safetyCSP()+'<title>'+escapeHTML(p.title)+'</title><style>*{box-sizing:border-box}body{background:#0b1020;margin:0;color:#fff;font-family:system-ui,sans-serif;display:grid;min-height:100vh;place-items:center}canvas{width:100%;height:auto;max-height:100vh;object-fit:contain}div{width:100%;max-width:960px}</style></head><body><div><canvas width="960" height="540" id="arcadia-game"></canvas></div><script>'+safeInline(js)+'</script></body></html>'
+}
 function normalizePath(path){return String(path||'').replace(/^\.\//,'').replace(/^\//,'')}
 function codeHTML(p){var html=p.files['index.html']||'',seenCss=false,seenJs=false;
 html=html.replace(/<link\b[^>]*\bhref\s*=\s*["']([^"']+)["'][^>]*>/gi,function(full,path){var name=normalizePath(path);if(Object.hasOwn(p.files,name)&&/\.css$/i.test(name)){if(name==='style.css')seenCss=true;return '<style>'+safeInline(p.files[name])+'</style>'}return full});
