@@ -16,6 +16,7 @@
 <script defer src="https://unpkg.com/blockly@13.5.0/msg/en.js"></script>
 <script defer src="assets/creator-blocks.js"></script>
 <script defer src="assets/creator-assets.js"></script>
+<script defer src="assets/creator-config.js"></script>
 <script defer src="assets/creator.js"></script>
 </head>
 <body>
@@ -101,7 +102,14 @@ await window.arcadiaGame.achievements.unlock('first-win');</code></pre></details
 <p id="publisher-feedback" class="hint" role="status">Anonymous mode selected. You can export a submission package now.</p>
 </div>
 <div class="notice"><strong>Submissions are being built.</strong> Anonymously submitted games will enter a review queue before appearing in Arcadia. The current static GitHub Pages site cannot securely accept uploads, so exporting a review package is the only live action here. Lucion Identity sign-in and profile linking are not yet connected. School Edition will have no sign-in.</div>
-<div class="hint">Submission and moderation are handled by Arcadia staff outside this local editor. Exporting does not make a game public.</div></div></div></div>
+<div class="hint">Submission and moderation are handled by Arcadia staff outside this local editor. Exporting does not make a game public.</div><section id="submission-online" hidden aria-labelledby="submission-online-heading">
+<h3 id="submission-online-heading">Submit without signing in</h3>
+<p class="hint">Your ZIP will be submitted privately for review. Publication happens only after staff approve the game.</p>
+<div id="creator-turnstile"></div>
+<button id="submit-for-review" class="button primary full" type="button">↑ Submit game for review</button>
+<p id="submission-status" class="hint" role="status" aria-live="polite"></p>
+</section>
+</div></div></div>
 </section>
 </main>
 <footer class="footer">ARCADIA CREATOR ALPHA · Built for browser games · <a href="index.html">Return to Arcadia</a></footer>
