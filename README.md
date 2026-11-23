@@ -1,6 +1,6 @@
 # Arcadia — browser game site
 
-An original, responsive arcade starter with four playable games, searchable catalog, favorites, and a local visual catalog editor. No third-party game assets or embeds included.
+An original, responsive arcade starter with 14 playable games, searchable catalog, favorites, and a local visual catalog editor. No third-party game assets or embeds included.
 
 ## Preview locally
 
@@ -45,7 +45,7 @@ Project source is supplied for your use and customization. No external game cont
 - `index.html` is the primary browser arcade. `plus.html` is a **coming-soon concept**, not a functioning billing or subscription system.
 - `school.html` is the lightweight school-friendly edition, sharing the same `catalog.json` as the main site. It has no network-filter bypassing and no tracking or ads.
 - To create the Google Sites companion: publish this site to HTTPS first. In the Google Sites editor, choose **Insert → Embed → URL**, enter the published absolute URL of `/school.html`, adjust the iframe size, and publish the Google Site. If your Google Workspace administrator blocks embedding or access to the host, follow that policy. The Google Site itself must be manually created/published with an authorized account.
-- To add a new original built-in game, add `games/<id>.js` and a matching `catalog.json` entry. Run `python scripts/check_catalog.py` to check metadata and module presence. More thorough browser/gameplay tests are still needed before public releases.
+- To add a new original built-in game, add `games/<id>.js` and a matching `catalog.json` entry. More thorough browser/gameplay tests are still needed before public releases.
 - `assets/player.js` now supports additional built-in JavaScript game files referenced by a validated catalog ID. Code review is essential because game scripts run on your site.
 - Changes to the catalog should be reviewed before a maintainer commits them. The Google Sites embed automatically reflects changes on the hosted `school.html`, subject to normal caching. It does **not** automatically create/update native Google Sites pages.
 
