@@ -74,3 +74,10 @@ See [CREATOR.md](CREATOR.md) and [GITHUB_PAGES.md](GITHUB_PAGES.md) for the deta
 The uploaded Arcadia Game SDK is integrated at [`sdk/`](sdk/README.md) and requires no developer accounts. The Main Edition and School Edition initialize `window.arcadiaGame` for reviewed built-in games, and **Neon Snake** records scores and unlocks achievements through it.
 
 Try [`sdk/example.html`](sdk/example.html) for a standalone demo or [`sdk/host-demo.html`](sdk/host-demo.html) for the trusted iframe host adapter. Local saves and scores remain on the current browser/device; there are no online leaderboards, cloud saves or automatic anonymous publishing APIs. Hosted/external games are not automatically granted host access.
+
+
+## Advanced Creator: Blocks, sprites and publishing intake
+
+Arcadia Creator now includes an advanced Blockly-based Block Studio with **22 custom game blocks** plus built-in control, logic, math, text and variable blocks. Visual games can be **converted one-way** into editable JavaScript in Code Studio. The sprite library includes ten original starter assets and browsable links to Kenney CC0 packs and per-license community packs, along with filtered ZIP/image imports. All changes remain account-free during the editor alpha.
+
+A gated **anonymous game review API** now exists under [`server/`](server/README.md), but **is not deployed or configured for public submissions**. The main website continues to export game ZIPs locally; enabling web uploads requires a durable database, CAPTCHA, approved moderation workflow and tests. Future optional Lucion Identity profile linking will remain outside School Edition. See [PUBLISHING.md](PUBLISHING.md) for the planned anonymous/linked release model.
