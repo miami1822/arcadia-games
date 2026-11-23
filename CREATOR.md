@@ -8,9 +8,10 @@ The Creator UI is also linked from the main `index.html`.
 - Responsive Creator Hub with real local project counts and search/sort.
 - Create, duplicate, rename, delete, and persist draft projects in browser `localStorage`.
 - 2D Visual Builder: add, select, drag, resize, recolor, and remove players, platforms, coins, hazards, and goals.
-- **Advanced Block Studio:** Blockly-powered, Scratch-style coding with 22 custom Arcadia blocks, including events, movement, physics, looks, sounds, scores, achievements and saves; standard control/logic/math/text/variables blocks are also available.
+- **Advanced Block Studio:** Blockly-powered, Scratch-style coding with 25 custom Arcadia blocks, including events, movement, physics, looks, sounds, scores, achievements and saves; standard control/logic/math/text/variables blocks are also available.
 - **Convert to Code:** One-way conversion of visual scene and blocks into editable HTML and JavaScript, retaining the original block snapshot. Reverse conversion is not supported.
-- **Asset Library:** Ten original starter sprites plus 24 additional vetted free-media and reference pack links from Kenney, OpenGameArt, Freesound, Poly Haven, and ambientCG. Includes sprite imports and filtered ZIP pack importing.
+- **2D Asset Library:** 22 original usable SVG sprites, curated CC0 and license-tagged source packs, direct image imports and filtered image ZIP imports. The Sprite Sheet Cutter converts PNG/JPEG/WebP sheets into 2D PNG frames usable in Visual Builder.
+- **3D Model Arsenal:** Eight generated original GLB 2.0 starter models, real orbit/zoom WebGL inspection, small self-contained GLB import and filtered 3D ZIP import. Models are packaged as files in release ZIPs but are not playable in the current 2D engine.
 - **Sound & Music Studio:** Thirteen original audio clips (10 SFX + 3 short loops) can be previewed and added to a game, along with WAV/MP3/OGG imports and filtered audio ZIP importing. A companion pack browser links to official audio sources.
 - **Audio Blocks:** Block Studio provides Play Audio Asset, Loop Music Asset, and Stop Background Music blocks, and exports bundle audio files plus source metadata.
 - Generated playable platformer, keyboard controls, collision, collectibles, score, finish zone.
@@ -77,7 +78,8 @@ See [PUBLISHING.md](PUBLISHING.md) and [server/README.md](server/README.md) for 
 
 - Blockly is currently loaded from a pinned CDN version, so the block editor requires network access to that CDN.
 - The block system generates game-specific JavaScript but isn't a full Scratch-compatible runtime. Not every arbitrary block program can be safely converted back from source code.
-- Starter art ships as original in-browser SVG; Kenney/OpenGameArt items are linked to their original download pages. Imports require license verification.
+- Original 2D art ships as in-browser SVG. The 3D kit dynamically generates valid GLB models. Third-party Kenney/Poly Haven/ambientCG packs remain source links until creators download and import specific assets; imports require license verification.
+- The 3D inspector loads Google's pinned `<model-viewer>` 4.4.0 module and needs WebGL/internet access. The playable Visual Builder remains 2D, without 3D scene assembly, physics, rigging or animation authoring.
 - Browser localStorage is size-limited. Keep exported ZIP backups, especially when importing large art packs.
 - Public game submissions, creator profiles and verified Lucion Identity are not live yet.
 
@@ -86,3 +88,7 @@ See [PUBLISHING.md](PUBLISHING.md) and [server/README.md](server/README.md) for 
 Refer to [ASSET_SOURCES.md](ASSET_SOURCES.md) for first-party audio inventory, curated third-party pack links, CC0/source licensing notes, and practical import/export limitations. Third-party packs are not automatically redistributed by Arcadia. The Sound & Music Studio originals can be added directly to a local project without visiting external websites.
 
 Exported ZIP games include `ASSET-CREDITS.txt` to list source provenance; imported files still require verification before publication.
+
+## 2D / 3D asset workflow
+
+See [ASSET_PIPELINE_2D_3D.md](ASSET_PIPELINE_2D_3D.md) for 2D atlas slicing, 3D GLB import limits, original model list, export behavior, and engine limitations. Models are included under `models/*.glb` in exported ZIPs and documented in `arcadia-3d-assets.json`. This does not turn existing 2D games into 3D games automatically.
