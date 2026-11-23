@@ -255,5 +255,71 @@
     "type": "hosted",
     "path": "games/minteez-emoji-memory-match/index.html",
     "featured": false
+  },
+  {
+    "id": "minteez-arcade-space-shooter",
+    "title": "Arcade Space Shooter",
+    "description": "Play Arcade Space Shooter, from Minteez's Browser Game Hub.",
+    "category": "Arcade",
+    "emoji": "🚀",
+    "accent": "#7bbaff",
+    "type": "hosted",
+    "path": "games/minteez-arcade-space-shooter/index.html",
+    "featured": false
+  },
+  {
+    "id": "minteez-catch-the-falling-stars",
+    "title": "Catch The Falling Stars",
+    "description": "Play Catch The Falling Stars, from Minteez's Browser Game Hub.",
+    "category": "Arcade",
+    "emoji": "⭐",
+    "accent": "#7bbaff",
+    "type": "hosted",
+    "path": "games/minteez-catch-the-falling-stars/index.html",
+    "featured": false
+  },
+  {
+    "id": "minteez-turbo-tunnel",
+    "title": "Turbo Tunnel",
+    "description": "Play Turbo Tunnel, from Minteez's Browser Game Hub.",
+    "category": "Arcade",
+    "emoji": "🏁",
+    "accent": "#7bbaff",
+    "type": "hosted",
+    "path": "games/minteez-turbo-tunnel/index.html",
+    "featured": false
+  },
+  {
+    "id": "minteez-ice-cream-stacker",
+    "title": "Ice Cream Stacker",
+    "description": "Play Ice Cream Stacker, from Minteez's Browser Game Hub.",
+    "category": "Arcade",
+    "emoji": "🍦",
+    "accent": "#7bbaff",
+    "type": "hosted",
+    "path": "games/minteez-ice-cream-stacker/index.html",
+    "featured": false
+  },
+  {
+    "id": "minteez-balloon-pop-mania",
+    "title": "Balloon Pop Mania",
+    "description": "Play Balloon Pop Mania, from Minteez's Browser Game Hub.",
+    "category": "Arcade",
+    "emoji": "🎈",
+    "accent": "#7bbaff",
+    "type": "hosted",
+    "path": "games/minteez-balloon-pop-mania/index.html",
+    "featured": false
+  },
+  {
+    "id": "minteez-modern-idle-tycoon",
+    "title": "Modern Idle Tycoon",
+    "description": "Play Modern Idle Tycoon, from Minteez's Browser Game Hub.",
+    "category": "Strategy",
+    "emoji": "🏙️",
+    "accent": "#7bbaff",
+    "type": "hosted",
+    "path": "games/minteez-modern-idle-tycoon/index.html",
+    "featured": false
   }
 ]
