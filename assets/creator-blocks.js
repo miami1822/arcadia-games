@@ -34,6 +34,9 @@ function define(){
   block('ac_unlock','unlock achievement %1',[{type:'field_input',name:'ID',text:'first-win'}],38),
   block('ac_save','save game slot %1',[{type:'field_input',name:'SLOT',text:'progress'}],38),
   block('ac_sound','play sound %1',[{type:'field_dropdown',name:'SOUND',options:[['Coin','coin'],['Jump','jump'],['Win','win'],['Hit','hit']]}],105),
+  block('ac_play_audio','play audio asset %1',[{type:'field_input',name:'PATH',text:'audio/arcadia-coin.wav'}],105),
+  block('ac_music_loop','loop music asset %1',[{type:'field_input',name:'PATH',text:'audio/arcadia-ambient-pulse.wav'}],105),
+  block('ac_music_stop','stop background music',[],105),
   block('ac_is_key','key %1 held?',[{type:'field_dropdown',name:'KEY',options:[['Space',' '],['Left','arrowleft'],['Right','arrowright'],['Up','arrowup'],['A','a'],['D','d']]}],210,false,true),
   block('ac_score','current score',[],38,false,true),
   block('ac_player_x','player X',[],235,false,true),
@@ -55,6 +58,9 @@ function define(){
  gen.forBlock.ac_unlock=b=>'ArcadiaLogic.unlock('+text(b.getFieldValue('ID'))+');\n';
  gen.forBlock.ac_save=b=>'ArcadiaLogic.save('+text(b.getFieldValue('SLOT'))+');\n';
  gen.forBlock.ac_sound=b=>'ArcadiaLogic.sound('+text(b.getFieldValue('SOUND'))+');\n';
+ gen.forBlock.ac_play_audio=b=>'ArcadiaLogic.playAudio('+text(b.getFieldValue('PATH'))+');\n';
+ gen.forBlock.ac_music_loop=b=>'ArcadiaLogic.playMusic('+text(b.getFieldValue('PATH'))+');\n';
+ gen.forBlock.ac_music_stop=()=>'ArcadiaLogic.stopMusic();\n';
  gen.forBlock.ac_is_key=(b,g)=>['ArcadiaLogic.isKeyDown('+text(b.getFieldValue('KEY'))+')',g.ORDER_FUNCTION_CALL];
  gen.forBlock.ac_score=(b,g)=>['ArcadiaLogic.score()',g.ORDER_FUNCTION_CALL];
  gen.forBlock.ac_player_x=(b,g)=>['ArcadiaLogic.playerX()',g.ORDER_FUNCTION_CALL];
@@ -68,7 +74,7 @@ const toolbox={kind:'categoryToolbox',contents:[
  {kind:'category',name:'↗ Motion',colour:'#60a5fa',contents:['ac_move','ac_jump','ac_speed','ac_gravity','ac_is_key','ac_player_x','ac_player_y'].map(type=>({kind:'block',type}))},
  {kind:'category',name:'✦ Looks & Effects',colour:'#d58ae5',contents:['ac_color','ac_message','ac_spawn'].map(type=>({kind:'block',type}))},
  {kind:'category',name:'★ Scores & Saves',colour:'#f0ba55',contents:['ac_score_add','ac_score_set','ac_score','ac_unlock','ac_save'].map(type=>({kind:'block',type}))},
- {kind:'category',name:'♫ Sound',colour:'#e183b6',contents:[{kind:'block',type:'ac_sound'}]},
+ {kind:'category',name:'♫ Sound',colour:'#e183b6',contents:['ac_sound','ac_play_audio','ac_music_loop','ac_music_stop'].map(type=>({kind:'block',type}))},
  {kind:'category',name:'⌛ Control',colour:'#f8a16b',contents:['controls_if','controls_repeat_ext','controls_whileUntil','controls_for'].map(type=>({kind:'block',type}))},
  {kind:'category',name:'◇ Logic',colour:'#75c6ba',contents:['logic_boolean','logic_compare','logic_operation','logic_negate'].map(type=>({kind:'block',type}))},
  {kind:'category',name:'＋ Math',colour:'#75b5c9',contents:['math_number','math_arithmetic','math_random_int','math_modulo'].map(type=>({kind:'block',type}))},
