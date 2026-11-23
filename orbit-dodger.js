@@ -1,0 +1,17 @@
+(()=>{"use strict";
+const stage=document.getElementById("game-stage"),inst=document.getElementById("instructions");
+stage.innerHTML='<div class="game-box"><div class="hud">ORBIT DODGER · SCORE <span id="orbit-score">0</span> · BEST <span id="orbit-best">0</span></div><canvas id="orbit-canvas" width="640" height="440" aria-label="Dodge asteroids and collect stars"></canvas><p id="orbit-status" class="overlay-message" role="status">Move your ship. Collect stars, avoid meteors!</p><div class="controls"><button id="orbit-start">Start / Restart</button><button id="orbit-left">◀</button><button id="orbit-right">▶</button></div></div>';
+if(inst)inst.textContent="Move with ← → or A/D; on touch, drag across the canvas or use the arrow buttons. Collect gold stars. Avoid red meteors.";
+const c=document.getElementById("orbit-canvas"),ctx=c.getContext("2d"),status=document.getElementById("orbit-status");
+let ship=320,objects=[],score=0,best=Number(localStorage.getItem("arcadia-orbit-best")||0),active=false,frame=0,last=0,dir=0,raf=0;
+document.getElementById("orbit-best").textContent=best;
+function reset(){cancelAnimationFrame(raf);ship=320;objects=[];score=0;frame=0;last=0;active=true;document.getElementById("orbit-score").textContent="0";status.textContent="Avoid meteors!";raf=requestAnimationFrame(loop)}
+function draw(){ctx.fillStyle="#090c22";ctx.fillRect(0,0,640,440);for(let i=0;i<50;i++){const x=(i*79+31)%640,y=(i*149+frame*.23)%440;ctx.fillStyle=i%3?"#5b7eb0":"#bcdafc";ctx.fillRect(x,y,2,2)}objects.forEach(o=>{ctx.fillStyle=o.kind==="star"?"#ffd46d":"#fb7185";ctx.beginPath();ctx.arc(o.x,o.y,o.r,0,Math.PI*2);ctx.fill()});ctx.fillStyle="#64f4cb";ctx.beginPath();ctx.moveTo(ship,374);ctx.lineTo(ship-24,419);ctx.lineTo(ship+24,419);ctx.closePath();ctx.fill()}
+function loop(time){if(!active)return;if(!last)last=time;const dt=Math.min(2.5,(time-last)/16.67);last=time;frame+=dt;ship=Math.max(28,Math.min(612,ship+dir*7*dt));if(Math.floor(frame/29)!==Math.floor((frame-dt)/29))objects.push({x:20+Math.random()*600,y:-20,r:10+Math.random()*10,kind:Math.random()<.24?"star":"meteor",v:2.3+Math.random()*2.5});for(const o of objects)o.y+=o.v*dt;objects=objects.filter(o=>o.y<480&&!o.gone);for(const o of objects){if(Math.hypot(o.x-ship,o.y-396)<o.r+17){o.gone=true;if(o.kind==="meteor"){active=false;status.textContent="Game over! Score "+score+". Press Start / Restart.";break}score+=10;document.getElementById("orbit-score").textContent=score;if(score>best){best=score;document.getElementById("orbit-best").textContent=best;localStorage.setItem("arcadia-orbit-best",String(best))}}}draw();if(active)raf=requestAnimationFrame(loop)}
+function key(e){if(["ArrowLeft","ArrowRight","a","d","A","D"].includes(e.key)){e.preventDefault();dir=["ArrowLeft","a","A"].includes(e.key)?-1:1}}
+const release=e=>{if(["ArrowLeft","ArrowRight","a","d","A","D"].includes(e.key))dir=0};
+document.addEventListener("keydown",key);document.addEventListener("keyup",release);
+c.addEventListener("pointermove",e=>{if(e.buttons||e.pointerType==="touch"){const r=c.getBoundingClientRect();ship=Math.max(28,Math.min(612,(e.clientX-r.left)*640/r.width))}});
+for(const [name,n] of [["orbit-left",-1],["orbit-right",1]]){const b=document.getElementById(name);b.addEventListener("pointerdown",e=>{e.preventDefault();dir=n});for(const ev of ["pointerup","pointerleave","pointercancel"])b.addEventListener(ev,()=>dir=0)}
+document.getElementById("orbit-start").onclick=reset;draw();
+})();
