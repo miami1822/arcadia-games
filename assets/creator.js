@@ -255,37 +255,45 @@ $('release-top').addEventListener('click',function(){show('publish')});
 function checks(p){return [['Game has a title',!!p.title.trim()],['Game has a description',!!p.description.trim()],['Rights declaration completed',!!p.rights],['Includes '+(p.mode==='visual'?'a player and finish zone':'an index.html file'),p.mode==='visual'?(p.scene.some(function(o){return o.type==='player'})&&p.scene.some(function(o){return o.type==='goal'})):!!(p.files['index.html']||'').trim()],['Preview opened for playtesting',!!p.testedAt]]}
 function renderRelease(){var p=current();$('release-empty').hidden=!!p;$('release-active').hidden=!p;if(!p)return;$('release-title').value=p.title;$('release-description').value=p.description||'';$('release-genre').value=p.genre||'Arcade';$('release-controls').value=p.controls||'';$('release-rights').checked=!!p.rights;$('release-school').checked=!!p.school;var items=checks(p);$('release-checks').innerHTML=items.map(function(pair){return '<div class="check-item"><span class="'+(pair[1]?'yes':'no')+'">'+(pair[1]?'✓':'○')+'</span><span>'+escapeHTML(pair[0])+'</span></div>'}).join('')}
 $('release-form').addEventListener('submit',function(e){e.preventDefault();var p=current();if(!p)return;p.title=$('release-title').value.trim()||p.title;p.description=$('release-description').value.trim();p.genre=$('release-genre').value;p.controls=$('release-controls').value.trim();p.rights=$('release-rights').checked;p.school=$('release-school').checked;touch(p);renderRelease();toast('Release details saved locally')});
+function packageFilename(p){return (p.title.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'arcadia-game')+'.zip'}
+async function buildGameZip(p){
+ if(!window.JSZip)throw Error('ZIP library unavailable');
+ var sdkSource=await sdkSourcePromise;
+ var options={sdkSource,projectId:p.id,title:p.title};
+ var metadata={name:p.title,description:p.description,genre:p.genre,controls:p.controls,schoolReviewRequested:p.school,rightsDeclared:p.rights,generatedBy:'Arcadia Creator',arcadiaSDK:'0.1.0',publisherMode:'anonymous',assetSources:p.assetMeta||{},exportedAt:new Date().toISOString()};
+ var zip=new JSZip();
+ if(p.mode==='visual'){
+  zip.file('index.html',ArcadiaCreatorRuntime.standalone(visualHTML(p),options));
+ }else{
+  Object.keys(p.files).forEach(function(key){
+   if(!key||key.split('/').includes('..')||key.startsWith('/'))return;
+   zip.file(key,key==='index.html'?ArcadiaCreatorRuntime.standalone(p.files[key],options):p.files[key]);
+  });
+  Object.keys(p.assets||{}).forEach(function(key){
+   var value=p.assets[key],parts=value.split(',');
+   if(parts.length!==2||key.split('/').includes('..')||key.startsWith('/'))return;
+   if(/^data:image\/svg\+xml(?:;charset=utf-8)?$/i.test(parts[0]))zip.file(key,decodeURIComponent(parts[1]));
+   else if(/;base64$/i.test(parts[0]))zip.file(key,parts[1],{base64:true});
+  });
+ }
+ zip.file('arcadia-release.json',JSON.stringify(metadata,null,2));
+ var blob=await zip.generateAsync({type:'blob',compression:'DEFLATE',compressionOptions:{level:5}});
+ return {blob,filename:packageFilename(p),metadata};
+}
 async function exportGame(p){
  if(!p)return;
- var filename=(p.title.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-|-$/g,'')||'arcadia-game')+'.zip';
- var meta={name:p.title,description:p.description,genre:p.genre,controls:p.controls,schoolReviewRequested:p.school,rightsDeclared:p.rights,generatedBy:'Arcadia Creator Alpha',arcadiaSDK:'0.1.0',publisherMode:'anonymous',assetSources:p.assetMeta||{},exportedAt:new Date().toISOString()};
  try{
-  var sdkSource=await sdkSourcePromise;
-  var options={sdkSource,projectId:p.id,title:p.title};
   if(!window.JSZip){
-   var html=ArcadiaCreatorRuntime.standalone(previewHTML(p),options);
-   download(new Blob([html],{type:'text/html'}),filename.replace(/\.zip$/i,'.html'));
-   toast('ZIP library unavailable. Exported a standalone HTML game with the SDK.');
-   return;
+   var sdkSource=await sdkSourcePromise;
+   download(new Blob([ArcadiaCreatorRuntime.standalone(previewHTML(p),{sdkSource,projectId:p.id,title:p.title})],{type:'text/html'}),packageFilename(p).replace(/\.zip$/i,'.html'));
+   toast('ZIP library unavailable. Exported standalone HTML with SDK.');return;
   }
-  var zip=new JSZip();
-  if(p.mode==='visual'){
-   zip.file('index.html',ArcadiaCreatorRuntime.standalone(visualHTML(p),options));
-  }else{
-   Object.keys(p.files).forEach(function(key){
-    if(!key||key.split('/').includes('..')||key.startsWith('/'))return;
-    zip.file(key,key==='index.html'?ArcadiaCreatorRuntime.standalone(p.files[key],options):p.files[key]);
-   });
-   Object.keys(p.assets||{}).forEach(function(key){
-    var data=p.assets[key],parts=data.split(',');
-    if(parts.length===2&&!key.split('/').includes('..')&&!key.startsWith('/')){if(/^data:image\/svg\+xml(?:;charset=utf-8)?$/i.test(parts[0]))zip.file(key,decodeURIComponent(parts[1]));else if(/;base64$/i.test(parts[0]))zip.file(key,parts[1],{base64:true})}
-   });
-  }
-  zip.file('arcadia-release.json',JSON.stringify(meta,null,2));
-  var blob=await zip.generateAsync({type:'blob',compression:'DEFLATE',compressionOptions:{level:5}});
-  download(blob,filename);toast('Game exported with Arcadia SDK included. Keep this ZIP as a backup.');
- }catch(err){toast('Export failed: '+(err.message||'unknown error'))}
+  var game=await buildGameZip(p);
+  download(game.blob,game.filename);
+  toast('Game ZIP exported with SDK and asset credits. Keep a backup.');
+ }catch(error){toast('Export failed: '+error.message)}
 }
+
 function download(blob,filename){var url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(function(){URL.revokeObjectURL(url)},30000)}
 $('export-top').addEventListener('click',function(){exportGame(current())});$('release-export').addEventListener('click',function(){var p=current();if(!p)return;var complete=checks(p).every(function(c){return c[1]});if(!complete)toast('Exporting draft. Finish the checklist before submitting to Arcadia.');exportGame(p)});
 show('home');
